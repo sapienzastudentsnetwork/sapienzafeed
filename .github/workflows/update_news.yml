@@ -23,7 +23,7 @@ jobs:
           pip install requests beautifulsoup4
 
       - name: Run news update script
-        run: python script.py
+        run: python scrape-news.py
 
       - name: Commit changes if any
         run: |
