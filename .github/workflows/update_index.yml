@@ -32,7 +32,7 @@ jobs:
             link=$(grep -P "^${key}\t" professors_list.txt | cut -f2)
             
             # Append the list item to index.html with the professor's news page and the link text
-            echo "<li><a href='$link'>$prof</a> - <a href='${dir}news.html'>news</a></li>" >> index.html
+            echo "<li><a href='$link'>$prof</a> - <a href=\"${dir}news.html\">news</a></li>" >> index.html
           done
       
           # Close the HTML document
