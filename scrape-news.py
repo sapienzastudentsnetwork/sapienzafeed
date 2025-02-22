@@ -54,7 +54,7 @@ def get_news(url):
 
     return clean_html(str(news_div))
 
-def save_news(professor, news_html):
+def save_news(professor, news_html, url):
     """
     Save the news HTML for a given professor in a dedicated directory.
     This function creates the professor's directory (if it doesn't exist)
@@ -63,6 +63,7 @@ def save_news(professor, news_html):
     Args:
         professor (str): The professor's name.
         news_html (str): The HTML content of the news.
+        url (str): The URL of the professor's notice board
     """
     # Create a directory for the professor, replacing spaces with underscores
     professor_dir = os.path.join(REPO_PATH, professor.replace(' ', '_'))
@@ -83,7 +84,7 @@ def save_news(professor, news_html):
 </style>
 </head>
 <body>
-<h1><a href='../../index.html'>«</a> News for {professor}</h1>
+<h1><a href='../../index.html'>«</a> News for <a href='{url}'>{professor}</a></h1>
 <div>{news_html}</div>
 </body>
 </html>"""
@@ -111,6 +112,6 @@ for professor, url in professors.items():
     print(f"Fetching news for {professor}...")
     news = get_news(url)
     if news:
-        save_news(professor, news)
+        save_news(professor, news, url)
     else:
         print(f"No news found for {professor}.")
