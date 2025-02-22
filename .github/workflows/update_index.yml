@@ -14,18 +14,34 @@ jobs:
 
       - name: Generate index.html
         run: |
+          # Create the HTML header and start the unordered list
           echo "<html><head><title>Professors News</title></head><body><h1>Professors</h1><ul>" > index.html
-          for dir in $(ls -d professors/*/ | sort); do
-            prof=$(basename "$dir")
-            echo "<li><a href='professors/$prof/news.html'>$prof</a></li>" >> index.html
+      
+          # Convert the JSON to a tab-separated key-value list
+          jq -r 'to_entries | map("\(.key)\t\(.value)") | .[]' professors.json > professors_list.txt
+      
+          # Iterate over all directories in the professors folder, sorted alphabetically
+          for dir in professors/*/; do
+            # Extract the key from the directory name by replacing underscores with spaces
+            key=$(basename "$dir" | sed 's/_/ /g')
+            
+            # Format the name into Title Case for display (e.g., "Ciuffetelli Annalisa")
+            prof=$(echo "$key" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
+            
+            # Look up the associated link using the key in the temporary list
+            link=$(grep -P "^${key}\t" professors_list.txt | cut -f2)
+            
+            # Append the list item to index.html with the professor's news page and the link text
+            echo "<li><a href='$link'>$prof</a> - <a href='${dir}news.html'>news</a></li>" >> index.html
           done
+      
+          # Close the HTML document
           echo "</ul></body></html>" >> index.html
 
       - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
           git add index.html
           git diff --quiet && git diff --staged --quiet || git commit -m 'Update index.html'
           git push
