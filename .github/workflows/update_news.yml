@@ -1,0 +1,43 @@
+name: Update Professor News
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Runs every 5 minutes
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run news update script
+        run: python script.py
+
+      - name: Commit changes if any
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          changed_files=$(git diff --name-only)
+          for file in $changed_files; do
+            if [[ $file == professors/*/news.html ]]; then
+              professor_name=$(echo $file | sed -E 's|professors/(.*)/news.html|\1|' | sed 's/_/ /g')
+              commit_message="Update news for $(echo "$professor_name" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')"
+              git add "$file"
+              git commit -m "$commit_message"
+            fi
+          done
+          
+          git push
