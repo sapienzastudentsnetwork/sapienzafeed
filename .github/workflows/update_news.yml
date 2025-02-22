@@ -21,6 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install requests beautifulsoup4
+          pip install requests
 
       - name: Run news update script
         run: python scrape-news.py
@@ -37,7 +38,7 @@ jobs:
           for file in $changed_files; do
             if [[ -d $file ]]; then
               # If the entry is a directory, check for news.html
-              news_file="$file/news.html"
+              news_file="${file}news.html"
               if [[ ! -f "$news_file" ]]; then
                 continue
               fi
@@ -56,14 +57,10 @@ jobs:
               commit_hash=$(git rev-parse HEAD)
           
               # Generate URLs for the updated file and the commit
-              file_url="${REPO_URL}/${file}"
+              file_url="sapienzastudents.net/teachers-notice-boards/${file}"
               commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
           
-              # Send a Telegram message for each updated file
-              message="📰 News update for professor $(echo "$professor_name" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1') has been posted! \n\n📄 View the updated file: ${file_url} \n🔍 View changes: ${commit_url}"
-              
-              curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
-                -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
-                -d "text=${message}"
+              # Send Telegram Notification
+              python send-news-update-to-telegram.py "$professor_name" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
             fi
           done
