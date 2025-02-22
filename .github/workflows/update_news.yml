@@ -26,18 +26,35 @@ jobs:
         run: python scrape-news.py
 
       - name: Commit changes if any
+        env:
+          REPO_URL: "https://github.com/${{ github.repository }}/blob/main"
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           changed_files=$(git diff --name-only)
+          commit_needed=false
+
           for file in $changed_files; do
             if [[ $file == professors/*/news.html ]]; then
               professor_name=$(echo $file | sed -E 's|professors/(.*)/news.html|\1|' | sed 's/_/ /g')
               commit_message="Update news for $(echo "$professor_name" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')"
               git add "$file"
               git commit -m "$commit_message"
+              commit_needed=true
+
+              # Push after each commit to get the correct commit hash
+              git push
+              commit_hash=$(git rev-parse HEAD)
+
+              # Generate URLs for the updated file and the commit
+              file_url="${REPO_URL}/${file}"
+              commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
+
+              # Send a Telegram message for each updated file
+              message="📰 News update for professor $(echo "$professor_name" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1') has been posted! \n\n📄 View the updated file: ${file_url} \n🔍 View changes: ${commit_url}"
+              curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+                -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+                -d "text=${message}"
             fi
           done
-          
-          git push
