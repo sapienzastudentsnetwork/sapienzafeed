@@ -57,7 +57,7 @@ jobs:
               commit_hash=$(git rev-parse HEAD)
           
               # Generate URLs for the updated file and the commit
-              file_url="sapienzastudents.net/teachers-notice-boards/${file}"
+              file_url="sapienzastudents.net/sapienzafeed/${file}"
               commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
           
               # Send Telegram Notification
