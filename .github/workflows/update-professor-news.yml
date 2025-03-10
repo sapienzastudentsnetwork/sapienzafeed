@@ -24,7 +24,7 @@ jobs:
           pip install requests
 
       - name: Run news update script
-        run: python scrape-news.py
+        run: python scrape-professor-news.py
 
       - name: Commit changes if any
         env:
@@ -61,6 +61,6 @@ jobs:
               commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
           
               # Send Telegram Notification
-              python send-news-update-to-telegram.py "$professor_name" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
+              python send-professor-news-update-to-telegram.py "$professor_name" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
             fi
           done
