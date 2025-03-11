@@ -46,20 +46,29 @@ jobs:
               "29923") course_name="Informatica (29923)" ;;
               "29400") course_name="Informatica - Distance Learning (29400)" ;;
             esac
+          
+            # Extract language from file path
+            if [[ "$file" == *"/it/"* ]]; then
+              language="Italian"
+            elif [[ "$file" == *"/en/"* ]]; then
+              language="English"
+            else
+              language="Unknown Language"
+            fi
             
             # Generate commit message based on the file name
             if [[ "$file" == *"frequentare"* ]]; then
-              commit_message="Update attendance homepage for $course_name"
+              commit_message="Update attendance homepage for $course_name [$language]"
             elif [[ "$file" == *"orario-delle-lezioni"* || "$file" == *"lesson-times"* ]]; then
-              commit_message="Update attendance lesson schedules section for $course_name"
+              commit_message="Update attendance lesson schedules section for $course_name [$language]"
             elif [[ "$file" == *"calendario-delle-sessioni-desame"* || "$file" == *"exam-session-calendar"* ]]; then
-              commit_message="Update attendance exam session calendar section for $course_name"
+              commit_message="Update attendance exam session calendar section for $course_name [$language]"
             elif [[ "$file" == *"compilazione-del-percorso-formativo"* || "$file" == *"custom-tailoring-your-programme"* ]]; then
-              commit_message="Update attendance study plan section for $course_name"
+              commit_message="Update attendance study plan section for $course_name [$language]"
             elif [[ "$file" == *"percorsi-di-eccellenza"* || "$file" == *"honours-programme"* ]]; then
-              commit_message="Update attendance honours programme section for $course_name"
+              commit_message="Update attendance honours programme section for $course_name [$language]"
             elif [[ "$file" == *"prova-finale"* || "$file" == *"final-test"* ]]; then
-              commit_message="Update attendance final test section for $course_name"
+              commit_message="Update attendance final test section for $course_name [$language]"
             else
               commit_message="Update an attendance section for $course_name"
             fi
