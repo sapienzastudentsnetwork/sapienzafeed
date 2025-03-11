@@ -9,7 +9,9 @@ telegram_token = sys.argv[4]
 chat_id = sys.argv[5]
 
 # Format the message
-update_description = update_description.replace("Update ", "<b>Content update</b> to ")
+update_description = update_description.replace("Update ", "A <b>content update</b> to ")
+
+update_description = update_description + " has been posted!"
 
 message = (
     f"📰 {update_description}\n\n"
