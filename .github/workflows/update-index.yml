@@ -14,8 +14,14 @@ jobs:
 
       - name: Generate index.html
         run: |
-          # Create the HTML header and start the unordered list
-          echo "<html><head><title>Professors News</title></head><body><h1>Professors</h1><ul>" > index.html
+          # Create the HTML header
+          echo "<html><head><title>SapienzaFeed</title></head><body>" > index.html
+          
+          # Frequentare
+          echo "<h1><a href='frequentare/index.html'>Frequentare</a></h1><ul>" >> index.html
+          
+          # Professors News
+          echo "</ul><h1>Professors News</h1><ul>" > index.html
       
           # Convert the JSON to a tab-separated key-value list
           jq -r 'to_entries | map("\(.key)\t\(.value)") | .[]' professors.json > professors_list.txt

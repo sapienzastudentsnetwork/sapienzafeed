@@ -1,0 +1,70 @@
+name: Update Attendance Pages
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Runs every 5 minutes
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run attendance pages update script
+        run: python scrape-attendance-pages.py
+
+      - name: Commit changes if any
+        env:
+          REPO_URL: "https://github.com/${{ github.repository }}/blob/main"
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          changed_files=$(git status --porcelain | awk '{print $2}')
+
+          for file in $changed_files; do            
+            # Extract course ID from file path
+            course_id=$(echo "$file" | grep -oE '[0-9]{5}')
+            course_name="Unknown Course"
+            
+            case "$course_id" in
+              "30786") course_name="ACSAI (30786)" ;;
+              "29932") course_name="Computer Science (29932)" ;;
+              "29389") course_name="Cybersecurity (29389)" ;;
+              "29923") course_name="Informatica (29923)" ;;
+              "29400") course_name="Informatica - Distance Learning (29400)" ;;
+            esac
+            
+            # Generate commit message based on the file name
+            if [[ "$file" == *"frequentare"* ]]; then
+              commit_message="Update attendance homepage for $course_name"
+            elif [[ "$file" == *"orario-delle-lezioni"* || "$file" == *"lesson-times"* ]]; then
+              commit_message="Update attendance lesson schedules section for $course_name"
+            elif [[ "$file" == *"calendario-delle-sessioni-desame"* || "$file" == *"exam-session-calendar"* ]]; then
+              commit_message="Update attendance exam session calendar section for $course_name"
+            elif [[ "$file" == *"compilazione-del-percorso-formativo"* || "$file" == *"custom-tailoring-your-programme"* ]]; then
+              commit_message="Update attendance study plan section for $course_name"
+            elif [[ "$file" == *"percorsi-di-eccellenza"* || "$file" == *"honours-programme"* ]]; then
+              commit_message="Update attendance honours programme section for $course_name"
+            elif [[ "$file" == *"prova-finale"* || "$file" == *"final-test"* ]]; then
+              commit_message="Update attendance final test section for $course_name"
+            else
+              commit_message="Update an attendance section for $course_name"
+            fi
+
+            git add "$file"
+            git commit -m "$commit_message"
+            git push
+          done
