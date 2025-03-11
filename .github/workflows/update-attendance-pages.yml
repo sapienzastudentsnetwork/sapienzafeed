@@ -49,9 +49,9 @@ jobs:
           
             # Extract language from file path
             if [[ "$file" == *"/it/"* ]]; then
-              language="Italian"
+              language="it"
             elif [[ "$file" == *"/en/"* ]]; then
-              language="English"
+              language="en"
             else
               language="Unknown Language"
             fi
@@ -70,7 +70,7 @@ jobs:
             elif [[ "$file" == *"prova-finale"* || "$file" == *"final-test"* ]]; then
               commit_message="Update attendance final test section for $course_name [$language]"
             else
-              commit_message="Update an attendance section for $course_name"
+              commit_message="Update an attendance section for $course_name [$language]"
             fi
 
             git add "$file"
