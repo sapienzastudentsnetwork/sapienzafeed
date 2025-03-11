@@ -6,7 +6,7 @@ on:
   workflow_dispatch: # Allows manual triggering
 
 jobs:
-  update-news:
+  update-attendance-pages:
     runs-on: ubuntu-latest
 
     steps:
