@@ -75,5 +75,15 @@ jobs:
 
             git add "$file"
             git commit -m "$commit_message"
+          
+            # Push after each commit to get the correct commit hash
             git push
+            commit_hash=$(git rev-parse HEAD)
+          
+            # Generate URLs for the updated file and the commit
+            file_url="sapienzastudents.net/sapienzafeed/${file}"
+            commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
+          
+            # Send Telegram Notification
+            python send-attendance-page-update-to-telegram.py "$commit_message" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
           done
