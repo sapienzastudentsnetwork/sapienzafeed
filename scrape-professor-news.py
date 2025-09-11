@@ -34,12 +34,8 @@ def clean_html(html):
 def get_news(url):
     """
     Fetch and extract the news section from the provided URL.
-
-    Args:
-        url (str): The URL from which to fetch the news.
-
-    Returns:
-        str or None: The cleaned HTML of the news section if found, otherwise None.
+    It now looks for the 'lecturer-news' block and extracts the
+    following 'cv-content' div, if present.
     """
     response = requests.get(url)
     if response.status_code != 200:
@@ -47,12 +43,22 @@ def get_news(url):
         return None
 
     soup = BeautifulSoup(response.text, 'html.parser')
-    # Find the div that contains news using its specific class name
-    news_div = soup.find('div', class_='field-name-field-notizie')
-    if not news_div:
+
+    # Find the div with id 'lecturer-news'
+    news_title_div = soup.find('div', id='lecturer-news')
+    if not news_title_div:
         return None
 
-    return clean_html(str(news_div))
+    # Find the first div.cv-content after 'lecturer-news'
+    accordion_content = news_title_div.find_next_sibling('div', class_='accordion-content')
+    if not accordion_content:
+        return None
+
+    cv_content = accordion_content.find('div', class_='cv-content')
+    if not cv_content:
+        return None
+
+    return clean_html(str(cv_content))
 
 def save_news(professor, news_html, url):
     """
