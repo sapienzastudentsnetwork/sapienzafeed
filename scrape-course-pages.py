@@ -676,6 +676,9 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     else:
                         print(f"No useful content found for {course_id}/{language_key}/{language_page}")
 
+            apply_title = "How and When to Enroll" if language_key == "en" else "Come e quando iscriversi"
+            page_links.append((apply_title, "apply.html"))
+
             page_links.append(("Teachers" if language_key == "en" else "Docenti", "teachers.html"))
 
             if page_links:
@@ -897,7 +900,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
                 if h3_tag:
                     page_heading = f"{course_prefix}{h3_tag.get_text(strip=True)}"
                 else:
-                    fallback_title = "Come e quando iscriversi" if language_key == "en" else "How and When to Enroll"
+                    fallback_title = "How and When to Enroll" if language_key == "en" else "Come e quando iscriversi"
                     page_heading = f"{course_prefix}{fallback_title}"
 
                 flag_html = ""
