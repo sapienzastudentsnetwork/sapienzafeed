@@ -92,6 +92,11 @@ jobs:
             # Push after each commit to get the correct commit hash
             git push
             commit_hash=$(git rev-parse HEAD)
+
+            # Skip Telegram notification if the file is a teachers.html or index.html page
+            if [[ "$file" == *"teachers.html"* ]] || [[ "$file" == *"index.html"* ]]; then
+              continue
+            fi
           
             # Generate URLs for the updated file and the commit
             file_url="https://sapienzastudents.net/sapienzafeed/${file}"
