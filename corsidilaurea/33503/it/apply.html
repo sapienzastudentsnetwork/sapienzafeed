@@ -25,6 +25,8 @@
     --toc-border: #444;
     --border-color: #404040;
     --details-body-border: #333;
+    --table-header-bg: #f0f0f0;
+    --table-header-text: #333333;
 }
 
 /* System preference as default */
@@ -38,7 +40,18 @@
         --toc-border: #444;
         --border-color: #404040;
         --details-body-border: #333;
+        --table-header-bg: #333333;
+        --table-header-text: #ffffff;
     }
+}
+
+.table-responsive table thead th {
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }

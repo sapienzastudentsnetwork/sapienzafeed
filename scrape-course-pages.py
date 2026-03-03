@@ -29,6 +29,8 @@ THEME_VARS_CSS = """
     --toc-border: #444;
     --border-color: #404040;
     --details-body-border: #333;
+    --table-header-bg: #f0f0f0;
+    --table-header-text: #333333;
 }
 
 /* System preference as default */
@@ -42,7 +44,18 @@ THEME_VARS_CSS = """
         --toc-border: #444;
         --border-color: #404040;
         --details-body-border: #333;
+        --table-header-bg: #333333;
+        --table-header-text: #ffffff;
     }
+}
+
+.table-responsive table thead th {
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
@@ -83,11 +96,25 @@ a:hover { text-decoration: underline; }
 ul, ol { padding-left: 40px; margin-bottom: 15px; }
 
 /* Table of Contents */
-.toc { background: #f8f9fa; padding: 15px; border: 1px solid #e9ecef; border-radius: 8px; margin-bottom: 30px; }
-.toc h2 { margin-top: 0; padding-bottom: 10px; font-size: 1.2em; color: #333; border-bottom: 2px solid #ddd; }
+.toc { 
+    background: var(--toc-bg); 
+    padding: 15px; 
+    border: 1px solid var(--toc-border); 
+    border-radius: 8px; 
+    margin-bottom: 30px; 
+}
+
+.toc h2 { 
+    margin-top: 0; 
+    padding-bottom: 10px; 
+    font-size: 1.2em; 
+    color: var(--text-color); /* Matches theme text */
+    border-bottom: 2px solid var(--border-color); 
+}
+
 .toc ul { list-style-type: none; padding-left: 0; margin-bottom: 0; }
 .toc li { margin-bottom: 8px; line-height: 1.3; }
-.toc a { color: #0056b3; }
+.toc a { color: var(--link-color); }
 
 /* Details and Accordion Specifics */
 details { margin-bottom: 20px; }
@@ -461,7 +488,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                                         char_len = len(child_elem.get_text(strip=True))
                                         vertical_items = len(child_elem.find_all(['tr', 'li', 'br']))
                                         
-                                        if char_len > 1200 or vertical_items > 10:
+                                        if char_len > 800 or vertical_items > 10:
                                             details_tag = soup.new_tag("details")
                                             summary_tag = soup.new_tag("summary")
                                             level_class = "level-default"
