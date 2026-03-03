@@ -7,7 +7,6 @@ from urllib.parse import urljoin
 # Courses that should NOT have an English version
 EXCLUDED_EN_IDS = (33503, 33504)
 
-# Updated with CSS Variables for theme support
 THEME_VARS_CSS = """
 :root {
     --bg-color: #ffffff;
@@ -67,23 +66,46 @@ a { color: var(--link-color); }
 .theme-toggle:hover { filter: brightness(1.2); }
 """
 
-# Separate CSS content to avoid triggering HTML changes on styling updates
-INDEX_CSS = THEME_VARS_CSS + """
+INDEX_CSS = """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 h1 { color: #333; }
 a { display: inline-block; margin-top: 20px; text-decoration: none; color: #007BFF; }
 """
 
-# Combine THEME_VARS_CSS with your specific page styles
-PAGE_CSS = THEME_VARS_CSS + """
+PAGE_CSS = """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 html { scroll-behavior: smooth; }
 h1 { color: #333; }
 
 /* Unified headings and summary styles for perfect visual parity */
-h2, summary.level-h2 { color: #0056b3; font-size: 1.8em; font-weight: bold; margin-top: 40px; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
-h3, summary.level-h3 { color: #0056b3; font-size: 1.4em; font-weight: bold; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-h4, summary.level-h4 { color: #004085; font-size: 1.15em; font-weight: bold; margin-top: 25px; margin-bottom: 10px; border-bottom: none; }
+h2, summary.level-h2 { 
+    color: var(--heading-color) !important; /* Usa la variabile invece del blu fisso */
+    font-size: 1.8em; 
+    font-weight: bold; 
+    margin-top: 40px; 
+    margin-bottom: 15px; 
+    border-bottom: 2px solid var(--border-color); 
+    padding-bottom: 5px; 
+}
+
+h3, summary.level-h3 { 
+    color: var(--heading-color) !important; 
+    font-size: 1.4em; 
+    font-weight: bold; 
+    margin-top: 30px; 
+    margin-bottom: 15px; 
+    border-bottom: 1px solid var(--border-color); 
+    padding-bottom: 5px; 
+}
+
+h4, summary.level-h4 { 
+    color: var(--heading-color) !important; 
+    font-size: 1.15em; 
+    font-weight: bold; 
+    margin-top: 25px; 
+    margin-bottom: 10px; 
+}
+
 h5, summary.level-h5, h6, summary.level-h6 { color: #333; font-size: 1.05em; font-weight: bold; margin-top: 20px; font-style: italic; margin-bottom: 10px; }
 
 summary.level-default { color: #0056b3; font-size: 1.2em; font-weight: bold; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
@@ -159,7 +181,7 @@ details[open] summary.level-h2, details[open] summary.level-h3, details[open] su
 #back-to-top:hover { background-color: #003d82; }
 """
 
-TEACHERS_CSS = THEME_VARS_CSS + """
+TEACHERS_CSS = """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 html { scroll-behavior: smooth; }
 h1 { color: #333; }
@@ -191,12 +213,13 @@ a:hover { text-decoration: underline; }
 #back-to-top:hover { background-color: #003d82; }
 """
 
-APPLY_SIDEBAR_CSS = THEME_VARS_CSS + """
+APPLY_CSS = """
 .corso-home-menu--generale {
     margin-top: 50px;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-top: 3px solid #0056b3;
+    background-color: var(--toc-bg); 
+    border-top: 3px solid var(--heading-color);
+    color: var(--text-color);
 }
 .corso-home-menu--generale ul {
     list-style: none;
@@ -204,6 +227,9 @@ APPLY_SIDEBAR_CSS = THEME_VARS_CSS + """
 }
 .corso-home-menu--generale li {
     margin-bottom: 10px;
+}
+.corso-home-menu--generale a {
+    color: var(--link-color);
 }
 """
 
@@ -246,6 +272,10 @@ def save_static_files(output_dir="corsidilaurea"):
         f.write(INDEX_CSS)
     with open(os.path.join(output_dir, "page-style.css"), "w", encoding="utf-8") as f:
         f.write(PAGE_CSS)
+    with open(os.path.join(output_dir, "theme-style.css"), "w", encoding="utf-8") as f:
+        f.write(THEME_VARS_CSS)
+    with open(os.path.join(output_dir, "apply-style.css"), "w", encoding="utf-8") as f:
+        f.write(APPLY_CSS)
     with open(os.path.join(output_dir, "teachers-style.css"), "w", encoding="utf-8") as f:
         f.write(TEACHERS_CSS)
         
@@ -265,6 +295,7 @@ def get_relative_path(directory, filename):
 def generate_index_html(directory, links, title, back_url="../index.html"):
     """Generates an index.html file with a list of links."""
     index_path = os.path.join(directory, "index.html")
+    theme_css_path = get_relative_path(directory, "theme-style.css")
     css_path = get_relative_path(directory, "index-style.css")
     js_theme_path = get_relative_path(directory, "theme-switch.js")
 
@@ -284,6 +315,7 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
+    <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
 </head>
 <body>
@@ -291,7 +323,7 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
     {theme_bar_html}
 
     <ul>
-""".format(back_html=back_html, title=title, theme_bar_html=theme_bar_html, css_path=css_path))
+""".format(back_html=back_html, title=title, theme_bar_html=theme_bar_html, theme_css_path=theme_css_path, css_path=css_path))
 
         for link_text, link_url in sorted(links):
             formatted_url = link_url
@@ -573,6 +605,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                         # Use dynamic relative path for page-style.css
                         # Calculate relative paths
+                        theme_css_path = get_relative_path(language_dir, "theme-style.css")
                         css_path = get_relative_path(language_dir, "page-style.css")
                         js_path = get_relative_path(language_dir, "back-to-top.js")
                         js_theme_path = get_relative_path(language_dir, "theme-switch.js")
@@ -584,6 +617,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                             <meta charset="UTF-8">
                             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                             <title>{title}</title>
+                            <link rel="stylesheet" href="{theme_css_path}">
                             <link rel="stylesheet" href="{css_path}">
                         </head>
                         <body>
@@ -606,6 +640,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                             toc=toc_html,
                             content=combined_content,
                             btn_text=back_to_top_text,
+                            theme_css_path=theme_css_path,
                             css_path=css_path,
                             js_theme_path=js_theme_path,
                             js_path=js_path
@@ -729,6 +764,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                     """
 
                     # Calculate relative paths
+                    theme_css_path = get_relative_path(language_dir, "theme-style.css")
                     css_path = get_relative_path(language_dir, "teachers-style.css")
                     js_path = get_relative_path(language_dir, "back-to-top.js")
                     js_theme_path = get_relative_path(language_dir, "theme-switch.js")
@@ -740,6 +776,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         <meta charset="UTF-8">
                         <meta name="viewport" content="width=device-width, initial-scale=1.0">
                         <title>{title}</title>
+                        <link rel="stylesheet" href="{theme_css_path}">
                         <link rel="stylesheet" href="{css_path}">
                     </head>
                     <body>
@@ -760,6 +797,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         theme_bar_html=theme_bar_html,
                         content=teachers_container.prettify() if teachers_container else "",
                         btn_text=back_to_top_text,
+                        theme_css_path=theme_css_path,
                         css_path=css_path,
                         js_path=js_path,
                         js_theme_path=js_theme_path
@@ -832,6 +870,8 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
                     combined_content += block.prettify()
 
                 css_path = get_relative_path(lang_dir, "page-style.css")
+                theme_css_path = get_relative_path(lang_dir, "theme-style.css")
+                apply_css_path = get_relative_path(lang_dir, "apply-style.css")
                 js_path = get_relative_path(lang_dir, "back-to-top.js")
                 js_theme_path = get_relative_path(lang_dir, "theme-switch.js")
                 
@@ -852,16 +892,25 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
 
                 back_to_top_text = "Torna su" if language_key == "it" else "Back to top"
 
+                theme_btn_text = "🌓 Dark Mode"
+                theme_bar_html = f"""
+                <div class="theme-bar">
+                    <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
+                </div>
+                """
+
                 html_content = f"""<!DOCTYPE html>
 <html lang="{language_key}">
 <head>
     <meta charset="UTF-8">
     <title>{page_heading}</title>
+    <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
-    <style>{APPLY_SIDEBAR_CSS}</style>
+    <link rel="stylesheet" href="{apply_css_path}">
 </head>
 <body>
     <h1><a href='index.html'>«</a> {page_heading} <a href='{url}' target='_blank' rel='noopener noreferrer'>(🌐)</a>{flag_html}</h1>
+    {theme_bar_html}
     <div class="content-wrapper">
         {combined_content}
     </div>
@@ -905,7 +954,7 @@ if __name__ == "__main__":
         "organization",
         "quality"
     ]
-    IDS = [33502, 33508, 33516, 33519, 33503, 33504]
+    IDS = [33502]#, 33508, 33516, 33519, 33503, 33504]
     OUTPUT_DIRECTORY = "corsidilaurea"
 
     save_static_files(output_dir="corsidilaurea")
