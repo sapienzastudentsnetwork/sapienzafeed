@@ -680,7 +680,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
             if page_links:
                 # Back button for the language index: go back to course root (language selector or auto-redirect)
-                lang_back_url = "../index.html"
+                lang_back_url = "../../index.html" if is_single_lang else "../index.html"
                 generate_index_html(language_dir, page_links, course_names.get(course_id, course_prefix), back_url=lang_back_url)
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 
