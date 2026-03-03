@@ -1,0 +1,107 @@
+name: Update Course Pages
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Runs every 5 minutes
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update-course-pages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run course pages update script
+        run: python scrape-course-pages.py
+
+      - name: Commit changes if any
+        env:
+          REPO_URL: "https://github.com/${{ github.repository }}/blob/main"
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          changed_files=$(git status --porcelain | awk '{print $2}')
+
+          for file in $changed_files; do
+            if [[ "$file" == *"style.css"* ]]; then
+              git add "$file"
+              git commit -m "Update global CSS styles" || true
+              git push
+              continue
+            fi
+
+            # Extract course ID from file path (e.g., 'corsidilaurea/33502/it/...' -> '33502')
+            course_id=$(echo "$file" | cut -d'/' -f2)
+            
+            # Check if the modified file is the root index.html
+            if [[ "$course_id" == "index.html" || -z "$course_id" ]]; then
+              course_name="General Index"
+              language="all"
+            else
+              # Map course ID to course name
+              case "$course_id" in
+                "33502") course_name="ACSAI" ;;
+                "33508") course_name="Computer Science" ;;
+                "33516") course_name="Cybersecurity" ;;
+                "33519") course_name="Data Science" ;;
+                "33503") course_name="Informatica" ;;
+                "33504") course_name="Informatica - a distanza" ;;
+                *) course_name="Course $course_id" ;;
+              esac
+              
+              # Extract language from file path (e.g., 'it' or 'en')
+              language=$(echo "$file" | cut -d'/' -f3)
+              
+              # Handle course-level index.html where there is no language folder
+              if [[ "$language" == "index.html" || -z "$language" ]]; then
+                language="global"
+              fi
+            fi
+          
+            # Create an uppercase language label (e.g., [IT], [EN], [GLOBAL], [ALL])
+            lang_label="[${language^^}]"
+            
+            # Generate commit message based on the file name
+            if [[ "$file" == *"index.html"* ]]; then
+              commit_message="Update index navigation for $course_name $lang_label"
+            elif [[ "$file" == *"teachers.html"* ]]; then
+              commit_message="Update teachers section for $course_name $lang_label"
+            else
+              # Extract the page name dynamically (e.g., 'frequentare')
+              page_name=$(basename "$file" .html)
+              commit_message="Update $page_name section for $course_name $lang_label"
+            fi
+
+            git add "$file"
+            
+            # Commit the file, or skip to the next iteration if there are no real changes
+            git commit -m "$commit_message" || continue
+          
+            # Push after each commit to get the correct commit hash
+            git push
+            commit_hash=$(git rev-parse HEAD)
+          
+            # Generate URLs for the updated file and the commit
+            file_url="https://sapienzastudents.net/sapienzafeed/${file}"
+            commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
+          
+            # Send Telegram Notification
+            python send-course-page-update-to-telegram.py \
+              "$commit_message" \
+              "$file_url" \
+              "$commit_url" \
+              "${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+              "${{ secrets.TELEGRAM_CHAT_ID }}"
+          done
