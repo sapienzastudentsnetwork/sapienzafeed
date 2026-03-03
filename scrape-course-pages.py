@@ -116,6 +116,22 @@ a:hover { text-decoration: underline; }
 #back-to-top:hover { background-color: #003d82; }
 """
 
+APPLY_SIDEBAR_CSS = """
+.corso-home-menu--generale {
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-top: 3px solid #0056b3;
+}
+.corso-home-menu--generale ul {
+    list-style: none;
+    padding: 0;
+}
+.corso-home-menu--generale li {
+    margin-bottom: 10px;
+}
+"""
+
 BACK_TO_TOP_JS = """
 window.addEventListener('scroll', function() {
     var btn = document.getElementById('back-to-top');
@@ -239,7 +255,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     main_div = soup.find("div", id="cdl-course-home-text")
                     if not main_div:
                         main_div = soup.find("div", id="cdl-course-attendance-text")
-                        
+
                     if main_div:
                         content_blocks.append(main_div)
                     else:
@@ -624,6 +640,110 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         file.write(content)
                     print(f"Saved: {output_path}")
 
+def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_dir="corsidilaurea"):
+    """
+    Scrapes the 'apply' (iscrizione) page for each course, including the general sidebar.
+    """
+    base_url = "https://corsidilaurea.uniroma1.it"
+    url_pattern = base_url + "/{}/course/{}/apply"
+    
+    for course_id in ids:
+        acronym = course_acronyms.get(course_id, str(course_id))
+        course_prefix = f"[{acronym}] "
+        course_dir = os.path.join(output_dir, str(course_id))
+
+        for language_key in languages:
+            # Skip English if course is in exclusion list
+            if language_key == "en" and course_id in EXCLUDED_EN_IDS:
+                continue
+                
+            url = url_pattern.format(language_key, course_id)
+            lang_dir = os.path.join(course_dir, language_key)
+            os.makedirs(lang_dir, exist_ok=True)
+            
+            try:
+                response = requests.get(url, timeout=15)
+                response.raise_for_status()
+            except requests.RequestException as e:
+                print(f"Skipping apply page for {course_id} [{language_key}] due to error: {e}")
+                continue
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            for a_tag in soup.find_all("a", href=True):
+                if a_tag["href"].startswith("/"):
+                    a_tag["href"] = urljoin(base_url, a_tag["href"])
+
+            for img_tag in soup.find_all("img", src=True):
+                if img_tag["src"].startswith("/"):
+                    img_tag["src"] = urljoin(base_url, img_tag["src"])
+
+            content_blocks = []
+
+            mt_divs = soup.find_all("div", class_=re.compile(r'^mt-\d+$'))
+            for mt_div in mt_divs:
+                col_div = mt_div.find("div", class_=re.compile(r'^col-md-\d+$'))
+                if col_div:
+                    content_blocks.append(col_div)
+
+            # 2. Sidebar: 'corso-home-menu--generale'
+            # We look for the sidebar to place it at the bottom
+            sidebar = soup.find("div", class_="corso-home-menu--generale")
+            if sidebar:
+                content_blocks.append(sidebar)
+
+            if content_blocks:
+                combined_content = ""
+                for block in content_blocks:
+                    # Clean up unwanted elements like scripts
+                    for script in block.find_all("script"):
+                        script.decompose()
+                    
+                    combined_content += block.prettify()
+
+                css_path = get_relative_path(lang_dir, "page-style.css")
+                js_path = get_relative_path(lang_dir, "back-to-top.js")
+                
+                main_section = soup.find("section", id="block-system-main")
+                h3_tag = main_section.find("h4") if main_section else None
+                
+                if h3_tag:
+                    page_heading = f"{course_prefix}{h3_tag.get_text(strip=True)}"
+                else:
+                    fallback_title = "Come e quando iscriversi" if language_key == "en" else "How and When to Enroll"
+                    page_heading = f"{course_prefix}{fallback_title}"
+
+                flag_html = ""
+                if course_id not in EXCLUDED_EN_IDS:
+                    other_lang = "en" if language_key == "it" else "it"
+                    flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                    flag_html = f" [<a href='../{other_lang}/apply.html' title='Switch language' style='text-decoration: none;'>{flag}</a>]"
+
+                back_to_top_text = "Torna su" if language_key == "it" else "Back to top"
+
+                html_content = f"""<!DOCTYPE html>
+<html lang="{language_key}">
+<head>
+    <meta charset="UTF-8">
+    <title>{page_heading}</title>
+    <link rel="stylesheet" href="{css_path}">
+    <style>{APPLY_SIDEBAR_CSS}</style>
+</head>
+<body>
+    <h1><a href='index.html'>«</a> {page_heading} <a href='{url}' target='_blank' rel='noopener noreferrer'>(🌐)</a>{flag_html}</h1>
+    <div class="content-wrapper">
+        {combined_content}
+    </div>
+    <button id="back-to-top" title="{back_to_top_text}">{back_to_top_text}</button>
+    <script src="{js_path}"></script>
+</body>
+</html>"""
+
+                output_path = os.path.join(lang_dir, "apply.html")
+                with open(output_path, "w", encoding="utf-8") as file:
+                    file.write(html_content)
+                print(f"Saved: {output_path}")
+
 if __name__ == "__main__":
     COURSE_NAMES = {
         33502: "ACSAI",
@@ -659,5 +779,6 @@ if __name__ == "__main__":
     save_static_files(output_dir="corsidilaurea")
 
     # Run scraping
-    fetch_and_save_page(LANGUAGES, PAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
+    fetch_and_save_apply(LANGUAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
     fetch_and_save_teachers(LANGUAGES, IDS, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
+    fetch_and_save_page(LANGUAGES, PAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
