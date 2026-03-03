@@ -7,14 +7,62 @@ from urllib.parse import urljoin
 # Courses that should NOT have an English version
 EXCLUDED_EN_IDS = (33503, 33504)
 
+# Updated with CSS Variables for theme support
+THEME_VARS_CSS = """
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --heading-color: #0056b3;
+    --link-color: #007BFF;
+    --toc-bg: #f8f9fa;
+    --toc-border: #e9ecef;
+    --border-color: #eee;
+    --details-body-border: #f4f4f4;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --heading-color: #4da3ff;
+    --link-color: #66b2ff;
+    --toc-bg: #2d2d2d;
+    --toc-border: #444;
+    --border-color: #404040;
+    --details-body-border: #333;
+}
+
+/* System preference as default */
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+        --bg-color: #1a1a1a;
+        --text-color: #e0e0e0;
+        --heading-color: #4da3ff;
+        --link-color: #66b2ff;
+        --toc-bg: #2d2d2d;
+        --toc-border: #444;
+        --border-color: #404040;
+        --details-body-border: #333;
+    }
+}
+
+body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
+h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
+a { color: var(--link-color); }
+
+.theme-bar { display: flex; justify-content: flex-end; padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+.theme-toggle { cursor: pointer; background: var(--toc-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8em; transition: 0.2s; }
+.theme-toggle:hover { filter: brightness(1.2); }
+"""
+
 # Separate CSS content to avoid triggering HTML changes on styling updates
-INDEX_CSS = """
+INDEX_CSS = THEME_VARS_CSS + """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 h1 { color: #333; }
 a { display: inline-block; margin-top: 20px; text-decoration: none; color: #007BFF; }
 """
 
-PAGE_CSS = """
+# Combine THEME_VARS_CSS with your specific page styles
+PAGE_CSS = THEME_VARS_CSS + """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 html { scroll-behavior: smooth; }
 h1 { color: #333; }
@@ -84,7 +132,7 @@ details[open] summary.level-h2, details[open] summary.level-h3, details[open] su
 #back-to-top:hover { background-color: #003d82; }
 """
 
-TEACHERS_CSS = """
+TEACHERS_CSS = THEME_VARS_CSS + """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 html { scroll-behavior: smooth; }
 h1 { color: #333; }
@@ -116,7 +164,7 @@ a:hover { text-decoration: underline; }
 #back-to-top:hover { background-color: #003d82; }
 """
 
-APPLY_SIDEBAR_CSS = """
+APPLY_SIDEBAR_CSS = THEME_VARS_CSS + """
 .corso-home-menu--generale {
     margin-top: 50px;
     padding: 20px;
@@ -130,6 +178,23 @@ APPLY_SIDEBAR_CSS = """
 .corso-home-menu--generale li {
     margin-bottom: 10px;
 }
+"""
+
+THEME_JS = """
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', targetTheme);
+    localStorage.setItem('theme', targetTheme);
+}
+
+// Check for saved user preference
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.body.setAttribute('data-theme', savedTheme);
+    }
+})();
 """
 
 BACK_TO_TOP_JS = """
@@ -158,6 +223,9 @@ def save_static_files(output_dir="corsidilaurea"):
         f.write(TEACHERS_CSS)
         
     # Save JS
+    with open(os.path.join(output_dir, "theme-switch.js"), "w", encoding="utf-8") as f:
+        f.write(THEME_JS)
+
     with open(os.path.join(output_dir, "back-to-top.js"), "w", encoding="utf-8") as f:
         f.write(BACK_TO_TOP_JS)
 
@@ -171,8 +239,16 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
     """Generates an index.html file with a list of links."""
     index_path = os.path.join(directory, "index.html")
     css_path = get_relative_path(directory, "index-style.css")
+    js_theme_path = get_relative_path(directory, "theme-switch.js")
 
     back_html = f"<a href='{back_url}'>«</a> " if back_url else ""
+
+    theme_btn_text = "🌓 Dark Mode"
+    theme_bar_html = f"""
+    <div class="theme-bar">
+        <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
+    </div>
+    """
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
@@ -185,8 +261,10 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
 </head>
 <body>
     <h1>{back_html}{title}</h1>
+    {theme_bar_html}
+
     <ul>
-""".format(back_html=back_html, title=title, css_path=css_path))
+""".format(back_html=back_html, title=title, theme_bar_html=theme_bar_html, css_path=css_path))
 
         for link_text, link_url in sorted(links):
             formatted_url = link_url
@@ -196,8 +274,9 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
             file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
 
         file.write("""    </ul>
+<script src="{js_theme_path}"></script>
 </body>
-</html>""")
+</html>""".format(js_theme_path=js_theme_path))
 
 
 def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, output_dir="corsidilaurea"):
@@ -458,10 +537,18 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                         back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                         
+                        theme_btn_text = "🌓 Dark Mode"
+                        theme_bar_html = f"""
+                        <div class="theme-bar">
+                            <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
+                        </div>
+                        """
+
                         # Use dynamic relative path for page-style.css
                         # Calculate relative paths
                         css_path = get_relative_path(language_dir, "page-style.css")
                         js_path = get_relative_path(language_dir, "back-to-top.js")
+                        js_theme_path = get_relative_path(language_dir, "theme-switch.js")
 
                         # Update the content formatting
                         content = """<!DOCTYPE html>
@@ -474,11 +561,13 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                         </head>
                         <body>
                         <h1><a href='index.html'>«</a> {heading} <a href='{url}' target='_blank' rel='noopener noreferrer'>(🌐)</a>{flag_html}</h1>
+                        {theme_bar_html}
                         {toc}
                         {content}
 
                         <button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
                         <script src="{js_path}"></script>
+                        <script src="{js_theme_path}"></script>
                         </body>
                         </html>""".format(
                             lang=language_key, 
@@ -486,11 +575,13 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                             heading=page_heading,
                             flag_html=flag_html,
                             url=url,
+                            theme_bar_html=theme_bar_html,
                             toc=toc_html,
                             content=combined_content,
                             btn_text=back_to_top_text,
                             css_path=css_path,
-                            js_path=js_path # <-- Add this parameter
+                            js_theme_path=js_theme_path,
+                            js_path=js_path
                         )
 
                         output_path = os.path.join(language_dir, filename)
@@ -603,9 +694,17 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                     
                     back_to_top_text = "Torna su" if language_key == "it" else "Back to top"
                     
+                    theme_btn_text = "🌓 Dark Mode"
+                    theme_bar_html = f"""
+                    <div class="theme-bar">
+                        <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
+                    </div>
+                    """
+
                     # Calculate relative paths
                     css_path = get_relative_path(language_dir, "teachers-style.css")
                     js_path = get_relative_path(language_dir, "back-to-top.js")
+                    js_theme_path = get_relative_path(language_dir, "theme-switch.js")
 
                     # Update the content formatting
                     content = """<!DOCTYPE html>
@@ -618,10 +717,12 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                     </head>
                     <body>
                     <h1><a href='index.html'>«</a> {heading} <a href='{url}' target='_blank' rel='noopener noreferrer'>(🌐)</a>{flag_html}</h1>
+                    {theme_bar_html}
                     {content}
 
                     <button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
                     <script src="{js_path}"></script>
+                    <script src="{js_theme_path}"></script>
                     </body>
                     </html>""".format(
                         lang=language_key,
@@ -629,10 +730,12 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         heading=page_heading,
                         url=url,
                         flag_html=flag_html,
+                        theme_bar_html=theme_bar_html,
                         content=teachers_container.prettify() if teachers_container else "",
                         btn_text=back_to_top_text,
                         css_path=css_path,
-                        js_path=js_path
+                        js_path=js_path,
+                        js_theme_path=js_theme_path
                     )
                     
                     output_path = os.path.join(language_dir, "teachers.html")
@@ -703,6 +806,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
 
                 css_path = get_relative_path(lang_dir, "page-style.css")
                 js_path = get_relative_path(lang_dir, "back-to-top.js")
+                js_theme_path = get_relative_path(lang_dir, "theme-switch.js")
                 
                 main_section = soup.find("section", id="block-system-main")
                 h3_tag = main_section.find("h4") if main_section else None
@@ -736,6 +840,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
     </div>
     <button id="back-to-top" title="{back_to_top_text}">{back_to_top_text}</button>
     <script src="{js_path}"></script>
+    <script src="{js_theme_path}"></script>
 </body>
 </html>"""
 

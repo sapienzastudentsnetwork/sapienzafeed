@@ -5,6 +5,50 @@
     <title>[INF - A DIST.] Come e quando iscriversi</title>
     <link rel="stylesheet" href="../../page-style.css">
     <style>
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --heading-color: #0056b3;
+    --link-color: #007BFF;
+    --toc-bg: #f8f9fa;
+    --toc-border: #e9ecef;
+    --border-color: #eee;
+    --details-body-border: #f4f4f4;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --heading-color: #4da3ff;
+    --link-color: #66b2ff;
+    --toc-bg: #2d2d2d;
+    --toc-border: #444;
+    --border-color: #404040;
+    --details-body-border: #333;
+}
+
+/* System preference as default */
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+        --bg-color: #1a1a1a;
+        --text-color: #e0e0e0;
+        --heading-color: #4da3ff;
+        --link-color: #66b2ff;
+        --toc-bg: #2d2d2d;
+        --toc-border: #444;
+        --border-color: #404040;
+        --details-body-border: #333;
+    }
+}
+
+body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
+h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
+a { color: var(--link-color); }
+
+.theme-bar { display: flex; justify-content: flex-end; padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
+.theme-toggle { cursor: pointer; background: var(--toc-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8em; transition: 0.2s; }
+.theme-toggle:hover { filter: brightness(1.2); }
+
 .corso-home-menu--generale {
     margin-top: 50px;
     padding: 20px;
@@ -154,5 +198,6 @@ Gli Ofa devono essere assolti entro il primo anno del corso di studio.
     </div>
     <button id="back-to-top" title="Torna su">Torna su</button>
     <script src="../../back-to-top.js"></script>
+    <script src="../../theme-switch.js"></script>
 </body>
 </html>
