@@ -966,7 +966,7 @@ if __name__ == "__main__":
         "organization",
         "quality"
     ]
-    IDS = [33502]#, 33508, 33516, 33519, 33503, 33504]
+    IDS = [33502, 33508, 33516, 33519, 33503, 33504]
     OUTPUT_DIRECTORY = "corsidilaurea"
 
     save_static_files(output_dir="corsidilaurea")
