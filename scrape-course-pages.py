@@ -17,24 +17,13 @@ THEME_VARS_CSS = """
     --toc-border: #e9ecef;
     --border-color: #eee;
     --details-body-border: #f4f4f4;
-}
-
-[data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --text-color: #e0e0e0;
-    --heading-color: #4da3ff;
-    --link-color: #66b2ff;
-    --toc-bg: #2d2d2d;
-    --toc-border: #444;
-    --border-color: #404040;
-    --details-body-border: #333;
     --table-header-bg: #f0f0f0;
     --table-header-text: #333333;
 }
 
-/* System preference as default */
+/* 1. Apply dark variables if system is dark AND user hasn't forced light */
 @media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
+    :root:not([data-theme="light"]) {
         --bg-color: #1a1a1a;
         --text-color: #e0e0e0;
         --heading-color: #4da3ff;
@@ -48,6 +37,26 @@ THEME_VARS_CSS = """
     }
 }
 
+/* 2. Apply dark variables if user explicitly toggled dark mode */
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --heading-color: #4da3ff;
+    --link-color: #66b2ff;
+    --toc-bg: #2d2d2d;
+    --toc-border: #444;
+    --border-color: #404040;
+    --details-body-border: #333;
+    --table-header-bg: #333333;
+    --table-header-text: #ffffff;
+}
+
+body { 
+    background-color: var(--bg-color); 
+    color: var(--text-color); 
+    transition: background 0.3s, color 0.3s; 
+}
+
 .table-responsive table thead th {
     background-color: var(--table-header-bg) !important;
     color: var(--table-header-text) !important;
@@ -57,7 +66,6 @@ THEME_VARS_CSS = """
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
 h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
 a { color: var(--link-color); }
 
@@ -234,20 +242,40 @@ APPLY_CSS = """
 """
 
 THEME_JS = """
-function toggleTheme() {
-    const currentTheme = document.body.getAttribute('data-theme');
-    const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.body.setAttribute('data-theme', targetTheme);
-    localStorage.setItem('theme', targetTheme);
+function applyTheme(theme) {
+    // Set attribute on <html> element to influence CSS variables immediately
+    document.documentElement.setAttribute('data-theme', theme);
 }
 
-// Check for saved user preference
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    
+    // Determine current effective theme
+    let activeTheme = currentTheme;
+    if (!activeTheme) {
+        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    
+    const targetTheme = (activeTheme === 'dark') ? 'light' : 'dark';
+    localStorage.setItem('theme', targetTheme);
+    applyTheme(targetTheme);
+}
+
+// Immediate execution (run in <head> to prevent flash)
 (function() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
-        document.body.setAttribute('data-theme', savedTheme);
+        applyTheme(savedTheme);
     }
+    // If no saved theme, CSS media queries will handle the system default
 })();
+
+// Sync across tabs
+window.addEventListener('storage', (event) => {
+    if (event.key === 'theme') {
+        applyTheme(event.newValue);
+    }
+});
 """
 
 BACK_TO_TOP_JS = """
@@ -302,11 +330,7 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
     back_html = f"<a href='{back_url}'>«</a> " if back_url else ""
 
     theme_btn_text = "🌓 Dark Mode"
-    theme_bar_html = f"""
-    <div class="theme-bar">
-        <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
-    </div>
-    """
+    theme_bar_html = f'<div class="theme-bar"><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
@@ -317,13 +341,14 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
     <title>{title}</title>
     <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
+    <script src="{js_theme_path}"></script>
 </head>
 <body>
     <h1>{back_html}{title}</h1>
     {theme_bar_html}
 
     <ul>
-""".format(back_html=back_html, title=title, theme_bar_html=theme_bar_html, theme_css_path=theme_css_path, css_path=css_path))
+""".format(back_html=back_html, title=title, theme_bar_html=theme_bar_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path))
 
         for link_text, link_url in sorted(links):
             formatted_url = link_url
@@ -333,7 +358,6 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
             file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
 
         file.write("""    </ul>
-<script src="{js_theme_path}"></script>
 </body>
 </html>""".format(js_theme_path=js_theme_path))
 
@@ -597,11 +621,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                         back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                         
                         theme_btn_text = "🌓 Dark Mode"
-                        theme_bar_html = f"""
-                        <div class="theme-bar">
-                            <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
-                        </div>
-                        """
+                        theme_bar_html = f'<div class="theme-bar"><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
                         # Use dynamic relative path for page-style.css
                         # Calculate relative paths
@@ -619,6 +639,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                             <title>{title}</title>
                             <link rel="stylesheet" href="{theme_css_path}">
                             <link rel="stylesheet" href="{css_path}">
+                            <script src="{js_theme_path}"></script>
                         </head>
                         <body>
                         <h1><a href='index.html'>«</a> {heading} <a href='{url}' target='_blank' rel='noopener noreferrer'>(🌐)</a>{flag_html}</h1>
@@ -628,7 +649,6 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                         <button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
                         <script src="{js_path}"></script>
-                        <script src="{js_theme_path}"></script>
                         </body>
                         </html>""".format(
                             lang=language_key, 
@@ -757,11 +777,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                     back_to_top_text = "Torna su" if language_key == "it" else "Back to top"
                     
                     theme_btn_text = "🌓 Dark Mode"
-                    theme_bar_html = f"""
-                    <div class="theme-bar">
-                        <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
-                    </div>
-                    """
+                    theme_bar_html = f'<div class="theme-bar"><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
                     # Calculate relative paths
                     theme_css_path = get_relative_path(language_dir, "theme-style.css")
@@ -778,6 +794,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         <title>{title}</title>
                         <link rel="stylesheet" href="{theme_css_path}">
                         <link rel="stylesheet" href="{css_path}">
+                        <script src="{js_theme_path}"></script>
                     </head>
                     <body>
                     <h1><a href='index.html'>«</a> {heading} <a href='{url}' target='_blank' rel='noopener noreferrer'>(🌐)</a>{flag_html}</h1>
@@ -786,7 +803,6 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
 
                     <button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
                     <script src="{js_path}"></script>
-                    <script src="{js_theme_path}"></script>
                     </body>
                     </html>""".format(
                         lang=language_key,
@@ -893,11 +909,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
                 back_to_top_text = "Torna su" if language_key == "it" else "Back to top"
 
                 theme_btn_text = "🌓 Dark Mode"
-                theme_bar_html = f"""
-                <div class="theme-bar">
-                    <button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>
-                </div>
-                """
+                theme_bar_html = f'<div class="theme-bar"><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
                 html_content = f"""<!DOCTYPE html>
 <html lang="{language_key}">
@@ -907,6 +919,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
     <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
     <link rel="stylesheet" href="{apply_css_path}">
+    <script src="{js_theme_path}"></script>
 </head>
 <body>
     <h1><a href='index.html'>«</a> {page_heading} <a href='{url}' target='_blank' rel='noopener noreferrer'>(🌐)</a>{flag_html}</h1>
@@ -916,7 +929,6 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
     </div>
     <button id="back-to-top" title="{back_to_top_text}">{back_to_top_text}</button>
     <script src="{js_path}"></script>
-    <script src="{js_theme_path}"></script>
 </body>
 </html>"""
 

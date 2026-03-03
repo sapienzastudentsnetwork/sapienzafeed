@@ -8,24 +8,13 @@
     --toc-border: #e9ecef;
     --border-color: #eee;
     --details-body-border: #f4f4f4;
-}
-
-[data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --text-color: #e0e0e0;
-    --heading-color: #4da3ff;
-    --link-color: #66b2ff;
-    --toc-bg: #2d2d2d;
-    --toc-border: #444;
-    --border-color: #404040;
-    --details-body-border: #333;
     --table-header-bg: #f0f0f0;
     --table-header-text: #333333;
 }
 
-/* System preference as default */
+/* 1. Apply dark variables if system is dark AND user hasn't forced light */
 @media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) {
+    :root:not([data-theme="light"]) {
         --bg-color: #1a1a1a;
         --text-color: #e0e0e0;
         --heading-color: #4da3ff;
@@ -39,6 +28,26 @@
     }
 }
 
+/* 2. Apply dark variables if user explicitly toggled dark mode */
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #e0e0e0;
+    --heading-color: #4da3ff;
+    --link-color: #66b2ff;
+    --toc-bg: #2d2d2d;
+    --toc-border: #444;
+    --border-color: #404040;
+    --details-body-border: #333;
+    --table-header-bg: #333333;
+    --table-header-text: #ffffff;
+}
+
+body { 
+    background-color: var(--bg-color); 
+    color: var(--text-color); 
+    transition: background 0.3s, color 0.3s; 
+}
+
 .table-responsive table thead th {
     background-color: var(--table-header-bg) !important;
     color: var(--table-header-text) !important;
@@ -48,7 +57,6 @@
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-body { background-color: var(--bg-color); color: var(--text-color); transition: background 0.3s, color 0.3s; }
 h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
 a { color: var(--link-color); }
 
