@@ -60,6 +60,23 @@ body {
 h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
 a { color: var(--link-color); }
 
+/* Hover anchors for direct linking */
+.heading-anchor {
+    opacity: 0;
+    color: #ccc !important;
+    font-size: 0.8em;
+    text-decoration: none !important;
+    margin-left: 8px;
+    transition: opacity 0.2s ease-in-out;
+    cursor: pointer;
+    user-select: none;
+}
+h2:hover .heading-anchor, h3:hover .heading-anchor, 
+h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
+    opacity: 1;
+}
+.heading-anchor:hover { color: var(--link-color) !important; }
+
 .theme-bar { display: flex; justify-content: flex-end; padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
 .theme-toggle { cursor: pointer; background: var(--toc-bg); color: var(--text-color); border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8em; transition: 0.2s; }
 .theme-toggle:hover { filter: brightness(1.2); }
