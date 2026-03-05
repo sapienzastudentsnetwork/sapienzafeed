@@ -843,6 +843,17 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
             if sidebar: content_blocks.append(sidebar)
 
             if content_blocks:
+                main_section = soup.find("section", id="block-system-main")
+                h4_tag = main_section.find("h4") if main_section else None
+                breadcrumb_title = get_fallback_title(soup)
+
+                if h4_tag:
+                    page_heading = f"{course_prefix}{h4_tag.get_text(strip=True)}"
+                elif breadcrumb_title:
+                    page_heading = f"{course_prefix}{breadcrumb_title}"
+                else:
+                    page_heading = f"{course_prefix}" + ("How and When to Enroll" if language_key == "en" else "Come e quando iscriversi")
+
                 combined_content = ""
                 for block in content_blocks:
                     for script in block.find_all("script"): script.decompose()
@@ -873,18 +884,6 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                 js_path = f"{rel_to_static_root}page-logic.js"
                 js_theme_path = f"{rel_to_static_root}theme-switch.js"
                 
-                # Handle heading with Breadcrumb fallback
-                main_section = soup.find("section", id="block-system-main")
-                h4_tag = main_section.find("h4") if main_section else None
-                breadcrumb_title = get_fallback_title(soup)
-
-                if h4_tag:
-                    page_heading = f"{course_prefix}{h4_tag.get_text(strip=True)}"
-                elif breadcrumb_title:
-                    page_heading = f"{course_prefix}{breadcrumb_title}"
-                else:
-                    page_heading = f"{course_prefix}" + ("How and When to Enroll" if language_key == "en" else "Come e quando iscriversi")
-
                 # Language Toggle with correct subdirectory jumping
                 flag_html = ""
                 if course_id not in excluded_en_ids:
