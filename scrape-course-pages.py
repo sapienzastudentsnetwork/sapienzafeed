@@ -71,10 +71,11 @@ def make_urls_absolute(soup, base_url):
 def extract_course_metadata(soup, language_key):
     """
     Extracts course metadata (e.g., degree class, faculty, language) from the homepage's 'corso-info' list
-    and the YouTube presentation video iframe located in 'cdl-video-video'.
-    Returns them wrapped in a collapsible <details> HTML tag.
+    and extracts the YouTube presentation video link.
+    Returns a tuple containing the collapsible <details> HTML string and the YouTube URL.
     """
     metadata_html = ""
+    youtube_url = None
     
     # 1. Extract the course information list
     target_ul = soup.find('ul', class_='corso-info')
@@ -85,33 +86,32 @@ def extract_course_metadata(soup, language_key):
             metadata_html += f"  <li>{li.decode_contents()}</li>\n"
         metadata_html += "</ul>\n"
         
-    # 2. Extract YouTube presentation video
+    # 2. Extract YouTube presentation video link instead of iframe
     video_div = soup.find('div', class_='cdl-video-video')
     if video_div:
         iframe = video_div.find('iframe')
-        if iframe:
-            metadata_html += f"<div class='course-metadata-video'>\n  {iframe}\n</div>\n"
+        if iframe and iframe.has_attr('src'):
+            youtube_url = iframe['src']
     else:
         # Fallback
         for iframe in soup.find_all('iframe'):
             src = iframe.get('src', '')
             if 'youtube.com' in src or 'youtu.be' in src:
-                metadata_html += f"<div class='course-metadata-video'>\n  {iframe}\n</div>\n"
+                youtube_url = src
                 break # Only take the first presentation video
             
     # 3. Wrap in a collapsible <details> tag if any data was found
     if metadata_html:
-        # Shortened the summary title
-        summary_text = "Dettagli & Video" if language_key == "it" else "Details & Video"
+        summary_text = "Dettagli" if language_key == "it" else "Details"
         collapsible_block = (
             "<details class='course-metadata-details'>\n"
             f"  <summary>ℹ️ {summary_text}</summary>\n"
             f"  <div class='details-body'>\n{metadata_html}  </div>\n"
             "</details>\n"
         )
-        return collapsible_block
+        return collapsible_block, youtube_url.replace("embed/", "watch?v=")
         
-    return ""
+    return "", None
 
 def get_fallback_title(soup):
     """
@@ -131,7 +131,7 @@ def get_assets_relative_path(directory, filename):
     depth = len(parts)
     return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html=""):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
@@ -163,16 +163,24 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         # Render dynamically categorized links if provided
         if categorized_links:
             for category, cat_links in categorized_links.items():
-                if not cat_links:
-                    continue # Skip empty categories
+                # Skip empty categories unless it is the info category and we have metadata to show
+                if not cat_links and not (category == info_category_name and metadata_html):
+                    continue 
+                    
                 file.write(f'    <h2 class="category-title">{category}</h2>\n')
-                file.write('    <ul class="category-list">\n')
-                for link_text, link_url in sorted(cat_links):
-                    formatted_url = link_url
-                    if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
-                        formatted_url = link_url.rstrip("/") + "/index.html"
-                    file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
-                file.write('    </ul>\n')
+                
+                # Render metadata at the top of the info category
+                if category == info_category_name and metadata_html:
+                    file.write(f'{metadata_html}\n')
+
+                if cat_links:
+                    file.write('    <ul class="category-list">\n')
+                    for link_text, link_url in sorted(cat_links):
+                        formatted_url = link_url
+                        if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
+                            formatted_url = link_url.rstrip("/") + "/index.html"
+                        file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
+                    file.write('    </ul>\n')
         
         # Render generic flat links (used for Root and Choose Language selection)
         elif links:
@@ -184,10 +192,11 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
             file.write('    </ul>\n')
 
-        # Appending metadata_html after the list to display it at the bottom of the page
-        file.write(f"""
-{metadata_html}
-</body>
+        # Appending metadata_html at the bottom ONLY if it wasn't injected into categorized_links
+        if not categorized_links and metadata_html:
+            file.write(f"\n{metadata_html}\n")
+            
+        file.write("""</body>
 </html>""")
 
 def fix_contacts_collapsibles(soup):
@@ -264,11 +273,12 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
             homepage_url = f"{base_url}/{language_key}/course/{course_id}"
             extracted_metadata = ""
+            youtube_video_url = None
             
             hp_resp = fetch_html(homepage_url)
             if hp_resp:
                 hp_soup = BeautifulSoup(hp_resp.text, 'html.parser')
-                extracted_metadata = extract_course_metadata(hp_soup, language_key)
+                extracted_metadata, youtube_video_url = extract_course_metadata(hp_soup, language_key)
 
             page_links = []
 
@@ -580,6 +590,11 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     cats["freq"]: [],
                     cats["ext"]: []
                 }
+                
+                # Append YouTube link if extracted
+                if youtube_video_url:
+                    yt_text = "Video presentazione (#IoScelgoSapienza)" if language_key == "it" else "Video presentation (#IoScelgoSapienza)"
+                    categorized_links[cats["info"]].append((yt_text, youtube_video_url))
 
                 for link_text, filename in page_links:
                     cat_key = file_to_cat.get(filename, "info") # Fallback to info
@@ -595,8 +610,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     for link_text, link_url in custom_links[course_id][language_key]:
                         categorized_links[cats["ext"]].append((link_text, link_url))
 
-                # Filter out empty categories
-                categorized_links = {k: v for k, v in categorized_links.items() if v}
+                # Filter out empty categories, but keep info category if it has metadata
+                categorized_links = {k: v for k, v in categorized_links.items() if v or (k == cats["info"] and extracted_metadata)}
 
                 # Build language toggle for the index page
                 index_flag_html = ""
@@ -613,7 +628,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     original_url=homepage_url,
                     language_key=language_key,
                     categorized_links=categorized_links,
-                    flag_html=index_flag_html
+                    flag_html=index_flag_html,
+                    info_category_name=cats["info"]
                 )
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 
