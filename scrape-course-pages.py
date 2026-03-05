@@ -403,9 +403,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                 attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
                             elif "cla.web.uniroma1.it" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "opp"))
-                            
-                            # If it was a direct link, skip looking for heading anchors inside it
-                            continue
+                            else:
+                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
 
                         # Extract section into separate page if it matches a target anchor or its base matches
                         acc_id = acc_title.get("id")
