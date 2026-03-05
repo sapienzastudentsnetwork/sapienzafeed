@@ -7,544 +7,6 @@ from urllib.parse import urljoin
 # Courses that should NOT have an English version
 EXCLUDED_EN_IDS = (33503, 33504)
 
-THEME_VARS_CSS = """
-:root {
-    --bg-color: #ffffff;
-    --text-color: #333333;
-    --heading-color: #0056b3;
-    --link-color: #007BFF;
-    --toc-bg: #f8f9fa;
-    --toc-border: #e9ecef;
-    --border-color: #eee;
-    --details-body-border: #f4f4f4;
-    --table-header-bg: #f0f0f0;
-    --table-header-text: #333333;
-}
-
-/* 1. Apply dark variables if system is dark AND user hasn't forced light */
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --bg-color: #1a1a1a;
-        --text-color: #e0e0e0;
-        --heading-color: #4da3ff;
-        --link-color: #66b2ff;
-        --toc-bg: #2d2d2d;
-        --toc-border: #444;
-        --border-color: #404040;
-        --details-body-border: #333;
-        --table-header-bg: #333333;
-        --table-header-text: #ffffff;
-    }
-}
-
-/* 2. Apply dark variables if user explicitly toggled dark mode */
-[data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --text-color: #e0e0e0;
-    --heading-color: #4da3ff;
-    --link-color: #66b2ff;
-    --toc-bg: #2d2d2d;
-    --toc-border: #444;
-    --border-color: #404040;
-    --details-body-border: #333;
-    --table-header-bg: #333333;
-    --table-header-text: #ffffff;
-}
-
-body { 
-    background-color: var(--bg-color); 
-    color: var(--text-color); 
-    transition: background 0.3s, color 0.3s; 
-}
-
-.table-responsive table thead th {
-    background-color: var(--table-header-bg) !important;
-    color: var(--table-header-text) !important;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
-a { color: var(--link-color); }
-
-/* Hover anchors for direct linking */
-.heading-anchor {
-    opacity: 0;
-    color: #ccc !important;
-    font-size: 0.8em;
-    text-decoration: none !important;
-    margin-left: 8px;
-    transition: opacity 0.2s ease-in-out;
-    cursor: pointer;
-    user-select: none;
-}
-h2:hover .heading-anchor, h3:hover .heading-anchor, 
-h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
-    opacity: 1;
-}
-.heading-anchor:hover { color: var(--link-color) !important; }
-
-.theme-bar { 
-    display: flex; 
-    justify-content: flex-end; 
-    gap: 8px; 
-    align-items: center; 
-    padding: 10px 0; 
-    margin-bottom: 20px; 
-    border-bottom: 1px solid var(--border-color); 
-    flex-wrap: wrap; /* Allows items to wrap nicely on small screens */
-}
-
-/* Unified button styles */
-.theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label { 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
-    box-sizing: border-box;
-    cursor: pointer; 
-    background: var(--toc-bg); 
-    color: var(--text-color) !important; 
-    border: 1px solid var(--border-color); 
-    padding: 6px 14px; 
-    border-radius: 20px; 
-    font-size: 0.85em; 
-    transition: 0.2s; 
-    text-decoration: none; 
-    white-space: nowrap; /* Prevents text from breaking into two lines */
-    margin: 0;
-}
-.theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover, .font-toggle-label:hover { 
-    filter: brightness(1.2); 
-    text-decoration: none; 
-}
-
-.lang-btn { 
-    font-size: 1.1em; 
-    padding: 4px 10px;
-}
-
-/* OpenDyslexic Font Configuration */
-@font-face {
-    font-family: 'OpenDyslexic';
-    src: url('opendyslexic/OpenDyslexic-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'OpenDyslexic';
-    src: url('opendyslexic/OpenDyslexic-Bold.woff2') format('woff2');
-    font-weight: bold;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'OpenDyslexic';
-    src: url('opendyslexic/OpenDyslexic-Italic.woff2') format('woff2');
-    font-weight: normal;
-    font-style: italic;
-}
-@font-face {
-    font-family: 'OpenDyslexic';
-    src: url('opendyslexic/OpenDyslexic-Bold-Italic.woff2') format('woff2');
-    font-weight: bold;
-    font-style: italic;
-}
-
-/* Apply OpenDyslexic to all elements when html has .dyslexic class */
-html.dyslexic, html.dyslexic * {
-    font-family: 'OpenDyslexic' !important;
-    font-size-adjust: 0.45;
-}
-
-/* Additional Styling for the DSA checkbox label */
-.font-toggle-label { 
-    gap: 6px; 
-    user-select: none;
-}
-.font-toggle-label input[type="checkbox"] {
-    margin: 0; /* Ensures checkbox doesn't alter the button height */
-}
-
-/* Mobile adjustments for theme bar */
-@media (max-width: 600px) {
-    .theme-bar { 
-        justify-content: center; 
-        gap: 6px; 
-    }
-    .theme-toggle, .original-link-btn, .font-toggle-label { 
-        font-size: 0.75em; 
-        padding: 5px 12px;
-    }
-    .lang-btn { 
-        font-size: 1em; 
-        padding: 4px 10px;
-    }
-}
-"""
-
-INDEX_CSS = """
-body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
-h1 { color: #333; }
-a { text-decoration: none; color: #007BFF; }
-a:hover { text-decoration: underline; }
-
-/* List and category styles */
-h2.category-title { 
-    color: var(--heading-color, #0056b3); 
-    margin-top: 30px; 
-    margin-bottom: 15px; 
-    border-bottom: 1px solid var(--border-color, #eee); 
-    padding-bottom: 5px; 
-    font-size: 1.4em; 
-}
-
-ul.category-list, ul.simple-list { 
-    padding-left: 20px; 
-    margin-top: 10px; 
-}
-
-ul.category-list li, ul.simple-list li { 
-    margin-bottom: 12px; 
-}
-
-/* Collapsible Course Metadata specific styling for Index/Homepage */
-.course-metadata-details {
-    margin-top: 30px; /* Added top margin since it is now moved to the bottom */
-    margin-bottom: 20px;
-    padding: 10px; /* Reduced padding to make it smaller */
-    border: 1px solid var(--toc-border, #e9ecef);
-    border-radius: 8px;
-    background-color: var(--toc-bg, #f8f9fa);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    font-size: 0.9em; /* Reduced base font size for the block */
-}
-.course-metadata-details summary {
-    font-weight: bold;
-    color: var(--heading-color, #0056b3);
-    font-size: 1.0em; /* Scaled down the title */
-    margin-bottom: 0;
-    cursor: pointer;
-    list-style: none; /* Hide default arrow in some browsers */
-    display: flex;
-    align-items: center;
-}
-.course-metadata-details summary::-webkit-details-marker {
-    display: none;
-}
-.course-metadata-details[open] summary {
-    margin-bottom: 12px;
-    border-bottom: 1px solid var(--border-color, #eee);
-    padding-bottom: 8px;
-}
-.course-metadata-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 10px;
-}
-.course-metadata-list li {
-    background: var(--bg-color, #ffffff);
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--border-color, #eee);
-    font-size: 0.9em;
-    display: flex;
-    flex-direction: column;
-}
-.course-metadata-list li span {
-    font-weight: bold;
-    color: var(--heading-color, #0056b3);
-    margin-top: 4px;
-}
-.course-metadata-video {
-    margin-top: 15px;
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
-    border-radius: 8px;
-}
-.course-metadata-video iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-"""
-
-PAGE_CSS = """
-body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
-html { scroll-behavior: smooth; }
-h1 { color: #333; }
-
-/* Unified headings and summary styles for perfect visual parity */
-h2, summary.level-h2 { 
-    color: var(--heading-color) !important;
-    font-size: 1.8em; 
-    font-weight: bold; 
-    margin-top: 40px; 
-    margin-bottom: 15px; 
-    border-bottom: 2px solid var(--border-color); 
-    padding-bottom: 5px; 
-}
-
-h3, summary.level-h3 { 
-    color: var(--heading-color) !important; 
-    font-size: 1.4em; 
-    font-weight: bold; 
-    margin-top: 30px; 
-    margin-bottom: 15px; 
-    border-bottom: 1px solid var(--border-color); 
-    padding-bottom: 5px; 
-}
-
-h4, summary.level-h4 { 
-    color: var(--heading-color) !important; 
-    font-size: 1.15em; 
-    font-weight: bold; 
-    margin-top: 25px; 
-    margin-bottom: 10px; 
-}
-
-h5, summary.level-h5, h6, summary.level-h6 { color: #333; font-size: 1.05em; font-weight: bold; margin-top: 20px; font-style: italic; margin-bottom: 10px; }
-
-summary.level-default { color: #0056b3; font-size: 1.2em; font-weight: bold; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-
-a { text-decoration: none; color: #007BFF; }
-a:hover { text-decoration: underline; }
-
-/* Proper indentation for lists */
-ul, ol { padding-left: 40px; margin-bottom: 15px; }
-
-/* Table of Contents */
-.toc { 
-    background: var(--toc-bg); 
-    padding: 15px; 
-    border: 1px solid var(--toc-border); 
-    border-radius: 8px; 
-    margin-bottom: 30px; 
-}
-
-.toc h2 { 
-    margin-top: 0; 
-    padding-bottom: 10px; 
-    font-size: 1.2em; 
-    color: var(--text-color);
-    border-bottom: 2px solid var(--border-color); 
-}
-
-.toc ul { list-style-type: none; padding-left: 0; margin-bottom: 0; }
-.toc li { margin-bottom: 8px; line-height: 1.3; }
-.toc a { color: var(--link-color); }
-
-/* Details and Accordion Specifics */
-details { margin-bottom: 20px; }
-summary { 
-    display: list-item; 
-    cursor: pointer; 
-    outline: none; 
-    transition: color 0.2s; 
-    word-break: break-word;
-}
-
-summary:hover { color: #003d82; }
-details[open] summary.level-h2, details[open] summary.level-h3, details[open] summary.level-default { border-bottom-color: #0056b3; }
-
-.details-body { 
-    padding-left: 15px; 
-    border-left: 3px solid #f4f4f4; 
-    margin-top: 10px;
-}
-
-/* Fallback for short un-wrapped accordions */
-.accordion-item { margin-bottom: 20px; }
-.accordion-title { font-weight: bold; color: #0056b3; font-size: 1.1em; margin-bottom: 5px; }
-.accordion-content { padding-left: 10px; border-left: 3px solid #eee; }
-
-/* Back to top button */
-#back-to-top {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 0.9em;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    z-index: 1000;
-}
-#back-to-top:hover { background-color: #003d82; }
-"""
-
-TEACHERS_CSS = """
-body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
-html { scroll-behavior: smooth; }
-h1 { color: #333; }
-a { text-decoration: none; color: #007BFF; }
-a:hover { text-decoration: underline; }
-.docente-card { border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-.docente-card .content { display: flex; align-items: center; gap: 20px; }
-.docente-picture img { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; }
-.docente-info { flex-grow: 1; }
-.full-name { font-weight: bold; font-size: 1.2em; margin-bottom: 5px; }
-.email, .structure { font-size: 0.9em; color: #555; margin-top: 3px; }
-
-/* Back to top button */
-#back-to-top {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 0.9em;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    z-index: 1000;
-}
-#back-to-top:hover { background-color: #003d82; }
-"""
-
-APPLY_CSS = """
-.corso-home-menu--generale {
-    margin-top: 50px;
-    padding: 20px;
-    background-color: var(--toc-bg); 
-    border-top: 3px solid var(--heading-color);
-    color: var(--text-color);
-}
-.corso-home-menu--generale ul {
-    list-style: none;
-    padding: 0;
-}
-.corso-home-menu--generale li {
-    margin-bottom: 10px;
-}
-.corso-home-menu--generale a {
-    color: var(--link-color);
-}
-"""
-
-THEME_JS = """
-function applyTheme(theme) {
-    // Set attribute on <html> element to influence CSS variables immediately
-    document.documentElement.setAttribute('data-theme', theme);
-}
-
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    // Determine current effective theme
-    let activeTheme = currentTheme;
-    if (!activeTheme) {
-        activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    
-    const targetTheme = (activeTheme === 'dark') ? 'light' : 'dark';
-    localStorage.setItem('theme', targetTheme);
-    applyTheme(targetTheme);
-}
-
-// Immediate execution (run in <head> to prevent flash)
-(function() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        applyTheme(savedTheme);
-    }
-    // Prevent font flickering by applying it instantly to the HTML element
-    const isFontDSA = localStorage.getItem('isFontDSA');
-    if (isFontDSA) {
-        document.documentElement.classList.add('dyslexic');
-    }
-})();
-
-// Settings and Preferences Listeners
-document.addEventListener("DOMContentLoaded", () => { 
-    // DSA Font Checkbox Initialization
-    let fontElement = document.getElementById('font-dsa-toggle');
-    if (fontElement) {
-        let isFontDSA = localStorage.getItem("isFontDSA");
-        if (isFontDSA) {
-            fontElement.checked = true; 
-        }
-
-        fontElement.addEventListener('change', function(e) {
-            if (this.checked) {
-                document.documentElement.classList.add('dyslexic');
-                localStorage.setItem("isFontDSA", "true");
-            } else {
-                document.documentElement.classList.remove('dyslexic');
-                localStorage.removeItem("isFontDSA");
-            }
-        });
-    }
-});
-
-// Sync across tabs
-window.addEventListener('storage', (event) => {
-    if (event.key === 'theme') {
-        applyTheme(event.newValue);
-    } else if (event.key === 'isFontDSA') {
-        const isDSA = !!event.newValue;
-        if (isDSA) document.documentElement.classList.add('dyslexic');
-        else document.documentElement.classList.remove('dyslexic');
-        const fontElement = document.getElementById('font-dsa-toggle');
-        if (fontElement) fontElement.checked = isDSA;
-    }
-});
-"""
-
-PAGE_LOGIC_JS = """
-window.addEventListener('scroll', function() {
-    var btn = document.getElementById('back-to-top');
-    if (btn) {
-        if (window.scrollY > 300) {
-            btn.style.display = 'block';
-        } else {
-            btn.style.display = 'none';
-        }
-    }
-});
-
-// Handle click on heading anchors to copy URL to clipboard
-document.addEventListener("DOMContentLoaded", function() {
-    const anchors = document.querySelectorAll('.heading-anchor');
-    anchors.forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            // Reconstruct full URL with the hash
-            const url = window.location.origin + window.location.pathname + targetId;
-            
-            // Copy to clipboard
-            navigator.clipboard.writeText(url).then(() => {
-                const originalText = this.textContent;
-                this.textContent = 'Copied!';
-                setTimeout(() => { this.textContent = originalText; }, 1500);
-            });
-            
-            // Update URL and smoothly scroll to element without jumping
-            history.pushState(null, null, targetId);
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    });
-});
-"""
-
 def extract_course_metadata(soup, language_key):
     """
     Extracts course metadata (e.g., degree class, faculty, language) from the homepage's 'corso-info' list
@@ -590,7 +52,6 @@ def extract_course_metadata(soup, language_key):
         
     return ""
 
-
 def get_fallback_title(soup):
     """
     Extracts the title from the last item of the breadcrumb list.
@@ -603,41 +64,18 @@ def get_fallback_title(soup):
             return items[-1].get_text(strip=True)
     return None
 
-def save_static_files(output_dir="corsidilaurea"):
-    """Saves the separated CSS and JS files to prevent HTML changes on styling/logic updates."""
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Save CSS
-    with open(os.path.join(output_dir, "index-style.css"), "w", encoding="utf-8") as f:
-        f.write(INDEX_CSS)
-    with open(os.path.join(output_dir, "page-style.css"), "w", encoding="utf-8") as f:
-        f.write(PAGE_CSS)
-    with open(os.path.join(output_dir, "theme-style.css"), "w", encoding="utf-8") as f:
-        f.write(THEME_VARS_CSS)
-    with open(os.path.join(output_dir, "apply-style.css"), "w", encoding="utf-8") as f:
-        f.write(APPLY_CSS)
-    with open(os.path.join(output_dir, "teachers-style.css"), "w", encoding="utf-8") as f:
-        f.write(TEACHERS_CSS)
-        
-    # Save JS
-    with open(os.path.join(output_dir, "theme-switch.js"), "w", encoding="utf-8") as f:
-        f.write(THEME_JS)
-
-    with open(os.path.join(output_dir, "page-logic.js"), "w", encoding="utf-8") as f:
-        f.write(PAGE_LOGIC_JS)
-
-def get_relative_path(directory, filename):
+def get_assets_relative_path(directory, filename):
     """Calculates the relative path to the root static files based on directory depth."""
     parts = os.path.normpath(directory).split(os.sep)
-    depth = len(parts) - 1
-    return ("../" * depth) + filename if depth > 0 else filename
+    depth = len(parts)
+    return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
 def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html=""):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
-    theme_css_path = get_relative_path(directory, "theme-style.css")
-    css_path = get_relative_path(directory, "index-style.css")
-    js_theme_path = get_relative_path(directory, "theme-switch.js")
+    theme_css_path = get_assets_relative_path(directory, "theme-style.css")
+    css_path = get_assets_relative_path(directory, "index-style.css")
+    js_theme_path = get_assets_relative_path(directory, "theme-switch.js")
 
     back_html = f"<a href='{back_url}'>«</a> " if back_url else ""
 
@@ -1016,7 +454,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                         
                         # Path to go up to the root 'corsidilaurea' where static assets live
                         # Since pages are in course_id/lang_key/page.html, we need (page_depth + 2)
-                        rel_to_static_root = "../" * (page_depth + 2)
+                        rel_to_static_root = "../" * (page_depth + 3) + "assets/"
                         
                         # Back button: return to current course language index (e.g. it/index.html)
                         back_link = "index.html" if page_depth == 0 else "../index.html"
@@ -1301,10 +739,10 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                     theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
                     # Calculate relative paths
-                    theme_css_path = get_relative_path(language_dir, "theme-style.css")
-                    css_path = get_relative_path(language_dir, "teachers-style.css")
-                    js_path = get_relative_path(language_dir, "page-logic.js")
-                    js_theme_path = get_relative_path(language_dir, "theme-switch.js")
+                    theme_css_path = get_assets_relative_path(language_dir, "theme-style.css")
+                    css_path = get_assets_relative_path(language_dir, "teachers-style.css")
+                    js_path = get_assets_relative_path(language_dir, "page-logic.js")
+                    js_theme_path = get_assets_relative_path(language_dir, "theme-switch.js")
 
                     # Update the content formatting (H1 has no anchor)
                     content = """<!DOCTYPE html>
@@ -1427,7 +865,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
                 
                 # Path to go up to the root 'corsidilaurea' where static assets live
                 # From it/apply.html we need to go up 2 levels (lang_dir -> course_id -> root)
-                rel_to_static_root = "../" * (page_depth + 2)
+                rel_to_static_root = "../" * (page_depth + 3) + "assets/"
                 
                 # Back button: return to current course language index (it/index.html)
                 back_link = "index.html"
@@ -1596,8 +1034,6 @@ if __name__ == "__main__":
     ]
     IDS = [33502, 33508, 33516, 33519, 33503, 33504]
     OUTPUT_DIRECTORY = "corsidilaurea"
-
-    save_static_files(output_dir="corsidilaurea")
 
     # Run scraping
     fetch_and_save_apply(LANGUAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)

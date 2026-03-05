@@ -1,0 +1,106 @@
+
+body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
+html { scroll-behavior: smooth; }
+h1 { color: #333; }
+
+/* Unified headings and summary styles for perfect visual parity */
+h2, summary.level-h2 { 
+    color: var(--heading-color) !important;
+    font-size: 1.8em; 
+    font-weight: bold; 
+    margin-top: 40px; 
+    margin-bottom: 15px; 
+    border-bottom: 2px solid var(--border-color); 
+    padding-bottom: 5px; 
+}
+
+h3, summary.level-h3 { 
+    color: var(--heading-color) !important; 
+    font-size: 1.4em; 
+    font-weight: bold; 
+    margin-top: 30px; 
+    margin-bottom: 15px; 
+    border-bottom: 1px solid var(--border-color); 
+    padding-bottom: 5px; 
+}
+
+h4, summary.level-h4 { 
+    color: var(--heading-color) !important; 
+    font-size: 1.15em; 
+    font-weight: bold; 
+    margin-top: 25px; 
+    margin-bottom: 10px; 
+}
+
+h5, summary.level-h5, h6, summary.level-h6 { color: #333; font-size: 1.05em; font-weight: bold; margin-top: 20px; font-style: italic; margin-bottom: 10px; }
+
+summary.level-default { color: #0056b3; font-size: 1.2em; font-weight: bold; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+
+a { text-decoration: none; color: #007BFF; }
+a:hover { text-decoration: underline; }
+
+/* Proper indentation for lists */
+ul, ol { padding-left: 40px; margin-bottom: 15px; }
+
+/* Table of Contents */
+.toc { 
+    background: var(--toc-bg); 
+    padding: 15px; 
+    border: 1px solid var(--toc-border); 
+    border-radius: 8px; 
+    margin-bottom: 30px; 
+}
+
+.toc h2 { 
+    margin-top: 0; 
+    padding-bottom: 10px; 
+    font-size: 1.2em; 
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color); 
+}
+
+.toc ul { list-style-type: none; padding-left: 0; margin-bottom: 0; }
+.toc li { margin-bottom: 8px; line-height: 1.3; }
+.toc a { color: var(--link-color); }
+
+/* Details and Accordion Specifics */
+details { margin-bottom: 20px; }
+summary { 
+    display: list-item; 
+    cursor: pointer; 
+    outline: none; 
+    transition: color 0.2s; 
+    word-break: break-word;
+}
+
+summary:hover { color: #003d82; }
+details[open] summary.level-h2, details[open] summary.level-h3, details[open] summary.level-default { border-bottom-color: #0056b3; }
+
+.details-body { 
+    padding-left: 15px; 
+    border-left: 3px solid #f4f4f4; 
+    margin-top: 10px;
+}
+
+/* Fallback for short un-wrapped accordions */
+.accordion-item { margin-bottom: 20px; }
+.accordion-title { font-weight: bold; color: #0056b3; font-size: 1.1em; margin-bottom: 5px; }
+.accordion-content { padding-left: 10px; border-left: 3px solid #eee; }
+
+/* Back to top button */
+#back-to-top {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 0.9em;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+#back-to-top:hover { background-color: #003d82; }
