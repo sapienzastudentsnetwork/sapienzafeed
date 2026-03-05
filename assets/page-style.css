@@ -65,30 +65,34 @@ ul, ol { padding-left: 40px; margin-bottom: 15px; }
 /* Details and Accordion Specifics */
 details { margin-bottom: 20px; }
 
-/* INTERACTIVE SUMMARY: Flex layout and hover effects */
-summary { 
-    display: flex; 
-    align-items: center;
-    justify-content: space-between;
-    list-style: none; /* Hides default marker */
-    cursor: pointer; 
-    outline: none; 
-    transition: background-color 0.2s ease, color 0.2s ease; 
+/* Base summary styles: Hide default marker for ALL summaries */
+summary {
+    list-style: none;
+    cursor: pointer;
+    outline: none;
     word-break: break-word;
-    /* Internal spacing for the interactive effect, offset by margins to maintain text alignment */
-    padding: 10px 15px;
-    margin-left: -15px; 
-    margin-right: -15px;
-    border-radius: 8px;
 }
-
-/* Hides default marker in Safari */
 summary::-webkit-details-marker {
     display: none;
 }
 
+/* ====================================================
+   1. HEADER SUMMARIES (with class "level-*")
+   Arrow on the FAR RIGHT, pointing down, rotates up.
+   ==================================================== */
+summary[class*="level-"] { 
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    margin-left: -15px; 
+    margin-right: -15px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease; 
+}
+
 /* Custom downward arrow pushed to the far right */
-summary::after {
+summary[class*="level-"]::after {
     content: '';
     display: inline-block;
     flex-shrink: 0;
@@ -100,14 +104,46 @@ summary::after {
 }
 
 /* Rotate arrow upwards when open */
-details[open] > summary::after {
+details[open] > summary[class*="level-"]::after {
     transform: rotate(180deg);
 }
 
 /* Visual feedback on hover */
-summary:hover { 
+summary[class*="level-"]:hover { 
     color: #003d82; 
-    background-color: rgba(0, 123, 255, 0.08); /* Light transparent blue background */
+    background-color: rgba(0, 123, 255, 0.08);
+}
+
+/* ====================================================
+   2. NORMAL SUMMARIES (Contacts, no "level-*" class)
+   Arrow on the LEFT, pointing right, rotates down.
+   ==================================================== */
+summary:not([class*="level-"]) {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Custom arrow on the left, pointing right */
+summary:not([class*="level-"])::before {
+    content: '';
+    display: inline-block;
+    flex-shrink: 0;
+    margin-right: 8px; /* Space between arrow and text */
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 6px solid currentColor;
+    transition: transform 0.2s ease;
+}
+
+/* Rotate arrow to point down when open */
+details[open] > summary:not([class*="level-"])::before {
+    transform: rotate(90deg);
+}
+
+/* Ensure no right-side arrow appears on normal summaries */
+summary:not([class*="level-"])::after {
+    content: none !important;
+    display: none !important;
 }
 
 details[open] summary.level-h2, details[open] summary.level-h3, details[open] summary.level-default { border-bottom-color: #0056b3; }
