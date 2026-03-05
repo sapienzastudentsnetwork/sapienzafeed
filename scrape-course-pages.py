@@ -884,6 +884,14 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     yt_text = "Video presentazione (#IoScelgoSapienza)" if language_key == "it" else "Video presentation (#IoScelgoSapienza)"
                     categorized_links[cats["info"]].append((yt_text, youtube_video_url))
 
+                # Hardcode the link to the Educational pathway / Study plan
+                study_plan_text = "Percorso formativo" if language_key == "it" else "Educational pathway"
+                
+                # Use {course_id} so the URL adapts dynamically to the current course
+                study_plan_url = f"https://corsidilaurea.uniroma1.it/{language_key}/course/{course_id}/study-plan"
+                
+                categorized_links[cats["info"]].append((study_plan_text, study_plan_url))
+
                 # Inject regular pages
                 for link_text, filename in page_links:
                     cat_key = file_to_cat.get(filename, "info") # Fallback to info
