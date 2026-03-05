@@ -48,15 +48,15 @@ def generate_theme_bar_html(language_key, flag_html="", original_url=None):
     """
     Generates the standard HTML for the top theme bar.
     """
-    dsa_text = "Font DSA"
+    dsa_text = "OpenDyslexic"
     dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
     
     original_btn_html = ""
     if original_url:
-        original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
+        original_btn_text = "🌐 Fonte" if language_key == "it" else "🌐 Source"
         original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
 
-    theme_btn_text = "🌓 Dark Mode"
+    theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
     return f'<div class="theme-bar">{dsa_toggle_html}{flag_html}{original_btn_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
 def make_urls_absolute(soup, base_url):
