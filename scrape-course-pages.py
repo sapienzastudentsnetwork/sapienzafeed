@@ -382,8 +382,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                 if char_len > 1200 or vertical_items > 10:
                                     wrap_candidates_count += 1
                     
-                    # True only if there's more than one large section
-                    should_wrap = wrap_candidates_count > 1
+                    # True if there's at least one large section, to maintain visual consistency
+                    should_wrap = wrap_candidates_count > 0
 
                     # 2. Processing phase
                     for i, block in enumerate(content_blocks):
@@ -427,7 +427,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                     char_len = len(content_div.get_text(strip=True))
                                     vertical_items = len(content_div.find_all(['tr', 'li', 'br']))
                                     
-                                    if char_len > 800 or vertical_items > 8:
+                                    # Wrap all accordion items to maintain visual consistency
+                                    if True:
                                         details_tag = soup.new_tag("details")
                                         summary_tag = soup.new_tag("summary")
                                         level_class = "level-default"
@@ -461,7 +462,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                     char_len = len(child_elem.get_text(strip=True))
                                     vertical_items = len(child_elem.find_all(['tr', 'li', 'br']))
                                     
-                                    if char_len > 800 or vertical_items > 10:
+                                    # Wrap most content divs, avoiding purely layout/empty ones
+                                    if char_len > 50 or vertical_items > 2:
                                         details_tag = soup.new_tag("details")
                                         summary_tag = soup.new_tag("summary")
                                         level_class = "level-default"

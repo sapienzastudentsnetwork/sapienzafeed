@@ -10,7 +10,7 @@ h2, summary.level-h2 {
     margin-top: 40px; 
     margin-bottom: 15px; 
     border-bottom: 2px solid var(--border-color); 
-    padding-bottom: 5px; 
+    padding-bottom: 10px; 
 }
 
 h3, summary.level-h3 { 
@@ -20,7 +20,7 @@ h3, summary.level-h3 {
     margin-top: 30px; 
     margin-bottom: 15px; 
     border-bottom: 1px solid var(--border-color); 
-    padding-bottom: 5px; 
+    padding-bottom: 10px; 
 }
 
 h4, summary.level-h4 { 
@@ -33,7 +33,7 @@ h4, summary.level-h4 {
 
 h5, summary.level-h5, h6, summary.level-h6 { color: #333; font-size: 1.05em; font-weight: bold; margin-top: 20px; font-style: italic; margin-bottom: 10px; }
 
-summary.level-default { color: #0056b3; font-size: 1.2em; font-weight: bold; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+summary.level-default { color: #0056b3; font-size: 1.2em; font-weight: bold; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
 a { text-decoration: none; color: #007BFF; }
 a:hover { text-decoration: underline; }
@@ -65,14 +65,21 @@ ul, ol { padding-left: 40px; margin-bottom: 15px; }
 /* Details and Accordion Specifics */
 details { margin-bottom: 20px; }
 
-/* Changed from list-item to block to remove default left arrow */
+/* INTERACTIVE SUMMARY: Flex layout and hover effects */
 summary { 
-    display: block; 
-    list-style: none; /* Hides default marker in standard browsers */
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    list-style: none; /* Hides default marker */
     cursor: pointer; 
     outline: none; 
-    transition: color 0.2s; 
+    transition: background-color 0.2s ease, color 0.2s ease; 
     word-break: break-word;
+    /* Internal spacing for the interactive effect, offset by margins to maintain text alignment */
+    padding: 10px 15px;
+    margin-left: -15px; 
+    margin-right: -15px;
+    border-radius: 8px;
 }
 
 /* Hides default marker in Safari */
@@ -80,26 +87,29 @@ summary::-webkit-details-marker {
     display: none;
 }
 
-/* Custom arrow positioned after the text, pointing downwards */
+/* Custom downward arrow pushed to the far right */
 summary::after {
     content: '';
     display: inline-block;
-    vertical-align: middle;
-    width: 0;
-    height: 0;
-    margin-left: 10px;
+    flex-shrink: 0;
+    margin-left: 15px;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-top: 6px solid currentColor; /* Downward triangle */
+    border-top: 6px solid currentColor;
     transition: transform 0.2s ease;
 }
 
-/* Rotate the arrow upwards when details is open */
+/* Rotate arrow upwards when open */
 details[open] > summary::after {
     transform: rotate(180deg);
 }
 
-summary:hover { color: #003d82; }
+/* Visual feedback on hover */
+summary:hover { 
+    color: #003d82; 
+    background-color: rgba(0, 123, 255, 0.08); /* Light transparent blue background */
+}
+
 details[open] summary.level-h2, details[open] summary.level-h3, details[open] summary.level-default { border-bottom-color: #0056b3; }
 
 .details-body { 
