@@ -187,6 +187,73 @@ INDEX_CSS = """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 h1 { color: #333; }
 a { display: inline-block; margin-top: 20px; text-decoration: none; color: #007BFF; }
+
+/* Collapsible Course Metadata specific styling for Index/Homepage */
+.course-metadata-details {
+    margin-top: 30px; /* Added top margin since it is now moved to the bottom */
+    margin-bottom: 20px;
+    padding: 10px; /* Reduced padding to make it smaller */
+    border: 1px solid var(--toc-border, #e9ecef);
+    border-radius: 8px;
+    background-color: var(--toc-bg, #f8f9fa);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    font-size: 0.9em; /* Reduced base font size for the block */
+}
+.course-metadata-details summary {
+    font-weight: bold;
+    color: var(--heading-color, #0056b3);
+    font-size: 1.0em; /* Scaled down the title */
+    margin-bottom: 0;
+    cursor: pointer;
+    list-style: none; /* Hide default arrow in some browsers */
+    display: flex;
+    align-items: center;
+}
+.course-metadata-details summary::-webkit-details-marker {
+    display: none;
+}
+.course-metadata-details[open] summary {
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border-color, #eee);
+    padding-bottom: 8px;
+}
+.course-metadata-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+}
+.course-metadata-list li {
+    background: var(--bg-color, #ffffff);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color, #eee);
+    font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+}
+.course-metadata-list li span {
+    font-weight: bold;
+    color: var(--heading-color, #0056b3);
+    margin-top: 4px;
+}
+.course-metadata-video {
+    margin-top: 15px;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.course-metadata-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 """
 
 PAGE_CSS = """
@@ -458,6 +525,52 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 """
 
+def extract_course_metadata(soup, language_key):
+    """
+    Extracts course metadata (e.g., degree class, faculty, language) from the homepage's 'corso-info' list
+    and the YouTube presentation video iframe located in 'cdl-video-video'.
+    Returns them wrapped in a collapsible <details> HTML tag.
+    """
+    metadata_html = ""
+    
+    # 1. Extract the course information list
+    target_ul = soup.find('ul', class_='corso-info')
+            
+    if target_ul:
+        metadata_html += "<ul class='course-metadata-list'>\n"
+        for li in target_ul.find_all('li', recursive=False):
+            metadata_html += f"  <li>{li.decode_contents()}</li>\n"
+        metadata_html += "</ul>\n"
+        
+    # 2. Extract YouTube presentation video
+    video_div = soup.find('div', class_='cdl-video-video')
+    if video_div:
+        iframe = video_div.find('iframe')
+        if iframe:
+            metadata_html += f"<div class='course-metadata-video'>\n  {iframe}\n</div>\n"
+    else:
+        # Fallback
+        for iframe in soup.find_all('iframe'):
+            src = iframe.get('src', '')
+            if 'youtube.com' in src or 'youtu.be' in src:
+                metadata_html += f"<div class='course-metadata-video'>\n  {iframe}\n</div>\n"
+                break # Only take the first presentation video
+            
+    # 3. Wrap in a collapsible <details> tag if any data was found
+    if metadata_html:
+        # Shortened the summary title
+        summary_text = "Dettagli & Video" if language_key == "it" else "Details & Video"
+        collapsible_block = (
+            "<details class='course-metadata-details'>\n"
+            f"  <summary>ℹ️ {summary_text}</summary>\n"
+            f"  <div class='details-body'>\n{metadata_html}  </div>\n"
+            "</details>\n"
+        )
+        return collapsible_block
+        
+    return ""
+
+
 def get_fallback_title(soup):
     """
     Extracts the title from the last item of the breadcrumb list.
@@ -499,8 +612,8 @@ def get_relative_path(directory, filename):
     depth = len(parts) - 1
     return ("../" * depth) + filename if depth > 0 else filename
 
-def generate_index_html(directory, links, title, back_url="../index.html"):
-    """Generates an index.html file with a list of links."""
+def generate_index_html(directory, links, title, back_url="../index.html", metadata_html=""):
+    """Generates an index.html file with a list of links and optional metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_relative_path(directory, "theme-style.css")
     css_path = get_relative_path(directory, "index-style.css")
@@ -537,7 +650,9 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
 
             file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
 
-        file.write("""    </ul>
+        # Appending metadata_html after the list to display it at the bottom of the page
+        file.write(f"""    </ul>
+{metadata_html}
 </body>
 </html>""")
 
@@ -572,6 +687,16 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
             language_dir = os.path.join(course_dir, language_key)
             os.makedirs(language_dir, exist_ok=True)
 
+            homepage_url = f"{base_url}/{language_key}/course/{course_id}"
+            extracted_metadata = ""
+            try:
+                hp_resp = requests.get(homepage_url, timeout=15)
+                if hp_resp.status_code == 200:
+                    hp_soup = BeautifulSoup(hp_resp.text, 'html.parser')
+                    extracted_metadata = extract_course_metadata(hp_soup, language_key)
+            except requests.RequestException as e:
+                print(f"Could not fetch homepage for metadata ({homepage_url}): {e}")
+
             page_links = []
 
             for language_page in pages:
@@ -587,7 +712,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                 if response.status_code == 200:
                     soup = BeautifulSoup(response.text, 'html.parser')
-
+                    
                     # Fix links to be absolute
                     for a_tag in soup.find_all("a", href=True):
                         if a_tag["href"].startswith("/"):
@@ -880,7 +1005,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
             if page_links:
                 # Back button for the language index: go back to course root (language selector or auto-redirect)
                 lang_back_url = "../../index.html" if is_single_lang else "../index.html"
-                generate_index_html(language_dir, page_links, course_names.get(course_id, course_prefix), back_url=lang_back_url)
+                generate_index_html(language_dir, page_links, course_names.get(course_id, course_prefix), back_url=lang_back_url, metadata_html=extracted_metadata)
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 
         if language_links:
