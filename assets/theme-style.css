@@ -256,8 +256,13 @@ html.dyslexic, html.dyslexic * {
     }
     
     /* Explicitly force ALL text and headings to black (overrides specific theme rules) */
-    *, h1, h2, h3, h4, h5, h6, #page-title, .header-dashboard h1#page-title, a { 
-        color: black !important; 
+    /* Target regular headings and specialized summary headings to ensure absolute black color */
+    *, 
+    h1, h2, h3, h4, h5, h6, 
+    summary.level-h2, summary.level-h3, summary.level-h4, summary.level-h5, summary.level-h6, summary.level-default,
+    #page-title, .header-dashboard h1#page-title, a { 
+        color: #000000 !important; 
+        border-color: #000000 !important;
         background-color: transparent !important; 
         box-shadow: none !important; 
         text-shadow: none !important; 

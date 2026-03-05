@@ -176,3 +176,24 @@ details[open] summary.level-h2, details[open] summary.level-h3, details[open] su
     z-index: 1000;
 }
 #back-to-top:hover { background-color: #003d82; }
+
+/* =========================================
+   PRINT OPTIMIZATION (Overrides for page-style.css)
+   ========================================= */
+@media print {
+    h1, h2, h3, h4, h5, h6, 
+    summary[class*="level-"], 
+    summary.level-default, 
+    .accordion-title, 
+    a {
+        color: #000000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    details[open] summary.level-h2, 
+    details[open] summary.level-h3, 
+    details[open] summary.level-default {
+        border-bottom-color: #000000 !important;
+    }
+}
