@@ -632,7 +632,7 @@ def get_relative_path(directory, filename):
     depth = len(parts) - 1
     return ("../" * depth) + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html=""):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_relative_path(directory, "theme-style.css")
@@ -648,7 +648,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 
     theme_btn_text = "🌓 Dark Mode"
     dsa_toggle_html = '<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> Font DSA</label>'
-    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{original_btn_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+    # Inserted flag_html here to display language switch button on course index page
+    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}{original_btn_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
@@ -1047,7 +1048,8 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
             page_links.append(("Teachers" if language_key == "en" else "Docenti", "teachers.html"))
 
             if page_links:
-                lang_back_url = "../../index.html" if is_single_lang else "../index.html"
+                # Always go back to global catalogue root since language selection page is removed
+                lang_back_url = "../../index.html"
 
                 # Define structural categories
                 categories_dict = {
@@ -1105,6 +1107,13 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                 # Filter out empty categories
                 categorized_links = {k: v for k, v in categorized_links.items() if v}
 
+                # Build language toggle for the index page
+                index_flag_html = ""
+                if course_id not in EXCLUDED_EN_IDS:
+                    other_lang = "en" if language_key == "it" else "it"
+                    flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                    index_flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
+
                 generate_index_html(
                     directory=language_dir, 
                     title=course_names.get(course_id, course_prefix), 
@@ -1112,18 +1121,16 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     metadata_html=extracted_metadata,
                     original_url=homepage_url,
                     language_key=language_key,
-                    categorized_links=categorized_links
+                    categorized_links=categorized_links,
+                    flag_html=index_flag_html
                 )
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 
         if language_links:
-            if is_single_lang:
-                lang_path = language_links[0][1]
-                with open(os.path.join(course_dir, "index.html"), "w", encoding="utf-8") as f:
-                    f.write(f'<html><head><meta http-equiv="refresh" content="0;url={lang_path}"></head></html>')
-            else:
-                # Back button from language selector: go back to global catalogue root
-                generate_index_html(course_dir, links=language_links, title=course_prefix+"Choose Language", back_url="../index.html")
+            # Default to English if available, otherwise use the first available language
+            default_lang_path = "en/index.html" if "en" in valid_langs else language_links[0][1]
+            with open(os.path.join(course_dir, "index.html"), "w", encoding="utf-8") as f:
+                f.write(f'<html><head><meta http-equiv="refresh" content="0;url={default_lang_path}"></head></html>')
 
 def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidilaurea"):
     base_url = "https://corsidilaurea.uniroma1.it"
