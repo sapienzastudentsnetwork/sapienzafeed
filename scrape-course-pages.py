@@ -5,6 +5,69 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
+def fetch_html(url, timeout=15):
+    """
+    Executes a safe HTTP GET request. 
+    Returns the response object if successful, otherwise None.
+    """
+    try:
+        response = requests.get(url, timeout=timeout)
+        response.raise_for_status()
+        return response
+    except requests.RequestException as e:
+        print(f"Skipping {url} due to request error: {e}")
+        return None
+
+def add_heading_anchors(soup, content_block):
+    """
+    Finds headings in a block, generates an ID (if missing), 
+    and injects a clickable anchor (#).
+    """
+    for h_tag in content_block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
+        # Skip headings inside collapsibles to avoid interfering with click events
+        if h_tag.find_parent('summary') or h_tag.find_parent('details'):
+            continue
+
+        raw_text = h_tag.get_text(strip=True)
+        if not raw_text: continue
+        
+        if not h_tag.has_attr('id'):
+            h_id = re.sub(r'[^a-z0-9]+', '-', raw_text.lower()).strip('-')
+            if not h_id: h_id = f"header-{id(h_tag)}"
+            h_tag['id'] = h_id
+        else:
+            h_id = h_tag['id']
+            
+        if not h_tag.find("a", class_="heading-anchor"):
+            anchor = soup.new_tag("a", href=f"#{h_id}", attrs={"class": "heading-anchor", "title": "Copy direct link"})
+            anchor.string = "#"
+            h_tag.append(" ")
+            h_tag.append(anchor)
+
+def generate_theme_bar_html(language_key, flag_html="", original_url=None):
+    """
+    Generates the standard HTML for the top theme bar.
+    """
+    dsa_text = "Font DSA"
+    dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
+    
+    original_btn_html = ""
+    if original_url:
+        original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
+        original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
+
+    theme_btn_text = "🌓 Dark Mode"
+    return f'<div class="theme-bar">{dsa_toggle_html}{flag_html}{original_btn_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+
+def make_urls_absolute(soup, base_url):
+    """
+    Converts relative URLs in href (for <a>) and src (for <img>) attributes to absolute URLs.
+    """
+    for tag in soup.find_all(["a", "img"]):
+        attr = "href" if tag.name == "a" else "src"
+        if tag.has_attr(attr) and tag[attr].startswith("/"):
+            tag[attr] = urljoin(base_url, tag[attr])
+
 def extract_course_metadata(soup, language_key):
     """
     Extracts course metadata (e.g., degree class, faculty, language) from the homepage's 'corso-info' list
@@ -77,15 +140,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 
     back_html = f"<a href='{back_url}'>«</a> " if back_url else ""
 
-    original_btn_html = ""
-    if original_url:
-        original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-        original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
-
-    theme_btn_text = "🌓 Dark Mode"
-    dsa_toggle_html = '<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> Font DSA</label>'
-    # Inserted flag_html here to display language switch button on course index page
-    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}{original_btn_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+    # Generate theme bar using utility function
+    theme_bar_html = generate_theme_bar_html(language_key, flag_html, original_url)
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
@@ -208,296 +264,274 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
             homepage_url = f"{base_url}/{language_key}/course/{course_id}"
             extracted_metadata = ""
-            try:
-                hp_resp = requests.get(homepage_url, timeout=15)
-                if hp_resp.status_code == 200:
-                    hp_soup = BeautifulSoup(hp_resp.text, 'html.parser')
-                    extracted_metadata = extract_course_metadata(hp_soup, language_key)
-            except requests.RequestException as e:
-                print(f"Could not fetch homepage for metadata ({homepage_url}): {e}")
+            
+            hp_resp = fetch_html(homepage_url)
+            if hp_resp:
+                hp_soup = BeautifulSoup(hp_resp.text, 'html.parser')
+                extracted_metadata = extract_course_metadata(hp_soup, language_key)
 
             page_links = []
 
             for language_page in pages:
                 url = url_pattern.format(language_key, course_id, language_page)
 
-                # Handle connection errors and invalid responses gracefully                
-                try:
-                    response = requests.get(url, timeout=15)
-                    response.raise_for_status()
-                except requests.RequestException as e:
-                    print(f"Skipping {url} due to request error: {e}")
+                response = fetch_html(url)
+                if not response:
                     continue
 
-                if response.status_code == 200:
-                    soup = BeautifulSoup(response.text, 'html.parser')
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                # Fix contacts collapsibles before links are modified
+                fix_contacts_collapsibles(soup)
+                
+                # Clean up excessive newlines
+                clean_excessive_newlines(soup)
+                
+                # Fix links to be absolute using utility function
+                make_urls_absolute(soup, base_url)
+
+                # Extract main content
+                content_blocks = []
+
+                main_div = soup.find("div", id="cdl-course-home-text")
+                if not main_div:
+                    main_div = soup.find("div", id="cdl-course-attendance-text")
+
+                if main_div:
+                    content_blocks.append(main_div)
+                else:
+                    accordions = soup.find_all("div", class_="cdl-accordion")
+                    if accordions:
+                        for acc in accordions:
+                            parent = acc.parent
+                            if parent and parent not in content_blocks:
+                                content_blocks.append(parent)
+
+                    if not content_blocks:
+                        mt_divs = soup.find_all("div", class_=re.compile(r'^mt-\d+$'))
+                        for mt_div in mt_divs:
+                            col_div = mt_div.find("div", class_=re.compile(r'^col-md-\d+$'))
+                            if col_div:
+                                content_blocks.append(col_div)
+                                break
+
+                if content_blocks:
+                    combined_content = ""
+                    page_heading = ""
+                    toc_items = []
                     
-                    # Fix contacts collapsibles before links are modified
-                    fix_contacts_collapsibles(soup)
-                    
-                    # Clean up excessive newlines
-                    clean_excessive_newlines(soup)
-                    
-                    # Fix links to be absolute
-                    for a_tag in soup.find_all("a", href=True):
-                        if a_tag["href"].startswith("/"):
-                            a_tag["href"] = urljoin(base_url, a_tag["href"])
-
-                    # Extract main content
-                    content_blocks = []
-
-                    main_div = soup.find("div", id="cdl-course-home-text")
-                    if not main_div:
-                        main_div = soup.find("div", id="cdl-course-attendance-text")
-
-                    if main_div:
-                        content_blocks.append(main_div)
-                    else:
-                        accordions = soup.find_all("div", class_="cdl-accordion")
-                        if accordions:
-                            for acc in accordions:
-                                parent = acc.parent
-                                if parent and parent not in content_blocks:
-                                    content_blocks.append(parent)
-
-                        if not content_blocks:
-                            mt_divs = soup.find_all("div", class_=re.compile(r'^mt-\d+$'))
-                            for mt_div in mt_divs:
-                                col_div = mt_div.find("div", class_=re.compile(r'^col-md-\d+$'))
-                                if col_div:
-                                    content_blocks.append(col_div)
-                                    break
-
-                    if content_blocks:
-                        combined_content = ""
-                        page_heading = ""
-                        toc_items = []
+                    # 1. Assessment phase: decide if we should wrap long blocks in <details>
+                    wrap_candidates_count = 0
+                    for block in content_blocks:
+                        field_item_div = block.find("div", class_="field-item")
+                        pb_count = field_item_div if field_item_div else block
                         
-                        # 1. Assessment phase: decide if we should wrap long blocks in <details>
-                        wrap_candidates_count = 0
-                        for block in content_blocks:
-                            field_item_div = block.find("div", class_="field-item")
-                            pb_count = field_item_div if field_item_div else block
+                        for acc_item in pb_count.find_all("div", class_="accordion-item"):
+                            content_div = acc_item.find("div", class_="accordion-content")
+                            if content_div:
+                                char_len = len(content_div.get_text(strip=True))
+                                vertical_items = len(content_div.find_all(['tr', 'li', 'br']))
+                                if char_len > 800 or vertical_items > 8:
+                                    wrap_candidates_count += 1
+                                
+                        for child_elem in pb_count.children:
+                            if child_elem.name == "div" and "cdl-accordion" not in child_elem.get("class", []) and "accordion-item" not in child_elem.get("class", []):
+                                if child_elem.get("id") in ["cdl-course-home-text", "cdl-course-attendance-text"]:
+                                    continue
+                                
+                                char_len = len(child_elem.get_text(strip=True))
+                                vertical_items = len(child_elem.find_all(['tr', 'li', 'br']))
+                                if char_len > 1200 or vertical_items > 10:
+                                    wrap_candidates_count += 1
+                    
+                    # True only if there's more than one large section
+                    should_wrap = wrap_candidates_count > 1
+
+                    # 2. Processing phase
+                    for i, block in enumerate(content_blocks):
+                        field_item_div = block.find("div", class_="field-item")
+                        process_block = field_item_div if field_item_div else block
+
+                        # Clean up
+                        for script in process_block.find_all(["script", "manifesto"]):
+                            script.decompose()
+                        
+                        optional_group_popup = process_block.find("div", id="optional-group-popup-div")
+                        if optional_group_popup:
+                            optional_group_popup.decompose()
+
+                        # Phase 2.1: Assign IDs to all headers before any wrapping occurs
+                        for h_tag in process_block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
                             
-                            for acc_item in pb_count.find_all("div", class_="accordion-item"):
+                            # FIX: Unwrap any <p> or <div> tags inside headings that would break inline anchors
+                            for block_tag in h_tag.find_all(['p', 'div']):
+                                block_tag.unwrap()
+                                
+                            raw_text = h_tag.get_text(strip=True)
+                            if not raw_text: continue
+                                
+                            if not h_tag.has_attr('id'):
+                                h_id = re.sub(r'[^a-z0-9]+', '-', raw_text.lower()).strip('-')
+                                if not h_id: h_id = f"header-{id(h_tag)}"
+                                h_tag['id'] = h_id
+                            else:
+                                h_id = h_tag['id']
+                            
+                            header_level = int(h_tag.name[1]) 
+                            toc_items.append((header_level, raw_text, h_id))
+
+                        # Wrapping logic
+                        if should_wrap:
+                            # Wrap accordion-items
+                            for acc_item in process_block.find_all("div", class_="accordion-item"):
                                 content_div = acc_item.find("div", class_="accordion-content")
                                 if content_div:
                                     char_len = len(content_div.get_text(strip=True))
                                     vertical_items = len(content_div.find_all(['tr', 'li', 'br']))
+                                    
                                     if char_len > 800 or vertical_items > 8:
-                                        wrap_candidates_count += 1
-                                    
-                            for child_elem in pb_count.children:
+                                        details_tag = soup.new_tag("details")
+                                        summary_tag = soup.new_tag("summary")
+                                        level_class = "level-default"
+                                        
+                                        title_div = acc_item.find("div", class_="accordion-title")
+                                        if title_div:
+                                            h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
+                                            if h_tag:
+                                                level_class = f"level-{h_tag.name}"
+                                                # Transfer ID to summary so anchor links scroll to it correctly
+                                                if h_tag.has_attr('id'):
+                                                    summary_tag['id'] = h_tag['id']
+                                            summary_tag.string = title_div.get_text(separator=" ", strip=True)
+                                            title_div.decompose()
+                                        else:
+                                            summary_tag.string = "Dettagli" if language_key == "it" else "Details"
+                                            
+                                        summary_tag['class'] = level_class
+                                        details_tag.append(summary_tag)
+                                        body_div = soup.new_tag("div", attrs={"class": "details-body"})
+                                        for child in list(content_div.children): body_div.append(child)
+                                        details_tag.append(body_div)
+                                        acc_item.insert_after(details_tag)
+                                        acc_item.decompose()
+
+                            # Wrap other large divs
+                            for child_elem in list(process_block.children):
                                 if child_elem.name == "div" and "cdl-accordion" not in child_elem.get("class", []) and "accordion-item" not in child_elem.get("class", []):
-                                    if child_elem.get("id") in ["cdl-course-home-text", "cdl-course-attendance-text"]:
-                                        continue
-                                    
+                                    if child_elem.get("id") in ["cdl-course-home-text", "cdl-course-attendance-text"]: continue
+                                        
                                     char_len = len(child_elem.get_text(strip=True))
                                     vertical_items = len(child_elem.find_all(['tr', 'li', 'br']))
-                                    if char_len > 1200 or vertical_items > 10:
-                                        wrap_candidates_count += 1
-                        
-                        # True only if there's more than one large section
-                        should_wrap = wrap_candidates_count > 1
-
-                        # 2. Processing phase
-                        for i, block in enumerate(content_blocks):
-                            field_item_div = block.find("div", class_="field-item")
-                            process_block = field_item_div if field_item_div else block
-
-                            # Clean up
-                            for script in process_block.find_all(["script", "manifesto"]):
-                                script.decompose()
-                            
-                            optional_group_popup = process_block.find("div", id="optional-group-popup-div")
-                            if optional_group_popup:
-                                optional_group_popup.decompose()
-
-                            # Phase 2.1: Assign IDs to all headers before any wrapping occurs
-                            for h_tag in process_block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
-                                
-                                # FIX: Unwrap any <p> or <div> tags inside headings that would break inline anchors
-                                for block_tag in h_tag.find_all(['p', 'div']):
-                                    block_tag.unwrap()
                                     
-                                raw_text = h_tag.get_text(strip=True)
-                                if not raw_text: continue
-                                    
-                                if not h_tag.has_attr('id'):
-                                    h_id = re.sub(r'[^a-z0-9]+', '-', raw_text.lower()).strip('-')
-                                    if not h_id: h_id = f"header-{id(h_tag)}"
-                                    h_tag['id'] = h_id
-                                else:
-                                    h_id = h_tag['id']
-                                
-                                header_level = int(h_tag.name[1]) 
-                                toc_items.append((header_level, raw_text, h_id))
-
-                            # Wrapping logic
-                            if should_wrap:
-                                # Wrap accordion-items
-                                for acc_item in process_block.find_all("div", class_="accordion-item"):
-                                    content_div = acc_item.find("div", class_="accordion-content")
-                                    if content_div:
-                                        char_len = len(content_div.get_text(strip=True))
-                                        vertical_items = len(content_div.find_all(['tr', 'li', 'br']))
+                                    if char_len > 800 or vertical_items > 10:
+                                        details_tag = soup.new_tag("details")
+                                        summary_tag = soup.new_tag("summary")
+                                        level_class = "level-default"
                                         
-                                        if char_len > 800 or vertical_items > 8:
-                                            details_tag = soup.new_tag("details")
-                                            summary_tag = soup.new_tag("summary")
-                                            level_class = "level-default"
-                                            
-                                            title_div = acc_item.find("div", class_="accordion-title")
-                                            if title_div:
-                                                h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                                                if h_tag:
-                                                    level_class = f"level-{h_tag.name}"
-                                                    # Transfer ID to summary so anchor links scroll to it correctly
-                                                    if h_tag.has_attr('id'):
-                                                        summary_tag['id'] = h_tag['id']
-                                                summary_tag.string = title_div.get_text(separator=" ", strip=True)
-                                                title_div.decompose()
+                                        first_tag = child_elem.find(['h2', 'h3', 'h4', 'h5', 'strong'])
+                                        if first_tag and len(first_tag.get_text(strip=True)) < 100:
+                                            if first_tag.name in ['h2', 'h3', 'h4', 'h5', 'h6']:
+                                                level_class = f"level-{first_tag.name}"
+                                                # Transfer ID
+                                                if first_tag.has_attr('id'):
+                                                    summary_tag['id'] = first_tag['id']
+                                            elif first_tag.name == 'strong':
+                                                level_class = "level-h4"
+                                                # Transfer ID
+                                                if first_tag.has_attr('id'):
+                                                    summary_tag['id'] = first_tag['id']
+                                            summary_tag.string = first_tag.get_text(separator=" ", strip=True)
+                                            first_tag.decompose()
+                                        else:
+                                            th_tag = child_elem.select_one("thead tr th")
+                                            if th_tag and len(th_tag.get_text(strip=True)) < 150:
+                                                summary_tag.string = th_tag.get_text(separator=" ", strip=True)
+                                                level_class = "level-h4"
                                             else:
-                                                summary_tag.string = "Dettagli" if language_key == "it" else "Details"
-                                                
-                                            summary_tag['class'] = level_class
-                                            details_tag.append(summary_tag)
-                                            body_div = soup.new_tag("div", attrs={"class": "details-body"})
-                                            for child in list(content_div.children): body_div.append(child)
-                                            details_tag.append(body_div)
-                                            acc_item.insert_after(details_tag)
-                                            acc_item.decompose()
-
-                                # Wrap other large divs
-                                for child_elem in list(process_block.children):
-                                    if child_elem.name == "div" and "cdl-accordion" not in child_elem.get("class", []) and "accordion-item" not in child_elem.get("class", []):
-                                        if child_elem.get("id") in ["cdl-course-home-text", "cdl-course-attendance-text"]: continue
+                                                summary_tag.string = "Approfondimento" if language_key == "it" else "More details"
                                             
-                                        char_len = len(child_elem.get_text(strip=True))
-                                        vertical_items = len(child_elem.find_all(['tr', 'li', 'br']))
-                                        
-                                        if char_len > 800 or vertical_items > 10:
-                                            details_tag = soup.new_tag("details")
-                                            summary_tag = soup.new_tag("summary")
-                                            level_class = "level-default"
-                                            
-                                            first_tag = child_elem.find(['h2', 'h3', 'h4', 'h5', 'strong'])
-                                            if first_tag and len(first_tag.get_text(strip=True)) < 100:
-                                                if first_tag.name in ['h2', 'h3', 'h4', 'h5', 'h6']:
-                                                    level_class = f"level-{first_tag.name}"
-                                                    # Transfer ID
-                                                    if first_tag.has_attr('id'):
-                                                        summary_tag['id'] = first_tag['id']
-                                                elif first_tag.name == 'strong':
-                                                    level_class = "level-h4"
-                                                    # Transfer ID
-                                                    if first_tag.has_attr('id'):
-                                                        summary_tag['id'] = first_tag['id']
-                                                summary_tag.string = first_tag.get_text(separator=" ", strip=True)
-                                                first_tag.decompose()
-                                            else:
-                                                th_tag = child_elem.select_one("thead tr th")
-                                                if th_tag and len(th_tag.get_text(strip=True)) < 150:
-                                                    summary_tag.string = th_tag.get_text(separator=" ", strip=True)
-                                                    level_class = "level-h4"
-                                                else:
-                                                    summary_tag.string = "Approfondimento" if language_key == "it" else "More details"
-                                                
-                                            summary_tag['class'] = level_class
-                                            details_tag.append(summary_tag)
-                                            body_div = soup.new_tag("div", attrs={"class": "details-body"})
-                                            child_elem.insert_after(details_tag)
-                                            body_div.append(child_elem)
-                                            details_tag.append(body_div)
+                                        summary_tag['class'] = level_class
+                                        details_tag.append(summary_tag)
+                                        body_div = soup.new_tag("div", attrs={"class": "details-body"})
+                                        child_elem.insert_after(details_tag)
+                                        body_div.append(child_elem)
+                                        details_tag.append(body_div)
 
-                            # Handle heading and cleanup first block
-                            if i == 0:
-                                h3_tag = process_block.find("h3")
-                                breadcrumb_title = get_fallback_title(soup) # Fallback to breadcrumb if h3 is missing
+                        # Handle heading and cleanup first block
+                        if i == 0:
+                            h3_tag = process_block.find("h3")
+                            breadcrumb_title = get_fallback_title(soup) # Fallback to breadcrumb if h3 is missing
 
-                                if h3_tag:
-                                    h3_id = h3_tag.get('id')
-                                    if h3_id: toc_items = [item for item in toc_items if item[2] != h3_id]
-                                    page_heading = f"{course_prefix}{h3_tag.get_text(strip=True)}"
-                                    h3_tag.decompose() 
-                                elif breadcrumb_title:
-                                    page_heading = f"{course_prefix}{breadcrumb_title}"
-                                else:
-                                    page_title = " ".join([word.capitalize() if word not in ["di", "del", "della", "delle"] else word for word in language_page.replace("-", " ").split()]).replace("Desame","d'Esame")
-                                    page_heading = f"{course_prefix}{page_title}"
+                            if h3_tag:
+                                h3_id = h3_tag.get('id')
+                                if h3_id: toc_items = [item for item in toc_items if item[2] != h3_id]
+                                page_heading = f"{course_prefix}{h3_tag.get_text(strip=True)}"
+                                h3_tag.decompose() 
+                            elif breadcrumb_title:
+                                page_heading = f"{course_prefix}{breadcrumb_title}"
+                            else:
+                                page_title = " ".join([word.capitalize() if word not in ["di", "del", "della", "delle"] else word for word in language_page.replace("-", " ").split()]).replace("Desame","d'Esame")
+                                page_heading = f"{course_prefix}{page_title}"
 
-                            # Phase 2.2: Add physical anchors only to visible non-collapsible headings
-                            for h_tag in process_block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
-                                # Skip headings inside collapsibles to avoid interfering with click events
-                                if h_tag.find_parent('summary') or h_tag.find_parent('details'):
-                                    continue
+                        # Phase 2.2: Add physical anchors using utility function
+                        add_heading_anchors(soup, process_block)
 
-                                if h_tag.has_attr('id') and not h_tag.find("a", class_="heading-anchor"):
-                                    h_id = h_tag['id']
-                                    anchor = soup.new_tag("a", href=f"#{h_id}", attrs={"class": "heading-anchor", "title": "Copy direct link"})
-                                    anchor.string = "#"
-                                    h_tag.append(" ")
-                                    h_tag.append(anchor)
+                        combined_content += '\n'.join([line for line in str(process_block).splitlines() if line.strip()]).replace(" ", " ") + "\n"
 
-                            combined_content += '\n'.join([line for line in str(process_block).splitlines() if line.strip()]).replace(" ", " ") + "\n"
+                    # Calculate relative path depth
+                    page_depth = language_page.count('/')
+                    
+                    # Path to go up from page to language folder (e.g. it/ or en/)
+                    up_to_lang = "../" * (page_depth + 1)
+                    
+                    # Path to go up to the root 'corsidilaurea' where static assets live
+                    # Since pages are in course_id/lang_key/page.html, we need (page_depth + 2)
+                    rel_to_static_root = "../" * (page_depth + 3) + "assets/"
+                    
+                    # Back button: return to current course language index (e.g. it/index.html)
+                    back_link = "index.html" if page_depth == 0 else "../index.html"
+                    
+                    filename = f"{language_page}.html"
+                    output_path = os.path.join(language_dir, filename)
+                    
+                    # Create subdirectories automatically (e.g., 'attendance/')
+                    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-                        # Calculate relative path depth
-                        page_depth = language_page.count('/')
+                    # Asset paths using rel_to_static_root
+                    theme_css_path = f"{rel_to_static_root}theme-style.css"
+                    css_path = f"{rel_to_static_root}page-style.css"
+                    js_path = f"{rel_to_static_root}page-logic.js"
+                    js_theme_path = f"{rel_to_static_root}theme-switch.js"
+
+                    # Build language toggle with correct subdirectory jumping
+                    flag_html = ""
+                    if course_id not in excluded_en_ids:
+                        other_lang = "en" if language_key == "it" else "it"
+                        flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                        # Path: Up to course root -> other lang folder -> same subpath/file
+                        flag_url = f"{up_to_lang}{other_lang}/{filename}"
+                        flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
+
+                    # Table of Contents HTML
+                    toc_html = ""
+                    if toc_items:
+                        toc_title = "Indice" if language_key == "it" else "Table of Contents"
+                        toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
+
+                        min_level = min(item[0] for item in toc_items)
                         
-                        # Path to go up from page to language folder (e.g. it/ or en/)
-                        up_to_lang = "../" * (page_depth + 1)
-                        
-                        # Path to go up to the root 'corsidilaurea' where static assets live
-                        # Since pages are in course_id/lang_key/page.html, we need (page_depth + 2)
-                        rel_to_static_root = "../" * (page_depth + 3) + "assets/"
-                        
-                        # Back button: return to current course language index (e.g. it/index.html)
-                        back_link = "index.html" if page_depth == 0 else "../index.html"
-                        
-                        filename = f"{language_page}.html"
-                        output_path = os.path.join(language_dir, filename)
-                        
-                        # Create subdirectories automatically (e.g., 'attendance/')
-                        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                        for level, text, link_id in toc_items:
+                            margin_left = (level - min_level) * 20
+                            toc_html += f'    <li style="margin-left: {margin_left}px;"><a href="#{link_id}">{text}</a></li>\n'
+                        toc_html += '</ul>\n</div>\n'
 
-                        # Asset paths using rel_to_static_root
-                        theme_css_path = f"{rel_to_static_root}theme-style.css"
-                        css_path = f"{rel_to_static_root}page-style.css"
-                        js_path = f"{rel_to_static_root}page-logic.js"
-                        js_theme_path = f"{rel_to_static_root}theme-switch.js"
+                    back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
+                    
+                    # Generate theme bar using utility function
+                    theme_bar_html = generate_theme_bar_html(language_key, flag_html, url)
 
-                        # Build language toggle with correct subdirectory jumping
-                        flag_html = ""
-                        if course_id not in excluded_en_ids:
-                            other_lang = "en" if language_key == "it" else "it"
-                            flag = "🇮🇹" if language_key == "it" else "🇬🇧"
-                            # Path: Up to course root -> other lang folder -> same subpath/file
-                            flag_url = f"{up_to_lang}{other_lang}/{filename}"
-                            flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
-
-                        # Table of Contents HTML
-                        toc_html = ""
-                        if toc_items:
-                            toc_title = "Indice" if language_key == "it" else "Table of Contents"
-                            toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
-
-                            min_level = min(item[0] for item in toc_items)
-                            
-                            for level, text, link_id in toc_items:
-                                margin_left = (level - min_level) * 20
-                                toc_html += f'    <li style="margin-left: {margin_left}px;"><a href="#{link_id}">{text}</a></li>\n'
-                            toc_html += '</ul>\n</div>\n'
-
-                        back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
-                        
-                        # Theme bar with added DSA and Original Page links
-                        dsa_text = "Font DSA" #if language_key == "it" else "DSA Font"
-                        dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
-                        original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                        theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
-
-                        # Final HTML construction (H1 has no anchor)
-                        content = f"""<!DOCTYPE html>
+                    # Final HTML construction (H1 has no anchor)
+                    content = f"""<!DOCTYPE html>
 <html lang="{language_key}">
 <head>
     <meta charset="UTF-8">
@@ -519,14 +553,14 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 </body>
 </html>"""
 
-                        with open(output_path, "w", encoding="utf-8") as file:
-                            file.write(content)
+                    with open(output_path, "w", encoding="utf-8") as file:
+                        file.write(content)
 
-                        clean_link_title = page_heading.replace(course_prefix, "")
-                        page_links.append((clean_link_title, filename))
-                        print(f"Saved: {output_path}")
-                    else:
-                        print(f"No useful content found for {course_id}/{language_key}/{language_page}")
+                    clean_link_title = page_heading.replace(course_prefix, "")
+                    page_links.append((clean_link_title, filename))
+                    print(f"Saved: {output_path}")
+                else:
+                    print(f"No useful content found for {course_id}/{language_key}/{language_page}")
 
             # Append manual links for apply and teachers
             page_links.append(("How and When to Enroll" if language_key == "en" else "Come e quando iscriversi", "apply.html"))
@@ -607,144 +641,112 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
             
             url = f"{base_url}/{language_key}/course/{course_id}/teachers"
             
-            try:
-                response = requests.get(url, timeout=15)
-                response.raise_for_status()
-            except requests.RequestException as e:
-                print(f"Skipping {url} due to request error: {e}")
+            response = fetch_html(url)
+            if not response:
                 continue
             
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.text, 'html.parser')
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            # Fix absolute links using utility function
+            make_urls_absolute(soup, base_url)
+                    
+            teachers_container = soup.find("div", class_="docente-cerca-results")
+            
+            if teachers_container:
+                # Generate IDs and anchors using utility function
+                add_heading_anchors(soup, teachers_container)
+
+                teacher_cards = teachers_container.find_all("div", class_="docente-card")
                 
-                for a_tag in soup.find_all("a", href=True):
-                    if a_tag["href"].startswith("/"):
-                        a_tag["href"] = urljoin(base_url, a_tag["href"])
+                if teacher_cards:
+                    def get_surname(card):
+                        email_element = card.find("div", class_="email")
+                        if email_element:
+                            email_text = email_element.get_text(strip=True)
+                            if "@" in email_text:
+                                local_part = email_text.split("@")[0]
+                                if "." in local_part:
+                                    return local_part.split(".", 1)[1].lower()
+                                return local_part.lower()
+
+                        name_element = card.find("div", class_="full-name")
+                        if name_element:
+                            full_name = name_element.get_text(strip=True)
+                            parts = full_name.split()
+                            return parts[-1].lower() if parts else ""
+                        return ""
+
+                    sorted_cards = sorted(teacher_cards, key=get_surname)
+                    
+                    teachers_container.clear()
+                    for card in sorted_cards:
+                        teachers_container.append(card)
+
+                main_section = soup.find("section", id="block-system-main")
+                h3_tag = main_section.find("h3") if main_section else None
+                breadcrumb_title = get_fallback_title(soup)
+
+                if h3_tag:
+                    page_heading = f"{course_prefix}{h3_tag.get_text(strip=True)}"
+                elif breadcrumb_title:
+                    page_heading = f"{course_prefix}{breadcrumb_title}"
+                else:
+                    fallback_title = "Teachers" if language_key == "en" else "Docenti"
+                    page_heading = f"{course_prefix}{fallback_title}"
+
+                flag_html = ""
+                if course_id not in excluded_en_ids:
+                    other_lang = "en" if language_key == "it" else "it"
+                    flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                    flag_html = f'<a href="../{other_lang}/teachers.html" class="lang-btn" title="Switch language">{flag}</a>'
                 
-                for img_tag in soup.find_all("img", src=True):
-                    if img_tag["src"].startswith("/"):
-                        img_tag["src"] = urljoin(base_url, img_tag["src"])
-                        
-                teachers_container = soup.find("div", class_="docente-cerca-results")
+                back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
-                if teachers_container:
-                    # Generate IDs and anchors for headings inside the container
-                    for h_tag in teachers_container.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
-                        # Skip headings inside collapsibles
-                        if h_tag.find_parent('summary') or h_tag.find_parent('details'):
-                            continue
+                # Generate theme bar using utility function
+                theme_bar_html = generate_theme_bar_html(language_key, flag_html, url)
 
-                        raw_text = h_tag.get_text(strip=True)
-                        if not raw_text: continue
-                        
-                        if not h_tag.has_attr('id'):
-                            h_id = re.sub(r'[^a-z0-9]+', '-', raw_text.lower()).strip('-')
-                            if not h_id: h_id = f"header-{id(h_tag)}"
-                            h_tag['id'] = h_id
-                        else:
-                            h_id = h_tag['id']
-                        
-                        if not h_tag.find("a", class_="heading-anchor"):
-                            anchor = soup.new_tag("a", href=f"#{h_id}", attrs={"class": "heading-anchor", "title": "Copy direct link"})
-                            anchor.string = "#"
-                            h_tag.append(" ")
-                            h_tag.append(anchor)
+                # Calculate relative paths
+                theme_css_path = get_assets_relative_path(language_dir, "theme-style.css")
+                css_path = get_assets_relative_path(language_dir, "teachers-style.css")
+                js_path = get_assets_relative_path(language_dir, "page-logic.js")
+                js_theme_path = get_assets_relative_path(language_dir, "theme-switch.js")
 
-                    teacher_cards = teachers_container.find_all("div", class_="docente-card")
-                    
-                    if teacher_cards:
-                        def get_surname(card):
-                            email_element = card.find("div", class_="email")
-                            if email_element:
-                                email_text = email_element.get_text(strip=True)
-                                if "@" in email_text:
-                                    local_part = email_text.split("@")[0]
-                                    if "." in local_part:
-                                        return local_part.split(".", 1)[1].lower()
-                                    return local_part.lower()
+                # Update the content formatting (H1 has no anchor)
+                content = """<!DOCTYPE html>
+<html lang="{lang}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <link rel="stylesheet" href="{theme_css_path}">
+    <link rel="stylesheet" href="{css_path}">
+    <script src="{js_theme_path}"></script>
+</head>
+<body>
+<h1 id="page-title"><a href='index.html'>«</a> {heading}</h1>
+{theme_bar_html}
+{content}
 
-                            name_element = card.find("div", class_="full-name")
-                            if name_element:
-                                full_name = name_element.get_text(strip=True)
-                                parts = full_name.split()
-                                return parts[-1].lower() if parts else ""
-                            return ""
-
-                        sorted_cards = sorted(teacher_cards, key=get_surname)
-                        
-                        teachers_container.clear()
-                        for card in sorted_cards:
-                            teachers_container.append(card)
-
-                    main_section = soup.find("section", id="block-system-main")
-                    h3_tag = main_section.find("h3") if main_section else None
-                    breadcrumb_title = get_fallback_title(soup)
-
-                    if h3_tag:
-                        page_heading = f"{course_prefix}{h3_tag.get_text(strip=True)}"
-                    elif breadcrumb_title:
-                        page_heading = f"{course_prefix}{breadcrumb_title}"
-                    else:
-                        fallback_title = "Teachers" if language_key == "en" else "Docenti"
-                        page_heading = f"{course_prefix}{fallback_title}"
-
-                    flag_html = ""
-                    if course_id not in excluded_en_ids:
-                        other_lang = "en" if language_key == "it" else "it"
-                        flag = "🇮🇹" if language_key == "it" else "🇬🇧"
-                        flag_html = f'<a href="../{other_lang}/teachers.html" class="lang-btn" title="Switch language">{flag}</a>'
-                    
-                    back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
-                    
-                    # Theme bar with added DSA and Original Page links
-                    theme_btn_text = "🌓 Dark Mode"
-                    dsa_text = "Font DSA" #if language_key == "it" else "DSA Font"
-                    dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
-                    original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
-
-                    # Calculate relative paths
-                    theme_css_path = get_assets_relative_path(language_dir, "theme-style.css")
-                    css_path = get_assets_relative_path(language_dir, "teachers-style.css")
-                    js_path = get_assets_relative_path(language_dir, "page-logic.js")
-                    js_theme_path = get_assets_relative_path(language_dir, "theme-switch.js")
-
-                    # Update the content formatting (H1 has no anchor)
-                    content = """<!DOCTYPE html>
-                    <html lang="{lang}">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>{title}</title>
-                        <link rel="stylesheet" href="{theme_css_path}">
-                        <link rel="stylesheet" href="{css_path}">
-                        <script src="{js_theme_path}"></script>
-                    </head>
-                    <body>
-                    <h1 id="page-title"><a href='index.html'>«</a> {heading}</h1>
-                    {theme_bar_html}
-                    {content}
-
-                    <button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
-                    <script src="{js_path}"></script>
-                    </body>
-                    </html>""".format(
-                        lang=language_key,
-                        title=page_heading,
-                        heading=page_heading,
-                        theme_bar_html=theme_bar_html,
-                        content=teachers_container.prettify() if teachers_container else "",
-                        btn_text=back_to_top_text,
-                        theme_css_path=theme_css_path,
-                        css_path=css_path,
-                        js_path=js_path,
-                        js_theme_path=js_theme_path
-                    )
-                    
-                    output_path = os.path.join(language_dir, "teachers.html")
-                    with open(output_path, "w", encoding="utf-8") as file:
-                        file.write(content)
-                    print(f"Saved: {output_path}")
+<button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
+<script src="{js_path}"></script>
+</body>
+</html>""".format(
+                    lang=language_key,
+                    title=page_heading,
+                    heading=page_heading,
+                    theme_bar_html=theme_bar_html,
+                    content=teachers_container.prettify() if teachers_container else "",
+                    btn_text=back_to_top_text,
+                    theme_css_path=theme_css_path,
+                    css_path=css_path,
+                    js_path=js_path,
+                    js_theme_path=js_theme_path
+                )
+                
+                output_path = os.path.join(language_dir, "teachers.html")
+                with open(output_path, "w", encoding="utf-8") as file:
+                    file.write(content)
+                print(f"Saved: {output_path}")
 
 def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_acronyms, output_dir="corsidilaurea"):
     """
@@ -767,20 +769,14 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
             lang_dir = os.path.join(course_dir, language_key)
             os.makedirs(lang_dir, exist_ok=True)
             
-            try:
-                response = requests.get(url, timeout=15)
-                response.raise_for_status()
-            except requests.RequestException as e:
-                print(f"Skipping apply page for {course_id} [{language_key}] due to error: {e}")
+            response = fetch_html(url)
+            if not response:
                 continue
 
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Absolute URL conversion for links and images
-            for tag in soup.find_all(["a", "img"]):
-                attr = "href" if tag.name == "a" else "src"
-                if tag.get(attr) and tag[attr].startswith("/"):
-                    tag[attr] = urljoin(base_url, tag[attr])
+            # Absolute URL conversion for links and images using utility function
+            make_urls_absolute(soup, base_url)
 
             content_blocks = []
 
@@ -797,27 +793,8 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                 for block in content_blocks:
                     for script in block.find_all("script"): script.decompose()
                     
-                    # Generate IDs and insert clickable anchors
-                    for h_tag in block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
-                        # Skip headings inside collapsibles 
-                        if h_tag.find_parent('summary') or h_tag.find_parent('details'):
-                            continue
-
-                        raw_text = h_tag.get_text(strip=True)
-                        if not raw_text: continue
-                        
-                        if not h_tag.has_attr('id'):
-                            h_id = re.sub(r'[^a-z0-9]+', '-', raw_text.lower()).strip('-')
-                            if not h_id: h_id = f"header-{id(h_tag)}"
-                            h_tag['id'] = h_id
-                        else:
-                            h_id = h_tag['id']
-                            
-                        if not h_tag.find("a", class_="heading-anchor"):
-                            anchor = soup.new_tag("a", href=f"#{h_id}", attrs={"class": "heading-anchor", "title": "Copy direct link"})
-                            anchor.string = "#"
-                            h_tag.append(" ")
-                            h_tag.append(anchor)
+                    # Generate IDs and insert clickable anchors using utility function
+                    add_heading_anchors(soup, block)
 
                     combined_content += block.prettify()
 
@@ -865,11 +842,8 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
 
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
-                # Theme bar with added DSA and Original Page links
-                dsa_text = "Font DSA" #if language_key == "it" else "DSA Font"
-                dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
-                original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
+                # Generate theme bar using utility function
+                theme_bar_html = generate_theme_bar_html(language_key, flag_html, url)
 
                 # Final HTML construction (H1 has no anchor)
                 html_content = f"""<!DOCTYPE html>
