@@ -325,13 +325,16 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
                 soup = BeautifulSoup(response.text, 'html.parser')
                 
+                # PRE-PROCESSING: Apply to all pages first
+                fix_contacts_collapsibles(soup)
+                clean_excessive_newlines(soup)
+                make_urls_absolute(soup, base_url)
+                
                 # SPECIAL HANDLING FOR ATTENDANCE PAGE
                 if language_page == "attendance":
                     # Extract general sidebar links to form a details block
                     sidebar = soup.find("div", class_="corso-home-menu--generale")
                     if sidebar:
-                        # Convert URLs to absolute
-                        make_urls_absolute(sidebar, base_url)
                         summary_text = "Come fare per" if language_key == "it" else "How to"
                         
                         # Parse sidebar links and generate a list relying on existing CSS classes
@@ -356,8 +359,21 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         )
                         sidebar.decompose()
 
-                    # Target specific direct links by matching href inside accordion titles
-                    for acc_title in soup.find_all("div", class_="accordion-title"):
+                    # Target text sections (anchors) inside accordions by their explicit ID
+                    target_anchors = {
+                        "apprenticeship": "freq",   # Apprenticeship
+                        "excellence": "opp",        # Path of excellence
+                        "job-orientation": "opp",   # Job Orientation
+                        "graduation": "freq",       # Graduate
+                        "ofa": "freq"               # Ofa: methods of fulfilling additional training obligations
+                    }
+
+                    # Iterate over accordion items to isolate and extract standalone pages
+                    for acc_item in soup.find_all("div", class_="accordion-item"):
+                        acc_title = acc_item.find("div", class_="accordion-title")
+                        if not acc_title: 
+                            continue
+
                         a_tag = acc_title.find("a")
                         # Ensure it's an actual external link and not just a collapsible trigger (href="#")
                         if a_tag and a_tag.has_attr("href") and not a_tag["href"].startswith("#"):
@@ -368,8 +384,6 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             # Hardcode for Lessons / Lezioni to make it clear it's about course descriptions
                             if "lessons-plan" in a_href or "insegnamenti" in a_href or a_text_clean in ["Lessons", "Lezioni"]:
                                 a_text_clean = "Courses" if language_key == "en" else "Insegnamenti"
-                                # Update the text inside the page to match
-                                a_tag.string = a_text_clean
                             
                             # Perform href mapping
                             if "/lessons-plan" in a_href or "/insegnamenti" in a_href:
@@ -377,10 +391,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             elif "/timetable" in a_href or "orario" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
                             elif "calendario-dellanno-accademico" in a_href or "academic-calendar" in a_href:
-                                # Hardcode translation for academic calendar URL in English
                                 if language_key == "en":
                                     a_href = "https://www.uniroma1.it/en/pagina/academic-calendar"
-                                    a_tag["href"] = a_href # also update the href in the page
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
                             elif "/exams" in a_href or "esami" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
@@ -392,41 +404,120 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             # If it was a direct link, skip looking for heading anchors inside it
                             continue
 
-                        # Target text sections (anchors) inside accordions by their explicit ID
-                        target_anchors = {
-                            "apprenticeship": "freq",   # Apprenticeship
-                            "excellence": "opp",        # Path of excellence
-                            "job-orientation": "opp",   # Job Orientation
-                            "graduation": "freq",       # Graduate
-                            "ofa": "freq"               # Ofa: methods of fulfilling additional training obligations
-                        }
-                        
+                        # Extract section into separate page if it matches a target anchor
                         acc_id = acc_title.get("id")
                         if acc_id and acc_id in target_anchors:
                             h_tag = acc_title.find(['h2', 'h3', 'h4', 'h5', 'h6'])
                             # Fallback to general div text if h_tag is absent
                             link_text = h_tag.get_text(strip=True) if h_tag else acc_title.get_text(strip=True)
                             
-                            # Predict the destination ID exactly as Phase 2.1 will dynamically generate it
-                            if h_tag:
-                                dest_id = h_tag.get('id')
-                                if not dest_id:
-                                    dest_id = re.sub(r'[^a-z0-9]+', '-', link_text.lower()).strip('-')
-                            else:
-                                dest_id = acc_id
+                            content_div = acc_item.find("div", class_="accordion-content")
+                            if content_div:
+                                page_heading = f"{course_prefix}{link_text}"
                                 
-                            # The file saved will be attendance.html
-                            anchor_url = f"attendance.html#{dest_id}"
+                                # Process the isolated block
+                                process_block = soup.new_tag("div")
+                                for child in list(content_div.children):
+                                    process_block.append(child)
+                                    
+                                for script in process_block.find_all(["script", "manifesto"]):
+                                    script.decompose()
+                                    
+                                toc_items = []
+                                for ht in process_block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
+                                    # Unwrap any p or div tags inside headings
+                                    for block_tag in ht.find_all(['p', 'div']):
+                                        block_tag.unwrap()
+                                        
+                                    raw_text = ht.get_text(strip=True)
+                                    if not raw_text: continue
+                                    
+                                    if not ht.has_attr('id'):
+                                        h_id = re.sub(r'[^a-z0-9]+', '-', raw_text.lower()).strip('-')
+                                        if not h_id: h_id = f"header-{id(ht)}"
+                                        ht['id'] = h_id
+                                    else:
+                                        h_id = ht['id']
+                                        
+                                    header_level = int(ht.name[1])
+                                    toc_items.append((header_level, raw_text, h_id))
+                                    
+                                add_heading_anchors(soup, process_block)
+                                combined_content = '\n'.join([line for line in str(process_block).splitlines() if line.strip()]).replace(" ", " ") + "\n"
+                                
+                                # Set up standalone file creation
+                                filename = f"attendance/{acc_id}.html"
+                                output_path = os.path.join(language_dir, filename)
+                                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                                
+                                # Relative paths (depth is 1 because of 'attendance/' subfolder)
+                                page_depth = 1
+                                up_to_lang = "../" * (page_depth + 1)
+                                rel_to_static_root = "../" * (page_depth + 3) + "assets/"
+                                back_link = "../index.html"
+                                
+                                theme_css_path = f"{rel_to_static_root}theme-style.css"
+                                css_path = f"{rel_to_static_root}page-style.css"
+                                js_path = f"{rel_to_static_root}page-logic.js"
+                                js_theme_path = f"{rel_to_static_root}theme-switch.js"
+                                
+                                flag_html = ""
+                                if course_id not in excluded_en_ids:
+                                    other_lang = "en" if language_key == "it" else "it"
+                                    flag = "🇮🇹 Lingua" if language_key == "it" else "🇬🇧 Language"
+                                    flag_url = f"{up_to_lang}{other_lang}/{filename}"
+                                    flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
+                                
+                                toc_html = ""
+                                if toc_items:
+                                    toc_title = "Indice" if language_key == "it" else "Table of Contents"
+                                    toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
+                                    min_level = min(item[0] for item in toc_items)
+                                    for level, text, link_id in toc_items:
+                                        margin_left = (level - min_level) * 20
+                                        toc_html += f'    <li style="margin-left: {margin_left}px;"><a href="#{link_id}">{text}</a></li>\n'
+                                    toc_html += '</ul>\n</div>\n'
+                                    
+                                back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
+                                top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
+                                
+                                content_html = f"""<!DOCTYPE html>
+<html lang="{language_key}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{page_heading}}</title>
+    <link rel="stylesheet" href="{{theme_css_path}}">
+    <link rel="stylesheet" href="{{css_path}}">
+    <script src="{{js_theme_path}}"></script>
+</head>
+<body>
+<div class="header-dashboard">
+    <h1 id="page-title">{{page_heading}}</h1>
+    <div class="header-actions">
+        {{top_bars_html}}
+    </div>
+</div>
+{{toc_html}}
+<div class="content-wrapper">
+{{combined_content}}
+</div>
+<button id="back-to-top" title="{{back_to_top_text}}" onclick="window.scrollTo({{{{top: 0, behavior: 'smooth'}}}})">▲ {{back_to_top_text}}</button>
+<script src="{{js_path}}"></script>
+</body>
+</html>"""
+                                # Format strings safely
+                                content_html = content_html.replace("{page_heading}", page_heading).replace("{theme_css_path}", theme_css_path).replace("{css_path}", css_path).replace("{js_theme_path}", js_theme_path).replace("{top_bars_html}", top_bars_html).replace("{toc_html}", toc_html).replace("{combined_content}", combined_content).replace("{back_to_top_text}", back_to_top_text).replace("{js_path}", js_path)
+
+                                with open(output_path, "w", encoding="utf-8") as file:
+                                    file.write(content_html)
+                                print(f"Saved standalone section: {output_path}")
+
+                            anchor_url = f"attendance/{acc_id}.html"
                             attendance_custom_links.append((link_text, anchor_url, target_anchors[acc_id]))
-                
-                # Fix contacts collapsibles before links are modified
-                fix_contacts_collapsibles(soup)
-                
-                # Clean up excessive newlines
-                clean_excessive_newlines(soup)
-                
-                # Fix links to be absolute using utility function
-                make_urls_absolute(soup, base_url)
+                    
+                    # Skip the standard combined page generation for "attendance"
+                    continue
 
                 # Extract main content
                 content_blocks = []
@@ -522,14 +613,6 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         if should_wrap:
                             # Wrap accordion-items
                             for acc_item in process_block.find_all("div", class_="accordion-item"):
-                                
-                                # Ignore specific blocks mentioned by user if we are in attendance page
-                                if language_page == "attendance":
-                                    acc_title = acc_item.find("div", class_="accordion-title")
-                                    if acc_title and acc_title.get("id") in ["biblio"]:
-                                        acc_item.decompose()
-                                        continue
-                                
                                 content_div = acc_item.find("div", class_="accordion-content")
                                 title_div = acc_item.find("div", class_="accordion-title")
                                 
