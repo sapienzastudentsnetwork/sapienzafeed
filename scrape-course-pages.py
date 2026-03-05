@@ -698,6 +698,47 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 </body>
 </html>""")
 
+def fix_contacts_collapsibles(soup):
+    """
+    Finds the specific structure of the 'contacts' page where an <a> tag 
+    acting as a toggle is followed by a div containing the emails. 
+    Converts them into functional HTML5 <details> elements.
+    """
+    toggles = soup.find_all('a', class_='accordion-card--contacts-toggle')
+    
+    for toggle in toggles:
+        contacts_div = toggle.find_next_sibling('div', class_='accordion-card--contacts')
+        
+        if contacts_div:
+            details = soup.new_tag('details')
+            details['class'] = 'accordion-card--contacts-fixed'
+            details['style'] = 'margin-top: 10px; cursor: pointer;'
+            
+            summary = soup.new_tag('summary')
+            summary.string = toggle.get_text(strip=True)
+            summary['style'] = 'font-weight: bold; color: var(--link-color);'
+            details.append(summary)
+            
+            content_wrapper = soup.new_tag('div')
+            content_wrapper['style'] = 'margin-top: 10px; padding-left: 15px;'
+            for child in list(contacts_div.children):
+                content_wrapper.append(child)
+            
+            details.append(content_wrapper)
+            
+            toggle.replace_with(details)
+            contacts_div.decompose()
+
+def clean_excessive_newlines(soup):
+    """
+    Removes excessive newlines and spaces from text nodes inside the HTML.
+    Specifically targets issues in 'sapienza-for-you' pages.
+    """
+    for text_node in soup.find_all(string=True):
+        if text_node.parent.name not in ['script', 'style', 'pre', 'code']:
+            cleaned_text = re.sub(r'\s+', ' ', text_node)
+            if cleaned_text != text_node:
+                text_node.replace_with(cleaned_text)
 
 def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links=None):
     if custom_links is None:
@@ -757,6 +798,12 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                 if response.status_code == 200:
                     soup = BeautifulSoup(response.text, 'html.parser')
+                    
+                    # Fix contacts collapsibles before links are modified
+                    fix_contacts_collapsibles(soup)
+                    
+                    # Clean up excessive newlines
+                    clean_excessive_newlines(soup)
                     
                     # Fix links to be absolute
                     for a_tag in soup.find_all("a", href=True):
@@ -835,6 +882,11 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                             # Phase 2.1: Assign IDs to all headers before any wrapping occurs
                             for h_tag in process_block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
+                                
+                                # FIX: Unwrap any <p> or <div> tags inside headings that would break inline anchors
+                                for block_tag in h_tag.find_all(['p', 'div']):
+                                    block_tag.unwrap()
+                                    
                                 raw_text = h_tag.get_text(strip=True)
                                 if not raw_text: continue
                                     
@@ -954,7 +1006,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                                     h_tag.append(" ")
                                     h_tag.append(anchor)
 
-                            combined_content += '\n'.join([line for line in str(process_block).splitlines() if line.strip()]).replace(" ", " ") + "\n"
+                            combined_content += '\n'.join([line for line in str(process_block).splitlines() if line.strip()]).replace(" ", " ") + "\n"
 
                         # Calculate relative path depth
                         page_depth = language_page.count('/')
@@ -1055,15 +1107,13 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                 categories_dict = {
                     "it": {
                         "info": "Informazioni sul corso",
-                        "opp": "Opportunità",
-                        "serv": "Servizi",
+                        "opp": "Servizi e Opportunità",
                         "freq": "Frequentare",
                         "ext": "Link esterni"
                     },
                     "en": {
                         "info": "Course Information",
-                        "opp": "Opportunities",
-                        "serv": "Services",
+                        "opp": "Services and Opportunities",
                         "freq": "Attendance",
                         "ext": "External Links"
                     }
@@ -1077,18 +1127,19 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     "professional-opportunities.html": "info",
                     "choice-orientation.html": "info",
                     "quality.html": "info",
-                    "international-experiences.html": "freq",
+                    "international-experiences.html": "opp",
                     "attendance/instructions.html": "freq",
                     "organization.html": "freq",
                     "apply.html": "info",
-                    "teachers.html": "freq"
+                    "teachers.html": "freq",
+                    "contacts.html": "info",
+                    "sapienza-for-you.html": "opp"
                 }
 
                 # Pre-initialize categorized map to maintain section order
                 categorized_links = {
                     cats["info"]: [],
                     cats["opp"]: [],
-                    cats["serv"]: [],
                     cats["freq"]: [],
                     cats["ext"]: []
                 }
@@ -1539,7 +1590,9 @@ if __name__ == "__main__":
         "international-experiences",
         "organization",
         "quality",
-        "attendance/instructions"
+        "attendance/instructions",
+        "contacts",
+        "sapienza-for-you"
     ]
     IDS = [33502, 33508, 33516, 33519, 33503, 33504]
     OUTPUT_DIRECTORY = "corsidilaurea"
