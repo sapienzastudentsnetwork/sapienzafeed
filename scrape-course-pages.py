@@ -612,10 +612,10 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
                 # Pre-initialize categorized map to maintain section order
                 categorized_links = {
-                    cats["info"]: [],
-                    cats["opp"]: [],
                     cats["freq"]: [],
-                    cats["ext"]: []
+                    cats["info"]: [],
+                    cats["ext"]: [],
+                    cats["opp"]: []
                 }
                 
                 # Append YouTube link if extracted
