@@ -87,8 +87,9 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 .heading-anchor:hover { color: var(--link-color) !important; }
 
 .theme-bar { display: flex; justify-content: flex-end; gap: 10px; align-items: center; padding: 10px 0; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); }
-.theme-toggle, .original-link-btn { cursor: pointer; background: var(--toc-bg); color: var(--text-color) !important; border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8em; transition: 0.2s; text-decoration: none; display: inline-block; }
-.theme-toggle:hover, .original-link-btn:hover { filter: brightness(1.2); text-decoration: none; }
+.theme-toggle, .original-link-btn, .lang-btn { cursor: pointer; background: var(--toc-bg); color: var(--text-color) !important; border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8em; transition: 0.2s; text-decoration: none; display: inline-block; }
+.theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover { filter: brightness(1.2); text-decoration: none; }
+.lang-btn { padding: 4px 8px; font-size: 1em; border-radius: 8px; }
 """
 
 INDEX_CSS = """
@@ -693,7 +694,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                             flag = "🇮🇹" if language_key == "it" else "🇬🇧"
                             # Path: Up to course root -> other lang folder -> same subpath/file
                             flag_url = f"{up_to_lang}{other_lang}/{filename}"
-                            flag_html = f" [<a href='{flag_url}' title='Switch language' style='text-decoration: none;'>{flag}</a>]"
+                            flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
 
                         # Table of Contents HTML
                         toc_html = ""
@@ -712,7 +713,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                         
                         # Theme bar with added Original Page link
                         original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                        theme_bar_html = f'<div class="theme-bar"><a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
+                        theme_bar_html = f'<div class="theme-bar">{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
 
                         # Final HTML construction (H1 has no anchor)
                         content = f"""<!DOCTYPE html>
@@ -726,7 +727,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
     <script src="{js_theme_path}"></script>
 </head>
 <body>
-<h1 id="page-title"><a href='{back_link}'>«</a> {page_heading}{flag_html}</h1>
+<h1 id="page-title"><a href='{back_link}'>«</a> {page_heading}</h1>
 {theme_bar_html}
 {toc_html}
 <div class="content-wrapper">
@@ -868,14 +869,14 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                     if course_id not in EXCLUDED_EN_IDS:
                         other_lang = "en" if language_key == "it" else "it"
                         flag = "🇮🇹" if language_key == "it" else "🇬🇧"
-                        flag_html = f" [<a href='../{other_lang}/teachers.html' title='Switch language' style='text-decoration: none;'>{flag}</a>]"
+                        flag_html = f'<a href="../{other_lang}/teachers.html" class="lang-btn" title="Switch language">{flag}</a>'
                     
                     back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                     
                     # Theme bar with added Original Page link
                     theme_btn_text = "🌓 Dark Mode"
                     original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                    theme_bar_html = f'<div class="theme-bar"><a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+                    theme_bar_html = f'<div class="theme-bar">{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
                     # Calculate relative paths
                     theme_css_path = get_relative_path(language_dir, "theme-style.css")
@@ -895,7 +896,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         <script src="{js_theme_path}"></script>
                     </head>
                     <body>
-                    <h1 id="page-title"><a href='index.html'>«</a> {heading}{flag_html}</h1>
+                    <h1 id="page-title"><a href='index.html'>«</a> {heading}</h1>
                     {theme_bar_html}
                     {content}
 
@@ -906,7 +907,6 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         lang=language_key,
                         title=page_heading,
                         heading=page_heading,
-                        flag_html=flag_html,
                         theme_bar_html=theme_bar_html,
                         content=teachers_container.prettify() if teachers_container else "",
                         btn_text=back_to_top_text,
@@ -1036,13 +1036,13 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
                     flag = "🇮🇹" if language_key == "it" else "🇬🇧"
                     # Path: Up to course root -> other lang folder -> same filename
                     lang_link = f"{up_to_lang}{other_lang}/apply.html"
-                    flag_html = f" [<a href='{lang_link}' title='Switch language' style='text-decoration: none;'>{flag}</a>]"
+                    flag_html = f'<a href="{lang_link}" class="lang-btn" title="Switch language">{flag}</a>'
 
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
                 # Theme bar with added Original Page link
                 original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                theme_bar_html = f'<div class="theme-bar"><a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
+                theme_bar_html = f'<div class="theme-bar">{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
 
                 # Final HTML construction (H1 has no anchor)
                 html_content = f"""<!DOCTYPE html>
@@ -1057,7 +1057,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
     <script src="{js_theme_path}"></script>
 </head>
 <body>
-    <h1 id="page-title"><a href='{back_link}'>«</a> {page_heading}{flag_html}</h1>
+    <h1 id="page-title"><a href='{back_link}'>«</a> {page_heading}</h1>
     {theme_bar_html}
     <div class="content-wrapper">
         {combined_content}
