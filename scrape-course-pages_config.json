@@ -1,0 +1,122 @@
+{
+    "course_ids": ["33502", "33508", "33516", "33519", "33503", "33504"],
+    "excluded_en_ids": ["33503", "33504"],
+    "course_names": {
+        "33502": "ACSAI",
+        "33508": "Computer Science",
+        "33516": "Cybersecurity",
+        "33519": "Data Science",
+        "33503": "Informatica",
+        "33504": "Informatica - a distanza"
+    },
+    "course_acronyms": {
+        "33502": "ACSAI",
+        "33508": "CS",
+        "33516": "CYBSEC",
+        "33519": "DS",
+        "33503": "INF",
+        "33504": "INF - A DIST."
+    },
+    "custom_links": {
+        "all": {
+            "it": [
+                ["Sito Web del Dipartimento (DI)", "https://www.di.uniroma1.it/it"],
+                ["Sito Web della Facoltà (I3S)", "https://i3s.web.uniroma1.it/it"]
+            ],
+            "en": [
+                ["Department Website (DI)", "https://www.di.uniroma1.it/en"],
+                ["Faculty Website (I3S)", "https://i3s.web.uniroma1.it/en"]
+            ]
+        },
+        "33502": {
+            "it": [
+                ["Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/acsai"],
+                ["Gruppo Telegram del Corso di Laurea", "https://t.me/+0XvGe7P6Yb5hYTky"]
+            ],
+            "en": [
+                ["Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/acsai"],
+                ["Telegram Group for the Degree Course", "https://t.me/+0XvGe7P6Yb5hYTky"]
+            ]
+        },
+        "33503": {
+            "it": [
+                ["Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Gruppo Telegram del Corso di Laurea", "https://t.me/+o8wqkLM2NS1lMGI0"]
+            ],
+            "en": [
+                ["Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Telegram Group for the Degree Course", "https://t.me/+o8wqkLM2NS1lMGI0"]
+            ]
+        },
+        "33504": {
+            "it": [
+                ["Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Gruppo Telegram del Corso di Laurea", "https://t.me/+JGzMbJh6QeFlYjlk"]
+            ],
+            "en": [
+                ["Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Telegram Group for the Degree Course", "https://t.me/+JGzMbJh6QeFlYjlk"]
+            ]
+        },
+        "33516": {
+            "it": [
+                ["Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Gruppo Telegram del Corso di Laurea", "https://t.me/+MCDGWHGxGUg3ZTgy"]
+            ],
+            "en": [
+                ["Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Telegram Group for the Degree Course", "https://t.me/+MCDGWHGxGUg3ZTgy"]
+            ]
+        },
+        "33519": {
+            "it": [
+                ["Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Gruppo Telegram del Corso di Laurea", "https://t.me/+kBVAbCt9WAw1ZDhk"]
+            ],
+            "en": [
+                ["Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"],
+                ["Telegram Group for the Degree Course", "https://t.me/+kBVAbCt9WAw1ZDhk"]
+            ]
+        }
+    },
+    "file_to_cat": {
+        "presentation.html": "info",
+        "objectives.html": "info",
+        "professional-opportunities.html": "info",
+        "choice-orientation.html": "info",
+        "quality.html": "info",
+        "international-experiences.html": "opp",
+        "attendance/instructions.html": "freq",
+        "organization.html": "freq",
+        "apply.html": "info",
+        "teachers.html": "freq",
+        "contacts.html": "info",
+        "sapienza-for-you.html": "opp"
+    },
+    "categories_dict": {
+        "it": {
+            "info": "Informazioni sul corso",
+            "opp": "Servizi e Opportunità",
+            "freq": "Frequentare",
+            "ext": "Link esterni"
+        },
+        "en": {
+            "info": "Course Information",
+            "opp": "Services and Opportunities",
+            "freq": "Attendance",
+            "ext": "External Links"
+        }
+    },
+    "pages": [
+        "presentation",
+        "objectives",
+        "professional-opportunities",
+        "choice-orientation",
+        "international-experiences",
+        "organization",
+        "quality",
+        "attendance/instructions",
+        "contacts",
+        "sapienza-for-you"
+    ]
+}

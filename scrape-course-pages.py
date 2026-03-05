@@ -1,11 +1,9 @@
 import os
+import json
 import re
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-
-# Courses that should NOT have an English version
-EXCLUDED_EN_IDS = (33503, 33504)
 
 def extract_course_metadata(soup, language_key):
     """
@@ -178,34 +176,31 @@ def clean_excessive_newlines(soup):
             if cleaned_text != text_node:
                 text_node.replace_with(cleaned_text)
 
-def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links=None):
-    if custom_links is None:
-        custom_links = {}
-        
+def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links={}, file_to_cat={}, categories_dict={}):
     base_url = "https://corsidilaurea.uniroma1.it"
     url_pattern = base_url + "/{}/course/{}/{}"
     os.makedirs(output_dir, exist_ok=True)
 
     # Root index
-    root_links = [(name, str(cid)) for cid, name in course_names.items() if cid in ids]
+    root_links = [(name, cid) for cid, name in course_names.items() if cid in ids]
     # No back button for the root directory
     generate_index_html(output_dir, links=root_links, title="Degree Courses", back_url=None)
 
     for course_id in ids:
-        acronym = course_acronyms.get(course_id, str(course_id))
+        acronym = course_acronyms.get(course_id, course_id)
         course_prefix = f"[{acronym}] "
 
-        course_dir = os.path.join(output_dir, str(course_id))
+        course_dir = os.path.join(output_dir, course_id)
         os.makedirs(course_dir, exist_ok=True)
 
         # Calculate how many languages are actually generated for this course
-        valid_langs = [l for l in languages if not (l == "en" and course_id in EXCLUDED_EN_IDS)]
+        valid_langs = [l for l in languages if not (l == "en" and course_id in excluded_en_ids)]
         is_single_lang = len(valid_langs) == 1
 
         language_links = []
         for language_key in languages:
             # Skip English if course is in exclusion list
-            if language_key == "en" and course_id in EXCLUDED_EN_IDS:
+            if language_key == "en" and course_id in excluded_en_ids:
                 continue
 
             language_dir = os.path.join(course_dir, language_key)
@@ -473,7 +468,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                         # Build language toggle with correct subdirectory jumping
                         flag_html = ""
-                        if course_id not in EXCLUDED_EN_IDS:
+                        if course_id not in excluded_en_ids:
                             other_lang = "en" if language_key == "it" else "it"
                             flag = "🇮🇹" if language_key == "it" else "🇬🇧"
                             # Path: Up to course root -> other lang folder -> same subpath/file
@@ -542,37 +537,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                 lang_back_url = "../../index.html"
 
                 # Define structural categories
-                categories_dict = {
-                    "it": {
-                        "info": "Informazioni sul corso",
-                        "opp": "Servizi e Opportunità",
-                        "freq": "Frequentare",
-                        "ext": "Link esterni"
-                    },
-                    "en": {
-                        "info": "Course Information",
-                        "opp": "Services and Opportunities",
-                        "freq": "Attendance",
-                        "ext": "External Links"
-                    }
-                }
                 cats = categories_dict.get(language_key, categories_dict["en"])
-
-                # Mapping scraped page filenames to their respective categories
-                file_to_cat = {
-                    "presentation.html": "info",
-                    "objectives.html": "info",
-                    "professional-opportunities.html": "info",
-                    "choice-orientation.html": "info",
-                    "quality.html": "info",
-                    "international-experiences.html": "opp",
-                    "attendance/instructions.html": "freq",
-                    "organization.html": "freq",
-                    "apply.html": "info",
-                    "teachers.html": "freq",
-                    "contacts.html": "info",
-                    "sapienza-for-you.html": "opp"
-                }
 
                 # Pre-initialize categorized map to maintain section order
                 categorized_links = {
@@ -586,12 +551,12 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     cat_key = file_to_cat.get(filename, "info") # Fallback to info
                     categorized_links[cats[cat_key]].append((link_text, filename))
                 
-                # Appendi custom links condivisi (chiave "all")
+                # Append shared custom links (key "all")
                 if "all" in custom_links and language_key in custom_links["all"]:
                     for link_text, link_url in custom_links["all"][language_key]:
                         categorized_links[cats["ext"]].append((link_text, link_url))
 
-                # Appendi custom links specifici per il singolo corso
+                # Append course-specific custom links
                 if course_id in custom_links and language_key in custom_links[course_id]:
                     for link_text, link_url in custom_links[course_id][language_key]:
                         categorized_links[cats["ext"]].append((link_text, link_url))
@@ -601,7 +566,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                 # Build language toggle for the index page
                 index_flag_html = ""
-                if course_id not in EXCLUDED_EN_IDS:
+                if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
                     flag = "🇮🇹" if language_key == "it" else "🇬🇧"
                     index_flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
@@ -624,17 +589,17 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
             with open(os.path.join(course_dir, "index.html"), "w", encoding="utf-8") as f:
                 f.write(f'<html><head><meta http-equiv="refresh" content="0;url={default_lang_path}"></head></html>')
 
-def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidilaurea"):
+def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, output_dir="corsidilaurea"):
     base_url = "https://corsidilaurea.uniroma1.it"
     os.makedirs(output_dir, exist_ok=True)
 
     for course_id in ids:
-        acronym = course_acronyms.get(course_id, str(course_id))
+        acronym = course_acronyms.get(course_id, course_id)
         course_prefix = f"[{acronym}] "
-        course_dir = os.path.join(output_dir, str(course_id))
+        course_dir = os.path.join(output_dir, course_id)
         
         for language_key in languages:
-            if language_key == "en" and course_id in EXCLUDED_EN_IDS:
+            if language_key == "en" and course_id in excluded_en_ids:
                 continue
                 
             language_dir = os.path.join(course_dir, language_key)
@@ -724,7 +689,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         page_heading = f"{course_prefix}{fallback_title}"
 
                     flag_html = ""
-                    if course_id not in EXCLUDED_EN_IDS:
+                    if course_id not in excluded_en_ids:
                         other_lang = "en" if language_key == "it" else "it"
                         flag = "🇮🇹" if language_key == "it" else "🇬🇧"
                         flag_html = f'<a href="../{other_lang}/teachers.html" class="lang-btn" title="Switch language">{flag}</a>'
@@ -781,7 +746,7 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                         file.write(content)
                     print(f"Saved: {output_path}")
 
-def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_dir="corsidilaurea"):
+def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_acronyms, output_dir="corsidilaurea"):
     """
     Scrapes the 'apply' (iscrizione) page for each course, including the general sidebar.
     """
@@ -789,13 +754,13 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
     url_pattern = base_url + "/{}/course/{}/apply"
     
     for course_id in ids:
-        acronym = course_acronyms.get(course_id, str(course_id))
+        acronym = course_acronyms.get(course_id, course_id)
         course_prefix = f"[{acronym}] "
-        course_dir = os.path.join(output_dir, str(course_id))
+        course_dir = os.path.join(output_dir, course_id)
 
         for language_key in languages:
             # Skip English if course is in exclusion list
-            if language_key == "en" and course_id in EXCLUDED_EN_IDS:
+            if language_key == "en" and course_id in excluded_en_ids:
                 continue
                 
             url = url_pattern.format(language_key, course_id)
@@ -891,7 +856,7 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
 
                 # Language Toggle with correct subdirectory jumping
                 flag_html = ""
-                if course_id not in EXCLUDED_EN_IDS:
+                if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
                     flag = "🇮🇹" if language_key == "it" else "🇬🇧"
                     # Path: Up to course root -> other lang folder -> same filename
@@ -935,107 +900,29 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
                 print(f"Saved: {output_path}")
 
 if __name__ == "__main__":
-    COURSE_NAMES = {
-        33502: "ACSAI",
-        33508: "Computer Science",
-        33516: "Cybersecurity",
-        33519: "Data Science",
-        33503: "Informatica",
-        33504: "Informatica - a distanza"
-    }
-
-    COURSE_ACRONYMS = {
-        33502: "ACSAI",
-        33508: "CS",
-        33516: "CYBSEC",
-        33519: "DS",
-        33503: "INF",
-        33504: "INF - A DIST."
-    }
-
-    # Custom links configuration mapping per course_id and language
-    # Provide an ordered list of tuples (Link_Text, URL) that will be appended to the "External Links" section.
-    # The "all" key applies links to EVERY course automatically.
-    CUSTOM_LINKS = {
-        "all": {
-            "it": [
-                ("Sito Web del Dipartimento (DI)", "https://www.di.uniroma1.it/it"),
-                ("Sito Web della Facoltà (I3S)", "https://i3s.web.uniroma1.it/it")
-            ],
-            "en": [
-                ("Department Website (DI)", "https://www.di.uniroma1.it/en"),
-                ("Faculty Website (I3S)", "https://i3s.web.uniroma1.it/en")
-            ]
-        },
-        33502: {
-            "it": [
-                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/acsai"),
-                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+0XvGe7P6Yb5hYTky")
-            ],
-            "en": [
-                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/acsai"),
-                ("Telegram Group for the Degree Course", "https://t.me/+0XvGe7P6Yb5hYTky")
-            ]
-        },
-        33503: {
-            "it": [
-                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+o8wqkLM2NS1lMGI0")
-            ],
-            "en": [
-                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Telegram Group for the Degree Course", "https://t.me/+o8wqkLM2NS1lMGI0")
-            ]
-        },
-        33504: {
-            "it": [
-                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+JGzMbJh6QeFlYjlk")
-            ],
-            "en": [
-                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Telegram Group for the Degree Course", "https://t.me/+JGzMbJh6QeFlYjlk")
-            ]
-        },
-        33516: {
-            "it": [
-                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+MCDGWHGxGUg3ZTgy")
-            ],
-            "en": [
-                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Telegram Group for the Degree Course", "https://t.me/+MCDGWHGxGUg3ZTgy")
-            ]
-        },
-        33519: {
-            "it": [
-                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+kBVAbCt9WAw1ZDhk")
-            ],
-            "en": [
-                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
-                ("Telegram Group for the Degree Course", "https://t.me/+kBVAbCt9WAw1ZDhk")
-            ]
-        }
-    }
+    # Load configuration from JSON file
+    json_path = "scrape-course-pages_config.json"
+    if os.path.exists(json_path):
+        with open(json_path, 'r', encoding='utf-8') as f:
+            CONFIG = json.load(f)
+    else:
+        print(f"Warning: {json_path} not found. Proceeding with empty dicts.")
+        CONFIG = {}
+    
+    COURSE_IDS = CONFIG.get("course_ids", {})
+    EXCLUDED_EN_IDS = CONFIG.get("excluded_en_ids", {})
+    COURSE_NAMES = CONFIG.get("course_names", {})
+    COURSE_ACRONYMS = CONFIG.get("course_acronyms", {})
+    CUSTOM_LINKS = CONFIG.get("custom_links", {})
+    FILE_TO_CAT = CONFIG.get("file_to_cat", {})
+    CATEGORIES_DICT = CONFIG.get("categories_dict", {})
 
     LANGUAGES = ["it", "en"]
-    PAGES = [
-        "presentation",
-        "objectives",
-        "professional-opportunities",
-        "choice-orientation",
-        "international-experiences",
-        "organization",
-        "quality",
-        "attendance/instructions",
-        "contacts",
-        "sapienza-for-you"
-    ]
-    IDS = [33502, 33508, 33516, 33519, 33503, 33504]
+    PAGES = CONFIG.get("pages", [])
+    
     OUTPUT_DIRECTORY = "corsidilaurea"
 
     # Run scraping
-    fetch_and_save_apply(LANGUAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
-    fetch_and_save_teachers(LANGUAGES, IDS, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
-    fetch_and_save_page(LANGUAGES, PAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY, custom_links=CUSTOM_LINKS)
+    fetch_and_save_apply(LANGUAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
+    fetch_and_save_teachers(LANGUAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
+    fetch_and_save_page(LANGUAGES, PAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY, custom_links=CUSTOM_LINKS, file_to_cat=FILE_TO_CAT, categories_dict=CATEGORIES_DICT)
