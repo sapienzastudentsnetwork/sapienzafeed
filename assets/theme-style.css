@@ -72,6 +72,12 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
+
+/* Center the page title on all pages */
+h1 { 
+    text-align: center; 
+}
+
 a { color: var(--link-color); }
 
 /* Hover anchors for direct linking */
@@ -93,7 +99,7 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 
 .theme-bar { 
     display: flex; 
-    justify-content: flex-end; 
+    justify-content: center; /* Centered buttons on desktop */
     gap: 8px; 
     align-items: center; 
     padding: 10px 0; 
@@ -103,7 +109,7 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 }
 
 /* Unified button styles */
-.theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label { 
+.theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label, .back-link-btn { 
     display: inline-flex; 
     align-items: center; 
     justify-content: center;
@@ -120,7 +126,8 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
     white-space: nowrap; /* Prevents text from breaking into two lines */
     margin: 0;
 }
-.theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover, .font-toggle-label:hover { 
+
+.theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover, .font-toggle-label:hover, .back-link-btn:hover { 
     filter: brightness(1.2); 
     text-decoration: none; 
 }
@@ -177,7 +184,7 @@ html.dyslexic, html.dyslexic * {
         justify-content: center; 
         gap: 6px; 
     }
-    .theme-toggle, .original-link-btn, .font-toggle-label { 
+    .theme-toggle, .original-link-btn, .font-toggle-label, .back-link-btn { 
         font-size: 0.75em; 
         padding: 5px 12px;
     }

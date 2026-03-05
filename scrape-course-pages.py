@@ -105,7 +105,7 @@ def extract_course_metadata(soup, language_key):
         summary_text = "Dettagli" if language_key == "it" else "Details"
         collapsible_block = (
             "<details class='course-metadata-details'>\n"
-            f"  <summary>ℹ️ {summary_text}</summary>\n"
+            f"  <summary>{summary_text}</summary>\n"
             f"  <div class='details-body'>\n{metadata_html}  </div>\n"
             "</details>\n"
         )

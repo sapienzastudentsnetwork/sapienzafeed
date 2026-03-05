@@ -1,6 +1,9 @@
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
-h1 { color: #333; }
-a { text-decoration: none; color: #007BFF; }
+h1 { 
+    color: var(--heading-color, #333); 
+    text-align: center; /* Center the page title */
+}
+a { text-decoration: none; color: var(--link-color, #007BFF); }
 a:hover { text-decoration: underline; }
 
 /* List and category styles */
@@ -8,8 +11,6 @@ h2.category-title {
     color: var(--heading-color, #0056b3); 
     margin-top: 30px; 
     margin-bottom: 15px; 
-    border-bottom: 1px solid var(--border-color, #eee); 
-    padding-bottom: 5px; 
     font-size: 1.4em; 
 }
 
@@ -71,57 +72,92 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
     color: var(--link-hover-color, #004494);
 }
 
-/* Collapsible Course Metadata specific styling for Index/Homepage */
+/* Collapsible Course Metadata (styled similarly to modern cards) */
 .course-metadata-details {
-    margin-top: 30px; /* Added top margin since it is now moved to the bottom */
+    margin-top: 30px; 
     margin-bottom: 20px;
-    padding: 10px; /* Reduced padding to make it smaller */
-    border: 1px solid var(--toc-border, #e9ecef);
-    border-radius: 8px;
-    background-color: var(--toc-bg, #f8f9fa);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    font-size: 0.9em; /* Reduced base font size for the block */
+    padding: 16px 20px; /* Match standard card padding */
+    border: 1px solid var(--card-border, #e9ecef); /* Match card border */
+    border-radius: 12px; /* Match card radius */
+    background-color: var(--card-bg, #f8f9fa); /* Match card background */
+    font-size: 0.9em; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
+
+/* Match hover effect of other cards */
+.course-metadata-details:hover {
+    background-color: var(--card-bg-hover, #ffffff);
+    border-color: var(--link-color);
+    box-shadow: 0 8px 20px var(--shadow-color, rgba(0,0,0,0.1));
+}
+
 .course-metadata-details summary {
-    font-weight: bold;
-    color: var(--heading-color, #0056b3);
-    font-size: 1.0em; /* Scaled down the title */
+    font-weight: 500;
+    color: var(--link-color); /* Matches clickable links */
+    font-size: 1.1em;
     margin-bottom: 0;
     cursor: pointer;
-    list-style: none; /* Hide default arrow in some browsers */
+    list-style: none; /* Hide default arrow */
     display: flex;
     align-items: center;
+    justify-content: center; /* Center the text horizontally */
+    transition: color 0.2s ease;
 }
+
+.course-metadata-details:hover summary {
+    color: var(--link-hover-color);
+}
+
 .course-metadata-details summary::-webkit-details-marker {
     display: none;
 }
-.course-metadata-details[open] summary {
-    margin-bottom: 12px;
-    border-bottom: 1px solid var(--border-color, #eee);
-    padding-bottom: 8px;
+
+/* Interactive custom arrow on the right, pointing down by default */
+.course-metadata-details summary::after {
+    content: "›";
+    font-size: 1.6em;
+    margin-left: 10px; /* Add space to the left of the arrow */
+    color: inherit;
+    transform: rotate(90deg); /* Point downwards initially */
+    transition: transform 0.2s ease;
+    padding-bottom: 4px;
+    display: inline-block; 
 }
+
+/* Rotate arrow when opened to point upwards */
+.course-metadata-details[open] summary::after {
+    transform: rotate(-90deg);
+}
+
+.course-metadata-details[open] summary {
+    margin-bottom: 16px;
+}
+
 .course-metadata-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 10px;
+    gap: 12px;
 }
+
 .course-metadata-list li {
     background: var(--bg-color, #ffffff);
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 8px; /* Slightly smaller radius for nested items */
     border: 1px solid var(--border-color, #eee);
-    font-size: 0.9em;
+    font-size: 0.95em;
     display: flex;
     flex-direction: column;
 }
+
 .course-metadata-list li span {
     font-weight: bold;
     color: var(--heading-color, #0056b3);
     margin-top: 4px;
 }
+
 .course-metadata-video {
     margin-top: 15px;
     position: relative;
@@ -130,6 +166,7 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
     overflow: hidden;
     border-radius: 8px;
 }
+
 .course-metadata-video iframe {
     position: absolute;
     top: 0;
