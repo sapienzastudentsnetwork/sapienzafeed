@@ -63,7 +63,7 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
     back_btn_html = ""
     if back_url:
         if is_index_page:
-            back_text = "🏠 Degree Courses" if language_key == "it" else "🏠 Degree Courses"
+            back_text = "🏠 Corsi" if language_key == "it" else "🏠 Degrees"
         else:
             back_text = "◀️ Indietro" if language_key == "it" else "◀️ Back"
             
@@ -540,7 +540,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     flag_html = ""
                     if course_id not in excluded_en_ids:
                         other_lang = "en" if language_key == "it" else "it"
-                        flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
+                        flag = "🇮🇹 Lingua" if language_key == "it" else "🇬🇧 Language"
                         # Path: Up to course root -> other lang folder -> same subpath/file
                         flag_url = f"{up_to_lang}{other_lang}/{filename}"
                         flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
@@ -614,8 +614,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 categorized_links = {
                     cats["freq"]: [],
                     cats["info"]: [],
-                    cats["ext"]: [],
-                    cats["opp"]: []
+                    cats["opp"]: [],
+                    cats["ext"]: []
                 }
                 
                 # Append YouTube link if extracted
@@ -644,7 +644,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 index_flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
-                    flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
+                    flag = "🇮🇹 Lingua" if language_key == "it" else "🇬🇧 Language"
                     index_flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
 
                 generate_index_html(
@@ -740,7 +740,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                 flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
-                    flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
+                    flag = "🇮🇹 Lingua" if language_key == "it" else "🇬🇧 Language"
                     flag_html = f'<a href="../{other_lang}/teachers.html" class="lang-btn" title="Switch language">{flag}</a>'
                 
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
@@ -882,7 +882,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                 flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
-                    flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
+                    flag = "🇮🇹 Lingua" if language_key == "it" else "🇬🇧 Language"
                     # Path: Up to course root -> other lang folder -> same filename
                     lang_link = f"{up_to_lang}{other_lang}/apply.html"
                     flag_html = f'<a href="{lang_link}" class="lang-btn" title="Switch language">{flag}</a>'
