@@ -1,7 +1,27 @@
 
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 h1 { color: #333; }
-a { display: inline-block; margin-top: 20px; text-decoration: none; color: #007BFF; }
+a { text-decoration: none; color: #007BFF; }
+a:hover { text-decoration: underline; }
+
+/* List and category styles */
+h2.category-title { 
+    color: var(--heading-color, #0056b3); 
+    margin-top: 30px; 
+    margin-bottom: 15px; 
+    border-bottom: 1px solid var(--border-color, #eee); 
+    padding-bottom: 5px; 
+    font-size: 1.4em; 
+}
+
+ul.category-list, ul.simple-list { 
+    padding-left: 20px; 
+    margin-top: 10px; 
+}
+
+ul.category-list li, ul.simple-list li { 
+    margin-bottom: 12px; 
+}
 
 /* Collapsible Course Metadata specific styling for Index/Homepage */
 .course-metadata-details {

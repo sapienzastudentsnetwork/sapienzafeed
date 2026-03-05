@@ -186,7 +186,27 @@ html.dyslexic, html.dyslexic * {
 INDEX_CSS = """
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 h1 { color: #333; }
-a { display: inline-block; margin-top: 20px; text-decoration: none; color: #007BFF; }
+a { text-decoration: none; color: #007BFF; }
+a:hover { text-decoration: underline; }
+
+/* List and category styles */
+h2.category-title { 
+    color: var(--heading-color, #0056b3); 
+    margin-top: 30px; 
+    margin-bottom: 15px; 
+    border-bottom: 1px solid var(--border-color, #eee); 
+    padding-bottom: 5px; 
+    font-size: 1.4em; 
+}
+
+ul.category-list, ul.simple-list { 
+    padding-left: 20px; 
+    margin-top: 10px; 
+}
+
+ul.category-list li, ul.simple-list li { 
+    margin-bottom: 12px; 
+}
 
 /* Collapsible Course Metadata specific styling for Index/Homepage */
 .course-metadata-details {
@@ -612,8 +632,8 @@ def get_relative_path(directory, filename):
     depth = len(parts) - 1
     return ("../" * depth) + filename if depth > 0 else filename
 
-def generate_index_html(directory, links, title, back_url="../index.html", metadata_html=""):
-    """Generates an index.html file with a list of links and optional metadata."""
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None):
+    """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_relative_path(directory, "theme-style.css")
     css_path = get_relative_path(directory, "index-style.css")
@@ -621,13 +641,18 @@ def generate_index_html(directory, links, title, back_url="../index.html", metad
 
     back_html = f"<a href='{back_url}'>«</a> " if back_url else ""
 
+    original_btn_html = ""
+    if original_url:
+        original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
+        original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
+
     theme_btn_text = "🌓 Dark Mode"
     dsa_toggle_html = '<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> Font DSA</label>'
-    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{original_btn_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
-<html lang="en">
+<html lang="{language_key}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -640,24 +665,43 @@ def generate_index_html(directory, links, title, back_url="../index.html", metad
     <h1 id="page-title">{back_html}{title}</h1>
     {theme_bar_html}
 
-    <ul>
-""".format(back_html=back_html, title=title, theme_bar_html=theme_bar_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path))
+""".format(language_key=language_key, back_html=back_html, title=title, theme_bar_html=theme_bar_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path))
 
-        for link_text, link_url in sorted(links):
-            formatted_url = link_url
-            if ".html" not in link_url and "#" not in link_url:
-                formatted_url = link_url.rstrip("/") + "/index.html"
-
-            file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
+        # Render dynamically categorized links if provided
+        if categorized_links:
+            for category, cat_links in categorized_links.items():
+                if not cat_links:
+                    continue # Skip empty categories
+                file.write(f'    <h2 class="category-title">{category}</h2>\n')
+                file.write('    <ul class="category-list">\n')
+                for link_text, link_url in sorted(cat_links):
+                    formatted_url = link_url
+                    if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
+                        formatted_url = link_url.rstrip("/") + "/index.html"
+                    file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
+                file.write('    </ul>\n')
+        
+        # Render generic flat links (used for Root and Choose Language selection)
+        elif links:
+            file.write('    <ul class="simple-list">\n')
+            for link_text, link_url in sorted(links):
+                formatted_url = link_url
+                if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
+                    formatted_url = link_url.rstrip("/") + "/index.html"
+                file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
+            file.write('    </ul>\n')
 
         # Appending metadata_html after the list to display it at the bottom of the page
-        file.write(f"""    </ul>
+        file.write(f"""
 {metadata_html}
 </body>
 </html>""")
 
 
-def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, output_dir="corsidilaurea"):
+def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links=None):
+    if custom_links is None:
+        custom_links = {}
+        
     base_url = "https://corsidilaurea.uniroma1.it"
     url_pattern = base_url + "/{}/course/{}/{}"
     os.makedirs(output_dir, exist_ok=True)
@@ -665,7 +709,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
     # Root index
     root_links = [(name, str(cid)) for cid, name in course_names.items() if cid in ids]
     # No back button for the root directory
-    generate_index_html(output_dir, root_links, "Degree Courses", back_url=None)
+    generate_index_html(output_dir, links=root_links, title="Degree Courses", back_url=None)
 
     for course_id in ids:
         acronym = course_acronyms.get(course_id, str(course_id))
@@ -1003,9 +1047,73 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
             page_links.append(("Teachers" if language_key == "en" else "Docenti", "teachers.html"))
 
             if page_links:
-                # Back button for the language index: go back to course root (language selector or auto-redirect)
                 lang_back_url = "../../index.html" if is_single_lang else "../index.html"
-                generate_index_html(language_dir, page_links, course_names.get(course_id, course_prefix), back_url=lang_back_url, metadata_html=extracted_metadata)
+
+                # Define structural categories
+                categories_dict = {
+                    "it": {
+                        "info": "Informazioni sul corso",
+                        "opp": "Opportunità",
+                        "freq": "Frequentare",
+                        "ext": "Link esterni"
+                    },
+                    "en": {
+                        "info": "Course Information",
+                        "opp": "Opportunities",
+                        "freq": "Attendance",
+                        "ext": "External Links"
+                    }
+                }
+                cats = categories_dict.get(language_key, categories_dict["en"])
+
+                # Mapping scraped page filenames to their respective categories
+                file_to_cat = {
+                    "presentation.html": "info",
+                    "objectives.html": "info",
+                    "professional-opportunities.html": "info",
+                    "choice-orientation.html": "info",
+                    "quality.html": "info",
+                    "international-experiences.html": "opp",
+                    "attendance/instructions.html": "freq",
+                    "organization.html": "freq",
+                    "apply.html": "freq",
+                    "teachers.html": "freq"
+                }
+
+                # Pre-initialize categorized map to maintain section order
+                categorized_links = {
+                    cats["info"]: [],
+                    cats["opp"]: [],
+                    cats["freq"]: [],
+                    cats["ext"]: []
+                }
+
+                for link_text, filename in page_links:
+                    cat_key = file_to_cat.get(filename, "info") # Fallback to info
+                    categorized_links[cats[cat_key]].append((link_text, filename))
+                
+                # Appendi custom links condivisi (chiave "all")
+                if "all" in custom_links and language_key in custom_links["all"]:
+                    for link_text, link_url in custom_links["all"][language_key]:
+                        categorized_links[cats["ext"]].append((link_text, link_url))
+
+                # Appendi custom links specifici per il singolo corso
+                if course_id in custom_links and language_key in custom_links[course_id]:
+                    for link_text, link_url in custom_links[course_id][language_key]:
+                        categorized_links[cats["ext"]].append((link_text, link_url))
+
+                # Filter out empty categories
+                categorized_links = {k: v for k, v in categorized_links.items() if v}
+
+                generate_index_html(
+                    directory=language_dir, 
+                    title=course_names.get(course_id, course_prefix), 
+                    back_url=lang_back_url, 
+                    metadata_html=extracted_metadata,
+                    original_url=homepage_url,
+                    language_key=language_key,
+                    categorized_links=categorized_links
+                )
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 
         if language_links:
@@ -1015,7 +1123,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     f.write(f'<html><head><meta http-equiv="refresh" content="0;url={lang_path}"></head></html>')
             else:
                 # Back button from language selector: go back to global catalogue root
-                generate_index_html(course_dir, language_links, course_prefix+"Choose Language", back_url="../index.html")
+                generate_index_html(course_dir, links=language_links, title=course_prefix+"Choose Language", back_url="../index.html")
 
 def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidilaurea"):
     base_url = "https://corsidilaurea.uniroma1.it"
@@ -1346,6 +1454,72 @@ if __name__ == "__main__":
         33504: "INF - A DIST."
     }
 
+    # Custom links configuration mapping per course_id and language
+    # Provide an ordered list of tuples (Link_Text, URL) that will be appended to the "External Links" section.
+    # The "all" key applies links to EVERY course automatically.
+    CUSTOM_LINKS = {
+        "all": {
+            "it": [
+                ("Sito Web del Dipartimento (DI)", "https://www.di.uniroma1.it/it"),
+                ("Sito Web della Facoltà (I3S)", "https://i3s.web.uniroma1.it/it")
+            ],
+            "en": [
+                ("Department Website (DI)", "https://www.di.uniroma1.it/en"),
+                ("Faculty Website (I3S)", "https://i3s.web.uniroma1.it/en")
+            ]
+        },
+        33502: {
+            "it": [
+                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/acsai"),
+                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+0XvGe7P6Yb5hYTky")
+            ],
+            "en": [
+                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/acsai"),
+                ("Telegram Group for the Degree Course", "https://t.me/+0XvGe7P6Yb5hYTky")
+            ]
+        },
+        33503: {
+            "it": [
+                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+o8wqkLM2NS1lMGI0")
+            ],
+            "en": [
+                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Telegram Group for the Degree Course", "https://t.me/+o8wqkLM2NS1lMGI0")
+            ]
+        },
+        33504: {
+            "it": [
+                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+JGzMbJh6QeFlYjlk")
+            ],
+            "en": [
+                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Telegram Group for the Degree Course", "https://t.me/+JGzMbJh6QeFlYjlk")
+            ]
+        },
+        33516: {
+            "it": [
+                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+MCDGWHGxGUg3ZTgy")
+            ],
+            "en": [
+                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Telegram Group for the Degree Course", "https://t.me/+MCDGWHGxGUg3ZTgy")
+            ]
+        },
+        33519: {
+            "it": [
+                ("Wiki del Corso su sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Gruppo Telegram del Corso di Laurea", "https://t.me/+kBVAbCt9WAw1ZDhk")
+            ],
+            "en": [
+                ("Course Wiki on sapienzastudents.net", "https://sapienzastudents.net/it"),
+                ("Telegram Group for the Degree Course", "https://t.me/+kBVAbCt9WAw1ZDhk")
+            ]
+        }
+    }
+
     LANGUAGES = ["it", "en"]
     PAGES = [
         "presentation",
@@ -1365,4 +1539,4 @@ if __name__ == "__main__":
     # Run scraping
     fetch_and_save_apply(LANGUAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
     fetch_and_save_teachers(LANGUAGES, IDS, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
-    fetch_and_save_page(LANGUAGES, PAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
+    fetch_and_save_page(LANGUAGES, PAGES, IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY, custom_links=CUSTOM_LINKS)
