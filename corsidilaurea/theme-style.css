@@ -81,3 +81,52 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 .theme-toggle, .original-link-btn, .lang-btn { cursor: pointer; background: var(--toc-bg); color: var(--text-color) !important; border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8em; transition: 0.2s; text-decoration: none; display: inline-block; }
 .theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover { filter: brightness(1.2); text-decoration: none; }
 .lang-btn { padding: 4px 8px; font-size: 1em; border-radius: 8px; }
+
+/* OpenDyslexic Font Configuration */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Italic.woff2') format('woff2');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Bold-Italic.woff2') format('woff2');
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Apply OpenDyslexic to all elements when html has .dyslexic class */
+html.dyslexic, html.dyslexic * {
+    font-family: 'OpenDyslexic' !important;
+    font-size-adjust: 0.45;
+}
+
+/* Styling for the DSA checkbox label */
+.font-toggle-label { 
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+    cursor: pointer; 
+    background: var(--toc-bg); 
+    color: var(--text-color); 
+    border: 1px solid var(--border-color); 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    font-size: 0.8em; 
+    transition: 0.2s; 
+    user-select: none;
+}
+.font-toggle-label:hover { filter: brightness(1.2); }

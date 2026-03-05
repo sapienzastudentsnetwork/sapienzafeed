@@ -90,6 +90,55 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 .theme-toggle, .original-link-btn, .lang-btn { cursor: pointer; background: var(--toc-bg); color: var(--text-color) !important; border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 20px; font-size: 0.8em; transition: 0.2s; text-decoration: none; display: inline-block; }
 .theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover { filter: brightness(1.2); text-decoration: none; }
 .lang-btn { padding: 4px 8px; font-size: 1em; border-radius: 8px; }
+
+/* OpenDyslexic Font Configuration */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Italic.woff2') format('woff2');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('opendyslexic/OpenDyslexic-Bold-Italic.woff2') format('woff2');
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Apply OpenDyslexic to all elements when html has .dyslexic class */
+html.dyslexic, html.dyslexic * {
+    font-family: 'OpenDyslexic' !important;
+    font-size-adjust: 0.45;
+}
+
+/* Styling for the DSA checkbox label */
+.font-toggle-label { 
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+    cursor: pointer; 
+    background: var(--toc-bg); 
+    color: var(--text-color); 
+    border: 1px solid var(--border-color); 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    font-size: 0.8em; 
+    transition: 0.2s; 
+    user-select: none;
+}
+.font-toggle-label:hover { filter: brightness(1.2); }
 """
 
 INDEX_CSS = """
@@ -284,13 +333,45 @@ function toggleTheme() {
     if (savedTheme) {
         applyTheme(savedTheme);
     }
-    // If no saved theme, CSS media queries will handle the system default
+    // Prevent font flickering by applying it instantly to the HTML element
+    const isFontDSA = localStorage.getItem('isFontDSA');
+    if (isFontDSA) {
+        document.documentElement.classList.add('dyslexic');
+    }
 })();
+
+// Settings and Preferences Listeners
+document.addEventListener("DOMContentLoaded", () => { 
+    // DSA Font Checkbox Initialization
+    let fontElement = document.getElementById('font-dsa-toggle');
+    if (fontElement) {
+        let isFontDSA = localStorage.getItem("isFontDSA");
+        if (isFontDSA) {
+            fontElement.checked = true; 
+        }
+
+        fontElement.addEventListener('change', function(e) {
+            if (this.checked) {
+                document.documentElement.classList.add('dyslexic');
+                localStorage.setItem("isFontDSA", "true");
+            } else {
+                document.documentElement.classList.remove('dyslexic');
+                localStorage.removeItem("isFontDSA");
+            }
+        });
+    }
+});
 
 // Sync across tabs
 window.addEventListener('storage', (event) => {
     if (event.key === 'theme') {
         applyTheme(event.newValue);
+    } else if (event.key === 'isFontDSA') {
+        const isDSA = !!event.newValue;
+        if (isDSA) document.documentElement.classList.add('dyslexic');
+        else document.documentElement.classList.remove('dyslexic');
+        const fontElement = document.getElementById('font-dsa-toggle');
+        if (fontElement) fontElement.checked = isDSA;
     }
 });
 """
@@ -386,7 +467,8 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
     back_html = f"<a href='{back_url}'>«</a> " if back_url else ""
 
     theme_btn_text = "🌓 Dark Mode"
-    theme_bar_html = f'<div class="theme-bar"><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+    dsa_toggle_html = '<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> Font DSA</label>'
+    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
@@ -415,7 +497,7 @@ def generate_index_html(directory, links, title, back_url="../index.html"):
 
         file.write("""    </ul>
 </body>
-</html>""".format(js_theme_path=js_theme_path))
+</html>""")
 
 
 def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, output_dir="corsidilaurea"):
@@ -711,9 +793,11 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
 
                         back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                         
-                        # Theme bar with added Original Page link
+                        # Theme bar with added DSA and Original Page links
+                        dsa_text = "Font DSA" #if language_key == "it" else "DSA Font"
+                        dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
                         original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                        theme_bar_html = f'<div class="theme-bar">{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
+                        theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
 
                         # Final HTML construction (H1 has no anchor)
                         content = f"""<!DOCTYPE html>
@@ -873,10 +957,12 @@ def fetch_and_save_teachers(languages, ids, course_acronyms, output_dir="corsidi
                     
                     back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                     
-                    # Theme bar with added Original Page link
+                    # Theme bar with added DSA and Original Page links
                     theme_btn_text = "🌓 Dark Mode"
+                    dsa_text = "Font DSA" #if language_key == "it" else "DSA Font"
+                    dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
                     original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                    theme_bar_html = f'<div class="theme-bar">{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+                    theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
 
                     # Calculate relative paths
                     theme_css_path = get_relative_path(language_dir, "theme-style.css")
@@ -1040,9 +1126,11 @@ def fetch_and_save_apply(languages, ids, course_names, course_acronyms, output_d
 
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
-                # Theme bar with added Original Page link
+                # Theme bar with added DSA and Original Page links
+                dsa_text = "Font DSA" #if language_key == "it" else "DSA Font"
+                dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
                 original_btn_text = "🌐 Pagina Originale" if language_key == "it" else "🌐 Original Page"
-                theme_bar_html = f'<div class="theme-bar">{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
+                theme_bar_html = f'<div class="theme-bar">{dsa_toggle_html}{flag_html}<a href="{url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Dark Mode</button></div>'
 
                 # Final HTML construction (H1 has no anchor)
                 html_content = f"""<!DOCTYPE html>

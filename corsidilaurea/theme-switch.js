@@ -24,12 +24,44 @@ function toggleTheme() {
     if (savedTheme) {
         applyTheme(savedTheme);
     }
-    // If no saved theme, CSS media queries will handle the system default
+    // Prevent font flickering by applying it instantly to the HTML element
+    const isFontDSA = localStorage.getItem('isFontDSA');
+    if (isFontDSA) {
+        document.documentElement.classList.add('dyslexic');
+    }
 })();
+
+// Settings and Preferences Listeners
+document.addEventListener("DOMContentLoaded", () => { 
+    // DSA Font Checkbox Initialization
+    let fontElement = document.getElementById('font-dsa-toggle');
+    if (fontElement) {
+        let isFontDSA = localStorage.getItem("isFontDSA");
+        if (isFontDSA) {
+            fontElement.checked = true; 
+        }
+
+        fontElement.addEventListener('change', function(e) {
+            if (this.checked) {
+                document.documentElement.classList.add('dyslexic');
+                localStorage.setItem("isFontDSA", "true");
+            } else {
+                document.documentElement.classList.remove('dyslexic');
+                localStorage.removeItem("isFontDSA");
+            }
+        });
+    }
+});
 
 // Sync across tabs
 window.addEventListener('storage', (event) => {
     if (event.key === 'theme') {
         applyTheme(event.newValue);
+    } else if (event.key === 'isFontDSA') {
+        const isDSA = !!event.newValue;
+        if (isDSA) document.documentElement.classList.add('dyslexic');
+        else document.documentElement.classList.remove('dyslexic');
+        const fontElement = document.getElementById('font-dsa-toggle');
+        if (fontElement) fontElement.checked = isDSA;
     }
 });
