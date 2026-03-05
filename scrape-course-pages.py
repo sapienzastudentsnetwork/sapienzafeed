@@ -157,7 +157,7 @@ def get_assets_relative_path(directory, filename):
     depth = len(parts)
     return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html=""):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
@@ -191,8 +191,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         # Render dynamically categorized links if provided
         if categorized_links:
             for category, cat_links in categorized_links.items():
-                # Skip empty categories unless it is the info category and we have metadata to show
-                if not cat_links and not (category == info_category_name and metadata_html):
+                # Skip empty categories unless it is the info category with metadata or freq category with metadata
+                if not cat_links and not (category == info_category_name and metadata_html) and not (category == freq_category_name and freq_metadata_html):
                     continue 
                     
                 file.write(f'    <h2 class="category-title">{category}</h2>\n')
@@ -200,6 +200,10 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 # Render metadata at the top of the info category
                 if category == info_category_name and metadata_html:
                     file.write(f'{metadata_html}\n')
+
+                # Render freq metadata at the top of the freq category
+                if category == freq_category_name and freq_metadata_html:
+                    file.write(f'{freq_metadata_html}\n')
 
                 if cat_links:
                     file.write('    <ul class="category-list">\n')
@@ -286,9 +290,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
         course_dir = os.path.join(output_dir, course_id)
         os.makedirs(course_dir, exist_ok=True)
 
-        # Calculate how many languages are actually generated for this course
         valid_langs = [l for l in languages if not (l == "en" and course_id in excluded_en_ids)]
-        is_single_lang = len(valid_langs) == 1
 
         language_links = []
         for language_key in languages:
@@ -309,6 +311,10 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 extracted_metadata, youtube_video_url = extract_course_metadata(hp_soup, language_key)
 
             page_links = []
+            
+            # Additional variables to handle attendance specific logic
+            attendance_custom_links = []
+            attendance_freq_metadata_html = ""
 
             for language_page in pages:
                 url = url_pattern.format(language_key, course_id, language_page)
@@ -318,6 +324,100 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     continue
 
                 soup = BeautifulSoup(response.text, 'html.parser')
+                
+                # SPECIAL HANDLING FOR ATTENDANCE PAGE
+                if language_page == "attendance":
+                    # Extract general sidebar links to form a details block
+                    sidebar = soup.find("div", class_="corso-home-menu--generale")
+                    if sidebar:
+                        # Convert URLs to absolute
+                        make_urls_absolute(sidebar, base_url)
+                        summary_text = "Come fare per" if language_key == "it" else "How to"
+                        
+                        # Parse sidebar links and generate a list relying on existing CSS classes
+                        sidebar_links_html = "<ul class='course-metadata-list'>\n"
+                        for a_tag in sidebar.find_all("a"):
+                            href = a_tag.get("href", "#")
+                            text = a_tag.get_text(strip=True)
+                            
+                            # Hardcode translation for academic calendar URL in English
+                            if language_key == "en" and "calendario-dellanno-accademico" in href:
+                                href = "https://www.uniroma1.it/en/pagina/academic-calendar"
+                                
+                            # Let the CSS handle the appearance of these links inside the list
+                            sidebar_links_html += f"  <li><a href='{href}'>{text}</a></li>\n"
+                        sidebar_links_html += "</ul>\n"
+
+                        attendance_freq_metadata_html = (
+                            "<details class='course-metadata-details' style='margin-bottom: 20px;'>\n"
+                            f"  <summary>{summary_text}</summary>\n"
+                            f"  <div class='details-body'>\n{sidebar_links_html}  </div>\n"
+                            "</details>\n"
+                        )
+                        sidebar.decompose()
+
+                    # Target specific direct links by matching href inside accordion titles
+                    for acc_title in soup.find_all("div", class_="accordion-title"):
+                        a_tag = acc_title.find("a")
+                        # Ensure it's an actual external link and not just a collapsible trigger (href="#")
+                        if a_tag and a_tag.has_attr("href") and not a_tag["href"].startswith("#"):
+                            a_href = a_tag["href"]
+                            a_text_raw = a_tag.get_text(strip=True)
+                            a_text_clean = re.sub(r'\(.*?\)', '', a_text_raw).strip() # clean extra icons text
+                            
+                            # Hardcode for Lessons / Lezioni to make it clear it's about course descriptions
+                            if "lessons-plan" in a_href or "insegnamenti" in a_href or a_text_clean in ["Lessons", "Lezioni"]:
+                                a_text_clean = "Courses" if language_key == "en" else "Insegnamenti"
+                                # Update the text inside the page to match
+                                a_tag.string = a_text_clean
+                            
+                            # Perform href mapping
+                            if "/lessons-plan" in a_href or "/insegnamenti" in a_href:
+                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
+                            elif "/timetable" in a_href or "orario" in a_href:
+                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
+                            elif "calendario-dellanno-accademico" in a_href or "academic-calendar" in a_href:
+                                # Hardcode translation for academic calendar URL in English
+                                if language_key == "en":
+                                    a_href = "https://www.uniroma1.it/en/pagina/academic-calendar"
+                                    a_tag["href"] = a_href # also update the href in the page
+                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
+                            elif "/exams" in a_href or "esami" in a_href:
+                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
+                            elif "/instructions" in a_href or "istruzioni" in a_href:
+                                attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
+                            elif "cla.web.uniroma1.it" in a_href:
+                                attendance_custom_links.append((a_text_clean, a_href, "opp"))
+                            
+                            # If it was a direct link, skip looking for heading anchors inside it
+                            continue
+
+                        # Target text sections (anchors) inside accordions by their explicit ID
+                        target_anchors = {
+                            "apprenticeship": "freq",   # Apprenticeship
+                            "excellence": "opp",        # Path of excellence
+                            "job-orientation": "opp",   # Job Orientation
+                            "graduation": "freq",       # Graduate
+                            "ofa": "freq"               # Ofa: methods of fulfilling additional training obligations
+                        }
+                        
+                        acc_id = acc_title.get("id")
+                        if acc_id and acc_id in target_anchors:
+                            h_tag = acc_title.find(['h2', 'h3', 'h4', 'h5', 'h6'])
+                            # Fallback to general div text if h_tag is absent
+                            link_text = h_tag.get_text(strip=True) if h_tag else acc_title.get_text(strip=True)
+                            
+                            # Predict the destination ID exactly as Phase 2.1 will dynamically generate it
+                            if h_tag:
+                                dest_id = h_tag.get('id')
+                                if not dest_id:
+                                    dest_id = re.sub(r'[^a-z0-9]+', '-', link_text.lower()).strip('-')
+                            else:
+                                dest_id = acc_id
+                                
+                            # The file saved will be attendance.html
+                            anchor_url = f"attendance.html#{dest_id}"
+                            attendance_custom_links.append((link_text, anchor_url, target_anchors[acc_id]))
                 
                 # Fix contacts collapsibles before links are modified
                 fix_contacts_collapsibles(soup)
@@ -422,18 +522,37 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         if should_wrap:
                             # Wrap accordion-items
                             for acc_item in process_block.find_all("div", class_="accordion-item"):
+                                
+                                # Ignore specific blocks mentioned by user if we are in attendance page
+                                if language_page == "attendance":
+                                    acc_title = acc_item.find("div", class_="accordion-title")
+                                    if acc_title and acc_title.get("id") in ["biblio"]:
+                                        acc_item.decompose()
+                                        continue
+                                
                                 content_div = acc_item.find("div", class_="accordion-content")
+                                title_div = acc_item.find("div", class_="accordion-title")
+                                
+                                a_tag = title_div.find("a") if title_div else None
+                                has_content = content_div and len(content_div.get_text(strip=True)) > 0
+                                is_direct_link = a_tag and a_tag.has_attr("href") and not a_tag["href"].startswith("#") and a_tag["href"].strip() != ""
+                                
+                                # FIX: Do not wrap into empty details if it's a direct link with no content
+                                # and do not enforce inline styling
+                                if is_direct_link and not has_content:
+                                    link_div = soup.new_tag("div", attrs={"class": "accordion-title", "style": "margin-bottom: 15px;"})
+                                    link_div.append(a_tag)
+                                    acc_item.insert_after(link_div)
+                                    acc_item.decompose()
+                                    continue
+
                                 if content_div:
-                                    char_len = len(content_div.get_text(strip=True))
-                                    vertical_items = len(content_div.find_all(['tr', 'li', 'br']))
-                                    
                                     # Wrap all accordion items to maintain visual consistency
                                     if True:
                                         details_tag = soup.new_tag("details")
                                         summary_tag = soup.new_tag("summary")
                                         level_class = "level-default"
                                         
-                                        title_div = acc_item.find("div", class_="accordion-title")
                                         if title_div:
                                             h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
                                             if h_tag:
@@ -441,7 +560,16 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                                 # Transfer ID to summary so anchor links scroll to it correctly
                                                 if h_tag.has_attr('id'):
                                                     summary_tag['id'] = h_tag['id']
-                                            summary_tag.string = title_div.get_text(separator=" ", strip=True)
+                                            elif title_div.has_attr('id'):
+                                                summary_tag['id'] = title_div['id']
+
+                                            # If there is a link inside the summary, keep it functional
+                                            a_tag_inside = title_div.find("a")
+                                            if a_tag_inside and a_tag_inside.has_attr("href") and not a_tag_inside["href"].startswith("#"):
+                                                summary_tag.append(a_tag_inside)
+                                            else:
+                                                summary_tag.string = title_div.get_text(separator=" ", strip=True)
+                                                
                                             title_div.decompose()
                                         else:
                                             summary_tag.string = "Dettagli" if language_key == "it" else "Details"
@@ -600,8 +728,11 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     with open(output_path, "w", encoding="utf-8") as file:
                         file.write(content)
 
-                    clean_link_title = page_heading.replace(course_prefix, "")
-                    page_links.append((clean_link_title, filename))
+                    # Regular page tracking handling
+                    if language_page != "attendance":
+                        clean_link_title = page_heading.replace(course_prefix, "")
+                        page_links.append((clean_link_title, filename))
+                    
                     print(f"Saved: {output_path}")
                 else:
                     print(f"No useful content found for {course_id}/{language_key}/{language_page}")
@@ -610,7 +741,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             page_links.append(("How and When to Enroll" if language_key == "en" else "Come e quando iscriversi", "apply.html"))
             page_links.append(("Teachers" if language_key == "en" else "Docenti", "teachers.html"))
 
-            if page_links:
+            if page_links or attendance_custom_links:
                 # Always go back to global catalogue root since language selection page is removed
                 lang_back_url = "../../index.html"
 
@@ -630,10 +761,15 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     yt_text = "Video presentazione (#IoScelgoSapienza)" if language_key == "it" else "Video presentation (#IoScelgoSapienza)"
                     categorized_links[cats["info"]].append((yt_text, youtube_video_url))
 
+                # Inject regular pages
                 for link_text, filename in page_links:
                     cat_key = file_to_cat.get(filename, "info") # Fallback to info
                     categorized_links[cats[cat_key]].append((link_text, filename))
                 
+                # Inject parsed attendance specific links
+                for link_text, anchor_url, cat_key in attendance_custom_links:
+                    categorized_links[cats[cat_key]].append((link_text, anchor_url))
+
                 # Append shared custom links (key "all")
                 if "all" in custom_links and language_key in custom_links["all"]:
                     for link_text, link_url in custom_links["all"][language_key]:
@@ -645,7 +781,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         categorized_links[cats["ext"]].append((link_text, link_url))
 
                 # Filter out empty categories, but keep info category if it has metadata
-                categorized_links = {k: v for k, v in categorized_links.items() if v or (k == cats["info"] and extracted_metadata)}
+                categorized_links = {k: v for k, v in categorized_links.items() if v or (k == cats["info"] and extracted_metadata) or (k == cats["freq"] and attendance_freq_metadata_html)}
 
                 # Build language toggle for the index page
                 index_flag_html = ""
@@ -663,7 +799,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     language_key=language_key,
                     categorized_links=categorized_links,
                     flag_html=index_flag_html,
-                    info_category_name=cats["info"]
+                    info_category_name=cats["info"],
+                    freq_category_name=cats["freq"],
+                    freq_metadata_html=attendance_freq_metadata_html
                 )
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 
@@ -950,7 +1088,7 @@ if __name__ == "__main__":
 
     LANGUAGES = ["it", "en"]
     PAGES = CONFIG.get("pages", [])
-    
+
     OUTPUT_DIRECTORY = "corsidilaurea"
 
     # Run scraping
