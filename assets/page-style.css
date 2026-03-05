@@ -1,4 +1,3 @@
-
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
 html { scroll-behavior: smooth; }
 h1 { color: #333; }
@@ -65,12 +64,39 @@ ul, ol { padding-left: 40px; margin-bottom: 15px; }
 
 /* Details and Accordion Specifics */
 details { margin-bottom: 20px; }
+
+/* Changed from list-item to block to remove default left arrow */
 summary { 
-    display: list-item; 
+    display: block; 
+    list-style: none; /* Hides default marker in standard browsers */
     cursor: pointer; 
     outline: none; 
     transition: color 0.2s; 
     word-break: break-word;
+}
+
+/* Hides default marker in Safari */
+summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Custom arrow positioned after the text, pointing downwards */
+summary::after {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    width: 0;
+    height: 0;
+    margin-left: 10px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid currentColor; /* Downward triangle */
+    transition: transform 0.2s ease;
+}
+
+/* Rotate the arrow upwards when details is open */
+details[open] > summary::after {
+    transform: rotate(180deg);
 }
 
 summary:hover { color: #003d82; }
