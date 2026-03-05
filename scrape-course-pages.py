@@ -48,7 +48,7 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
     """
     Generates the standard HTML for the two top bars.
     Bar 1: Controls (Language, Font, Theme).
-    Bar 2: Navigation (Source, Back).
+    Bar 2: Navigation (Source, Back, Print).
     """
     # Bar 1: Controls (Font, Language, Theme)
     dsa_text = "OpenDyslexic"
@@ -59,15 +59,20 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
     
     controls_bar_html = f'<div class="controls-bar">{dsa_toggle_html}{flag_html}{theme_btn_html}</div>'
 
-    # Bar 2: Navigation (Back, Source)
+    # Bar 2: Navigation (Back, Print, Source)
     back_btn_html = ""
     if back_url:
         if is_index_page:
             back_text = "🏠 Corsi" if language_key == "it" else "🏠 Degrees"
         else:
-            back_text = "◀️ Indietro" if language_key == "it" else "◀️ Back"
+            back_text = "◀️ Homepage" if language_key == "it" else "◀️ Homepage"
             
         back_btn_html = f'<a href="{back_url}" class="back-link-btn">{back_text}</a>'
+
+    print_btn_html = ""
+    if not is_index_page:
+        print_btn_text = "🖨️ Salva come PDF" if language_key == "it" else "🖨️ Save as PDF"
+        print_btn_html = f'<button class="print-btn" onclick="window.print()">{print_btn_text}</button>'
 
     original_btn_html = ""
     if original_url:
@@ -75,8 +80,8 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
         original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
 
     nav_bar_html = ""
-    if back_btn_html or original_btn_html:
-        nav_bar_html = f'<div class="navigation-bar">{back_btn_html}{original_btn_html}</div>'
+    if back_btn_html or print_btn_html or original_btn_html:
+        nav_bar_html = f'<div class="navigation-bar">{back_btn_html}{print_btn_html}{original_btn_html}</div>'
 
     return f'{controls_bar_html}\n{nav_bar_html}'
 

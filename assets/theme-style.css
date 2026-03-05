@@ -133,7 +133,7 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 .heading-anchor:hover { color: var(--link-color) !important; }
 
 /* Unified button styles (Card Style) */
-.theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label, .back-link-btn { 
+.theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label, .back-link-btn, .print-btn { 
     display: inline-flex; 
     align-items: center; 
     justify-content: center;
@@ -153,7 +153,7 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 }
 
 /* Dynamic hover effect: button "lifts" up */
-.theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover, .font-toggle-label:hover, .back-link-btn:hover { 
+.theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover, .font-toggle-label:hover, .back-link-btn:hover, .print-btn:hover { 
     background: var(--card-bg-hover); 
     transform: translateY(-2px); 
     box-shadow: 0 4px 8px var(--shadow-color);
@@ -217,7 +217,7 @@ html.dyslexic, html.dyslexic * {
     .header-actions .navigation-bar {
         justify-content: center;
     }
-    .theme-toggle, .original-link-btn, .font-toggle-label, .lang-btn, .back-link-btn { 
+    .theme-toggle, .original-link-btn, .font-toggle-label, .lang-btn, .back-link-btn, .print-btn { 
         font-size: 0.8em; 
         padding: 6px 12px;
     }
