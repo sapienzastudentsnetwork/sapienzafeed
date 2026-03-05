@@ -44,20 +44,41 @@ def add_heading_anchors(soup, content_block):
             h_tag.append(" ")
             h_tag.append(anchor)
 
-def generate_theme_bar_html(language_key, flag_html="", original_url=None):
+def generate_top_bars_html(language_key, flag_html="", original_url=None, back_url=None, is_index_page=False):
     """
-    Generates the standard HTML for the top theme bar.
+    Generates the standard HTML for the two top bars.
+    Bar 1: Controls (Language, Font, Theme).
+    Bar 2: Navigation (Source, Back).
     """
+    # Bar 1: Controls (Font, Language, Theme)
     dsa_text = "OpenDyslexic"
     dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
     
+    theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
+    theme_btn_html = f'<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>'
+    
+    controls_bar_html = f'<div class="controls-bar">{dsa_toggle_html}{flag_html}{theme_btn_html}</div>'
+
+    # Bar 2: Navigation (Back, Source)
+    back_btn_html = ""
+    if back_url:
+        if is_index_page:
+            back_text = "🏠 Degree Courses" if language_key == "it" else "🏠 Degree Courses"
+        else:
+            back_text = "◀️ Indietro" if language_key == "it" else "◀️ Back"
+            
+        back_btn_html = f'<a href="{back_url}" class="back-link-btn">{back_text}</a>'
+
     original_btn_html = ""
     if original_url:
         original_btn_text = "🌐 Fonte" if language_key == "it" else "🌐 Source"
         original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
 
-    theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
-    return f'<div class="theme-bar">{dsa_toggle_html}{flag_html}{original_btn_html}<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button></div>'
+    nav_bar_html = ""
+    if back_btn_html or original_btn_html:
+        nav_bar_html = f'<div class="navigation-bar">{back_btn_html}{original_btn_html}</div>'
+
+    return f'{controls_bar_html}\n{nav_bar_html}'
 
 def make_urls_absolute(soup, base_url):
     """
@@ -138,10 +159,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     css_path = get_assets_relative_path(directory, "index-style.css")
     js_theme_path = get_assets_relative_path(directory, "theme-switch.js")
 
-    back_html = f"<a href='{back_url}'>«</a> " if back_url else ""
-
-    # Generate theme bar using utility function
-    theme_bar_html = generate_theme_bar_html(language_key, flag_html, original_url)
+    # Generate top bars using utility function
+    top_bars_html = generate_top_bars_html(language_key, flag_html, original_url, back_url, is_index_page=True)
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
@@ -155,10 +174,14 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     <script src="{js_theme_path}"></script>
 </head>
 <body>
-    <h1 id="page-title">{back_html}{title}</h1>
-    {theme_bar_html}
+    <div class="header-dashboard">
+        <h1 id="page-title">{title}</h1>
+        <div class="header-actions">
+            {top_bars_html}
+        </div>
+    </div>
 
-""".format(language_key=language_key, back_html=back_html, title=title, theme_bar_html=theme_bar_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path))
+""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -517,7 +540,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     flag_html = ""
                     if course_id not in excluded_en_ids:
                         other_lang = "en" if language_key == "it" else "it"
-                        flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                        flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
                         # Path: Up to course root -> other lang folder -> same subpath/file
                         flag_url = f"{up_to_lang}{other_lang}/{filename}"
                         flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
@@ -537,8 +560,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
                     back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                     
-                    # Generate theme bar using utility function
-                    theme_bar_html = generate_theme_bar_html(language_key, flag_html, url)
+                    # Generate top bars using utility function
+                    top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
 
                     # Final HTML construction (H1 has no anchor)
                     content = f"""<!DOCTYPE html>
@@ -552,8 +575,12 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
     <script src="{js_theme_path}"></script>
 </head>
 <body>
-<h1 id="page-title"><a href='{back_link}'>«</a> {page_heading}</h1>
-{theme_bar_html}
+<div class="header-dashboard">
+    <h1 id="page-title">{page_heading}</h1>
+    <div class="header-actions">
+        {top_bars_html}
+    </div>
+</div>
 {toc_html}
 <div class="content-wrapper">
 {combined_content}
@@ -617,7 +644,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 index_flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
-                    flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                    flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
                     index_flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
 
                 generate_index_html(
@@ -713,13 +740,13 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                 flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
-                    flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                    flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
                     flag_html = f'<a href="../{other_lang}/teachers.html" class="lang-btn" title="Switch language">{flag}</a>'
                 
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
-                # Generate theme bar using utility function
-                theme_bar_html = generate_theme_bar_html(language_key, flag_html, url)
+                # Generate top bars using utility function
+                top_bars_html = generate_top_bars_html(language_key, flag_html, url, "index.html")
 
                 # Calculate relative paths
                 theme_css_path = get_assets_relative_path(language_dir, "theme-style.css")
@@ -739,8 +766,12 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
     <script src="{js_theme_path}"></script>
 </head>
 <body>
-<h1 id="page-title"><a href='index.html'>«</a> {heading}</h1>
-{theme_bar_html}
+<div class="header-dashboard">
+    <h1 id="page-title">{heading}</h1>
+    <div class="header-actions">
+        {top_bars_html}
+    </div>
+</div>
 {content}
 
 <button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
@@ -750,7 +781,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                     lang=language_key,
                     title=page_heading,
                     heading=page_heading,
-                    theme_bar_html=theme_bar_html,
+                    top_bars_html=top_bars_html,
                     content=teachers_container.prettify() if teachers_container else "",
                     btn_text=back_to_top_text,
                     theme_css_path=theme_css_path,
@@ -851,15 +882,15 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                 flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
-                    flag = "🇮🇹" if language_key == "it" else "🇬🇧"
+                    flag = "🇮🇹 Cambia Lingua" if language_key == "it" else "🇬🇧 Switch Language"
                     # Path: Up to course root -> other lang folder -> same filename
                     lang_link = f"{up_to_lang}{other_lang}/apply.html"
                     flag_html = f'<a href="{lang_link}" class="lang-btn" title="Switch language">{flag}</a>'
 
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
-                # Generate theme bar using utility function
-                theme_bar_html = generate_theme_bar_html(language_key, flag_html, url)
+                # Generate top bars using utility function
+                top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
 
                 # Final HTML construction (H1 has no anchor)
                 html_content = f"""<!DOCTYPE html>
@@ -874,8 +905,12 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
     <script src="{js_theme_path}"></script>
 </head>
 <body>
-    <h1 id="page-title"><a href='{back_link}'>«</a> {page_heading}</h1>
-    {theme_bar_html}
+    <div class="header-dashboard">
+        <h1 id="page-title">{page_heading}</h1>
+        <div class="header-actions">
+            {top_bars_html}
+        </div>
+    </div>
     <div class="content-wrapper">
         {combined_content}
     </div>
