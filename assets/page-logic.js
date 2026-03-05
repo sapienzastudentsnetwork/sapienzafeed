@@ -36,3 +36,25 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+/* =========================================
+   PRINT OPTIMIZATION LOGIC
+   ========================================= */
+
+// Expand all dropdown menus (<details>) before opening the print prompt
+window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('details').forEach(d => {
+        if (!d.hasAttribute('open')) {
+            d.setAttribute('data-print-opened', 'true');
+            d.setAttribute('open', '');
+        }
+    });
+});
+
+// Close them after the print prompt is closed
+window.addEventListener('afterprint', () => {
+    document.querySelectorAll('details[data-print-opened="true"]').forEach(d => {
+        d.removeAttribute('open');
+        d.removeAttribute('data-print-opened');
+    });
+});

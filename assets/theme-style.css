@@ -222,3 +222,78 @@ html.dyslexic, html.dyslexic * {
         padding: 6px 12px;
     }
 }
+
+/* =========================================
+   PRINT OPTIMIZATION
+   ========================================= */
+@media print {
+    @page {
+        margin: 1.5cm; 
+
+        /* Standard CSS rules to hide margin content (limited browser support) */
+        @top-left { content: none; }
+        @top-center { content: none; }
+        @top-right { content: none; }
+        @bottom-left { content: none; }
+        @bottom-center { content: none; }
+        @bottom-right { content: none; }
+    }
+    
+    body {
+        padding: 0 !important; 
+        margin: 0 !important;
+        background: white !important;
+    }
+
+    /* Hide menus, buttons, ToC, and sidebar */
+    .header-actions, .controls-bar, .navigation-bar, .toc, #back-to-top { 
+        display: none !important; 
+    }
+    
+    /* Force light colors to save ink */
+    html, .content-wrapper, .header-dashboard { 
+        background: white !important; 
+    }
+    
+    /* Explicitly force ALL text and headings to black (overrides specific theme rules) */
+    *, h1, h2, h3, h4, h5, h6, #page-title, .header-dashboard h1#page-title, a { 
+        color: black !important; 
+        background-color: transparent !important; 
+        box-shadow: none !important; 
+        text-shadow: none !important; 
+    }
+
+    /* Clean up link appearance for reading */
+    a {
+        text-decoration: none !important;
+    }
+    
+    /* Optimize page breaks to prevent elements (including lists and rows) from splitting awkwardly */
+    details, .docente-card, .accordion-card, li, tr { 
+        page-break-inside: avoid; 
+        break-inside: avoid; 
+    }
+    h1, h2, h3, h4, h5, h6 { 
+        page-break-after: avoid; 
+        break-after: avoid; 
+    }
+    img { 
+        max-width: 100% !important; 
+        page-break-inside: avoid; 
+        break-inside: avoid; 
+    }
+    
+    /* Additional style to make expanded blocks clear in print */
+    details { 
+        border-bottom: 1px solid #ddd; 
+        margin-bottom: 15px; 
+        padding-bottom: 10px; 
+    }
+    summary { 
+        font-weight: bold; 
+        font-size: 1.1em; 
+        border-bottom: 1px solid #eee; 
+        padding-bottom: 5px; 
+        margin-bottom: 10px; 
+    }
+}

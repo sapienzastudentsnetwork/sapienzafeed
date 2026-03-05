@@ -63,15 +63,15 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
     back_btn_html = ""
     if back_url:
         if is_index_page:
-            back_text = "🏠 Corsi" if language_key == "it" else "🏠 Degrees"
+            back_text = "🏠 Corsi di Laurea" if language_key == "it" else "🏠 Degree Courses"
         else:
-            back_text = "◀️ Homepage" if language_key == "it" else "◀️ Homepage"
+            back_text = "◀️ Indice" if language_key == "it" else "◀️ Homepage"
             
         back_btn_html = f'<a href="{back_url}" class="back-link-btn">{back_text}</a>'
 
     print_btn_html = ""
     if not is_index_page:
-        print_btn_text = "🖨️ Salva come PDF" if language_key == "it" else "🖨️ Save as PDF"
+        print_btn_text = "🖨️ Salva come PDF" if language_key == "it" else "🖨️ Save to PDF"
         print_btn_html = f'<button class="print-btn" onclick="window.print()">{print_btn_text}</button>'
 
     original_btn_html = ""
