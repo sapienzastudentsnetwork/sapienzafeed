@@ -99,6 +99,10 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 
 /* Unified button styles */
 .theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label { 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+    box-sizing: border-box;
     cursor: pointer; 
     background: var(--toc-bg); 
     color: var(--text-color) !important; 
@@ -108,11 +112,7 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
     font-size: 0.85em; 
     transition: 0.2s; 
     text-decoration: none; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
     white-space: nowrap; /* Prevents text from breaking into two lines */
-    box-sizing: border-box;
     margin: 0;
 }
 .theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover, .font-toggle-label:hover { 
@@ -122,7 +122,7 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 
 .lang-btn { 
     font-size: 1.1em; 
-    padding: 4px 10px; /* Adjust padding for emoji size */
+    padding: 4px 10px;
 }
 
 /* OpenDyslexic Font Configuration */
@@ -162,8 +162,8 @@ html.dyslexic, html.dyslexic * {
     gap: 6px; 
     user-select: none;
 }
-.font-toggle-label input {
-    margin: 0; /* Ensures checkbox doesn't misalign text */
+.font-toggle-label input[type="checkbox"] {
+    margin: 0; /* Ensures checkbox doesn't alter the button height */
 }
 
 /* Mobile adjustments for theme bar */
@@ -174,11 +174,11 @@ html.dyslexic, html.dyslexic * {
     }
     .theme-toggle, .original-link-btn, .font-toggle-label { 
         font-size: 0.75em; 
-        padding: 5px 10px; 
+        padding: 5px 12px;
     }
     .lang-btn { 
         font-size: 1em; 
-        padding: 4px 8px; 
+        padding: 4px 10px;
     }
 }
 """
