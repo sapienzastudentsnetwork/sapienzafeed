@@ -273,7 +273,7 @@ def clean_excessive_newlines(soup):
             if cleaned_text != text_node:
                 text_node.replace_with(cleaned_text)
 
-def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links={}, file_to_cat={}, categories_dict={}):
+def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links={}, file_to_cat={}, categories_dict={}, excluded_attendance_ids=[]):
     base_url = "https://corsidilaurea.uniroma1.it"
     url_pattern = base_url + "/{}/course/{}/{}"
     os.makedirs(output_dir, exist_ok=True)
@@ -397,16 +397,16 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             elif "/exams" in a_href or "esami" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
                             elif "/instructions" in a_href or "istruzioni" in a_href:
-                                attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
+                                continue
+                                #attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
                             elif "cla.web.uniroma1.it" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "opp"))
-                            
-                            # If it was a direct link, skip looking for heading anchors inside it
-                            continue
+                            else:
+                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
 
-                        # Extract section into separate page if it matches a target anchor
+                        # Extract section into separate page
                         acc_id = acc_title.get("id")
-                        if acc_id and acc_id in target_anchors:
+                        if acc_id:
                             h_tag = acc_title.find(['h2', 'h3', 'h4', 'h5', 'h6'])
                             # Fallback to general div text if h_tag is absent
                             link_text = h_tag.get_text(strip=True) if h_tag else acc_title.get_text(strip=True)
@@ -514,7 +514,10 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                 print(f"Saved standalone section: {output_path}")
 
                             anchor_url = f"attendance/{acc_id}.html"
-                            attendance_custom_links.append((link_text, anchor_url, target_anchors[acc_id]))
+                            if acc_id in target_anchors:
+                                attendance_custom_links.append((link_text, anchor_url, target_anchors[acc_id]))
+                            elif acc_id not in excluded_attendance_ids:
+                                attendance_custom_links.append((link_text, anchor_url, "freq"))
                     
                     # Skip the standard combined page generation for "attendance"
                     continue
@@ -1168,6 +1171,7 @@ if __name__ == "__main__":
     CUSTOM_LINKS = CONFIG.get("custom_links", {})
     FILE_TO_CAT = CONFIG.get("file_to_cat", {})
     CATEGORIES_DICT = CONFIG.get("categories_dict", {})
+    EXCLUDED_ATTENDANCE_IDS = CONFIG.get("excluded_attendance_ids", [])
 
     LANGUAGES = ["it", "en"]
     PAGES = CONFIG.get("pages", [])
@@ -1177,4 +1181,4 @@ if __name__ == "__main__":
     # Run scraping
     fetch_and_save_apply(LANGUAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
     fetch_and_save_teachers(LANGUAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
-    fetch_and_save_page(LANGUAGES, PAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY, custom_links=CUSTOM_LINKS, file_to_cat=FILE_TO_CAT, categories_dict=CATEGORIES_DICT)
+    fetch_and_save_page(LANGUAGES, PAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY, custom_links=CUSTOM_LINKS, file_to_cat=FILE_TO_CAT, categories_dict=CATEGORIES_DICT, excluded_attendance_ids=EXCLUDED_ATTENDANCE_IDS)
