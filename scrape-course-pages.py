@@ -1056,12 +1056,14 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     "it": {
                         "info": "Informazioni sul corso",
                         "opp": "Opportunità",
+                        "serv": "Servizi",
                         "freq": "Frequentare",
                         "ext": "Link esterni"
                     },
                     "en": {
                         "info": "Course Information",
                         "opp": "Opportunities",
+                        "serv": "Services",
                         "freq": "Attendance",
                         "ext": "External Links"
                     }
@@ -1075,10 +1077,10 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                     "professional-opportunities.html": "info",
                     "choice-orientation.html": "info",
                     "quality.html": "info",
-                    "international-experiences.html": "opp",
+                    "international-experiences.html": "freq",
                     "attendance/instructions.html": "freq",
                     "organization.html": "freq",
-                    "apply.html": "freq",
+                    "apply.html": "info",
                     "teachers.html": "freq"
                 }
 
@@ -1086,6 +1088,7 @@ def fetch_and_save_page(languages, pages, ids, course_names, course_acronyms, ou
                 categorized_links = {
                     cats["info"]: [],
                     cats["opp"]: [],
+                    cats["serv"]: [],
                     cats["freq"]: [],
                     cats["ext"]: []
                 }
