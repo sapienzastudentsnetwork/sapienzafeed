@@ -368,6 +368,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         "ofa": "freq"               # Ofa: methods of fulfilling additional training obligations
                     }
 
+                    # Dictionary to hold the extracted sections before writing, to allow merging
+                    extracted_attendance_sections = {}
+
                     # Iterate over accordion items to isolate and extract standalone pages
                     for acc_item in soup.find_all("div", class_="accordion-item"):
                         acc_title = acc_item.find("div", class_="accordion-title")
@@ -397,16 +400,22 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             elif "/exams" in a_href or "esami" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
                             elif "/instructions" in a_href or "istruzioni" in a_href:
-                                continue
-                                #attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
+                                attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
                             elif "cla.web.uniroma1.it" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "opp"))
-                            else:
-                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
+                            
+                            # If it was a direct link, skip looking for heading anchors inside it
+                            continue
 
-                        # Extract section into separate page
+                        # Extract section into separate page if it matches a target anchor or its base matches
                         acc_id = acc_title.get("id")
-                        if acc_id:
+                        if not acc_id:
+                            continue
+                            
+                        # Strip '-additional' to check if the root ID belongs to our target list
+                        base_id = acc_id[:-11] if acc_id.endswith("-additional") else acc_id
+                        
+                        if base_id not in excluded_attendance_ids:
                             h_tag = acc_title.find(['h2', 'h3', 'h4', 'h5', 'h6'])
                             # Fallback to general div text if h_tag is absent
                             link_text = h_tag.get_text(strip=True) if h_tag else acc_title.get_text(strip=True)
@@ -445,43 +454,75 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                 add_heading_anchors(soup, process_block)
                                 combined_content = '\n'.join([line for line in str(process_block).splitlines() if line.strip()]).replace(" ", " ") + "\n"
                                 
-                                # Set up standalone file creation
-                                filename = f"attendance/{acc_id}.html"
-                                output_path = os.path.join(language_dir, filename)
-                                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                                # Store for potential merging instead of writing directly
+                                target_cat = "freq"
+                                if base_id in target_anchors:
+                                    target_cat = target_anchors[base_id]
+
+                                extracted_attendance_sections[acc_id] = {
+                                    "link_text": link_text,
+                                    "page_heading": page_heading,
+                                    "combined_content": combined_content,
+                                    "toc_items": toc_items,
+                                    "target_cat": target_cat
+                                }
+
+                    # Merge '-additional' sections into their base sections
+                    keys_to_remove = []
+                    for acc_id, data in extracted_attendance_sections.items():
+                        if acc_id.endswith("-additional"):
+                            base_id = acc_id[:-11]
+                            if base_id in extracted_attendance_sections:
+                                # Append content and TOC items to the base section
+                                extracted_attendance_sections[base_id]["combined_content"] += "\n" + data["combined_content"]
+                                extracted_attendance_sections[base_id]["toc_items"].extend(data["toc_items"])
+                                keys_to_remove.append(acc_id)
                                 
-                                # Relative paths (depth is 1 because of 'attendance/' subfolder)
-                                page_depth = 1
-                                up_to_lang = "../" * (page_depth + 1)
-                                rel_to_static_root = "../" * (page_depth + 3) + "assets/"
-                                back_link = "../index.html"
-                                
-                                theme_css_path = f"{rel_to_static_root}theme-style.css"
-                                css_path = f"{rel_to_static_root}page-style.css"
-                                js_path = f"{rel_to_static_root}page-logic.js"
-                                js_theme_path = f"{rel_to_static_root}theme-switch.js"
-                                
-                                flag_html = ""
-                                if course_id not in excluded_en_ids:
-                                    other_lang = "en" if language_key == "it" else "it"
-                                    flag = "🇮🇹 Lingua" if language_key == "it" else "🇬🇧 Language"
-                                    flag_url = f"{up_to_lang}{other_lang}/{filename}"
-                                    flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
-                                
-                                toc_html = ""
-                                if toc_items:
-                                    toc_title = "Indice" if language_key == "it" else "Table of Contents"
-                                    toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
-                                    min_level = min(item[0] for item in toc_items)
-                                    for level, text, link_id in toc_items:
-                                        margin_left = (level - min_level) * 20
-                                        toc_html += f'    <li style="margin-left: {margin_left}px;"><a href="#{link_id}">{text}</a></li>\n'
-                                    toc_html += '</ul>\n</div>\n'
-                                    
-                                back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
-                                top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
-                                
-                                content_html = f"""<!DOCTYPE html>
+                    # Remove the standalone '-additional' entries as they are now merged
+                    for k in keys_to_remove:
+                        del extracted_attendance_sections[k]
+
+                    # Generate files for the extracted and merged sections
+                    for acc_id, data in extracted_attendance_sections.items():
+                        filename = f"attendance/{acc_id}.html"
+                        output_path = os.path.join(language_dir, filename)
+                        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                        
+                        # Relative paths (depth is 1 because of 'attendance/' subfolder)
+                        page_depth = 1
+                        up_to_lang = "../" * (page_depth + 1)
+                        rel_to_static_root = "../" * (page_depth + 3) + "assets/"
+                        back_link = "../index.html"
+                        
+                        theme_css_path = f"{rel_to_static_root}theme-style.css"
+                        css_path = f"{rel_to_static_root}page-style.css"
+                        js_path = f"{rel_to_static_root}page-logic.js"
+                        js_theme_path = f"{rel_to_static_root}theme-switch.js"
+                        
+                        flag_html = ""
+                        if course_id not in excluded_en_ids:
+                            other_lang = "en" if language_key == "it" else "it"
+                            flag = "🇮🇹 Lingua" if language_key == "it" else "🇬🇧 Language"
+                            flag_url = f"{up_to_lang}{other_lang}/{filename}"
+                            flag_html = f'<a href="{flag_url}" class="lang-btn" title="Switch language">{flag}</a>'
+                        
+                        toc_html = ""
+                        if data["toc_items"]:
+                            toc_title = "Indice" if language_key == "it" else "Table of Contents"
+                            toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
+                            min_level = min(item[0] for item in data["toc_items"])
+                            for level, text, link_id in data["toc_items"]:
+                                margin_left = (level - min_level) * 20
+                                toc_html += f'    <li style="margin-left: {margin_left}px;"><a href="#{link_id}">{text}</a></li>\n'
+                            toc_html += '</ul>\n</div>\n'
+                            
+                        back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
+                        top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
+                        
+                        page_heading = data["page_heading"]
+                        combined_content = data["combined_content"]
+                        
+                        content_html = f"""<!DOCTYPE html>
 <html lang="{language_key}">
 <head>
     <meta charset="UTF-8">
@@ -506,19 +547,16 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 <script src="{{js_path}}"></script>
 </body>
 </html>"""
-                                # Format strings safely
-                                content_html = content_html.replace("{page_heading}", page_heading).replace("{theme_css_path}", theme_css_path).replace("{css_path}", css_path).replace("{js_theme_path}", js_theme_path).replace("{top_bars_html}", top_bars_html).replace("{toc_html}", toc_html).replace("{combined_content}", combined_content).replace("{back_to_top_text}", back_to_top_text).replace("{js_path}", js_path)
+                        # Format strings safely
+                        content_html = content_html.replace("{page_heading}", page_heading).replace("{theme_css_path}", theme_css_path).replace("{css_path}", css_path).replace("{js_theme_path}", js_theme_path).replace("{top_bars_html}", top_bars_html).replace("{toc_html}", toc_html).replace("{combined_content}", combined_content).replace("{back_to_top_text}", back_to_top_text).replace("{js_path}", js_path)
 
-                                with open(output_path, "w", encoding="utf-8") as file:
-                                    file.write(content_html)
-                                print(f"Saved standalone section: {output_path}")
+                        with open(output_path, "w", encoding="utf-8") as file:
+                            file.write(content_html)
+                        print(f"Saved standalone section: {output_path}")
 
-                            anchor_url = f"attendance/{acc_id}.html"
-                            if acc_id in target_anchors:
-                                attendance_custom_links.append((link_text, anchor_url, target_anchors[acc_id]))
-                            elif acc_id not in excluded_attendance_ids:
-                                attendance_custom_links.append((link_text, anchor_url, "freq"))
-                    
+                        anchor_url = f"attendance/{acc_id}.html"
+                        attendance_custom_links.append((data["link_text"], anchor_url, data["target_cat"]))
+
                     # Skip the standard combined page generation for "attendance"
                     continue
 
