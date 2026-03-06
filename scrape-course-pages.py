@@ -199,7 +199,7 @@ def get_assets_relative_path(directory, filename):
     depth = len(parts)
     return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html=""):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
@@ -233,8 +233,12 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         # Render dynamically categorized links if provided
         if categorized_links:
             for category, cat_links in categorized_links.items():
-                # Skip empty categories unless it is the info category with metadata or freq category with metadata
-                if not cat_links and not (category == info_category_name and metadata_html) and not (category == freq_category_name and freq_metadata_html):
+                # Skip empty categories unless it is the info category with metadata, freq category with metadata, or freq with timetables
+                has_metadata = (category == info_category_name and metadata_html)
+                has_freq_metadata = (category == freq_category_name and freq_metadata_html)
+                has_timetables = (category == freq_category_name and timetables_links)
+                
+                if not cat_links and not has_metadata and not has_freq_metadata and not has_timetables:
                     continue 
                     
                 file.write(f'    <h2 class="category-title">{category}</h2>\n')
@@ -260,6 +264,25 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                             if "external-icon" not in display_text:
                                 display_text += ' <span class="external-icon">↗</span>'
                             
+                        if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
+                            formatted_url = link_url.rstrip("/") + "/index.html"
+                        file.write(f'        <li><a href="{formatted_url}">{display_text}</a></li>\n')
+                    file.write('    </ul>\n')
+                
+                # Render sub-category Timetables right after freq category links
+                if category == freq_category_name and timetables_links:
+                    if timetables_title:
+                        file.write(f'    <h3 class="subcategory-title" style="margin-top: 20px;">{timetables_title}</h3>\n')
+                    file.write('    <ul class="category-list">\n')
+                    for link_text, link_url in sorted(timetables_links):
+                        formatted_url = link_url
+                        display_text = link_text
+                        
+                        if is_external_url(link_url):
+                            display_text = display_text.replace("↗", "").strip()
+                            if "external-icon" not in display_text:
+                                display_text += ' <span class="external-icon">↗</span>'
+                                
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
                         file.write(f'        <li><a href="{formatted_url}">{display_text}</a></li>\n')
@@ -427,11 +450,11 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
                     # Target text sections (anchors) inside accordions by their explicit ID
                     target_anchors = {
-                        "apprenticeship": "freq",   # Apprenticeship
+                        "apprenticeship": "guides",   # Apprenticeship
                         "excellence": "opp",        # Path of excellence
                         "job-orientation": "opp",   # Job Orientation
                         "graduation": "freq",       # Graduate
-                        "ofa": "freq"               # Ofa: methods of fulfilling additional training obligations
+                        "ofa": "guides"               # Ofa: methods of fulfilling additional training obligations
                     }
 
                     # Dictionary to hold the extracted sections before writing, to allow merging
@@ -936,34 +959,37 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             page_links.append(("Teachers" if language_key == "en" else "Docenti", "teachers.html"))
             
             # CUSTOM TIMETABLE SEPARATE LINKS GENERATION
-            # Define language-specific prefix
-            tt_prefix = "Orario delle Lezioni" if language_key == "it" else "Timetables"
+            # Define language-specific title
+            tt_title = "Orari delle Lezioni" if language_key == "it" else "Timetables"
+            timetables_custom_links = []
             
             # 1. corsidilaurea (scraped link)
             if scraped_timetable_link:
-                attendance_custom_links.append((f"{tt_prefix} (corsidilaurea)", scraped_timetable_link, "freq"))
+                timetables_custom_links.append(("corsidilaurea", scraped_timetable_link))
                 
             # 2. Education Office / Segreteria Didattica
             ed_office_link = timetables_education_office_links.get(course_id, {})
             if ed_office_link:
-                office_suffix = "Segr. Didattica" if language_key == "it" else "Education Office"
-                attendance_custom_links.append((f"{tt_prefix} ({office_suffix})", ed_office_link, "freq"))
+                office_suffix = "Segreteria Didattica" if language_key == "it" else "Education Affairs Office"
+                timetables_custom_links.append((office_suffix, ed_office_link))
                 
             # 3. sapienzastudents.net
             sap_students_link = timetables_sapienza_students_links.get(course_id, {})
             if sap_students_link:
-                attendance_custom_links.append((f"{tt_prefix} (sapienzastudents.net)", sap_students_link, "freq"))
+                timetables_custom_links.append(("sapienzastudents.net", sap_students_link))
 
-            if page_links or attendance_custom_links:
+            if page_links or attendance_custom_links or timetables_custom_links:
                 # Always go back to global catalogue root since language selection page is removed
                 lang_back_url = "../../index.html"
 
-                # Define structural categories
-                cats = categories_dict.get(language_key, categories_dict["en"])
+                # Define structural categories and include the new 'guides' category
+                cats = categories_dict.get(language_key, categories_dict.get("en", {})).copy()
+                cats["guides"] = "Guide" if language_key == "it" else "Guides"
 
                 # Pre-initialize categorized map to maintain section order
                 categorized_links = {
                     cats["freq"]: [],
+                    cats["guides"]: [],
                     cats["info"]: [],
                     cats["opp"]: [],
                     cats["ext"]: []
@@ -979,12 +1005,23 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 
                 # Use {course_id} so the URL adapts dynamically to the current course
                 study_plan_url = f"https://corsidilaurea.uniroma1.it/{language_key}/course/{course_id}/study-plan"
-                
                 categorized_links[cats["info"]].append((study_plan_text, study_plan_url))
+                
+                # Hardcode the link to Faculty academic calendar in "freq"
+                faculty_calendar_text = "Calendario didattico di Facoltà" if language_key == "it" else "Faculty academic calendar"
+                faculty_calendar_url = "https://i3s.web.uniroma1.it/it/calendario-didattico" if language_key == "it" else "https://i3s.web.uniroma1.it/en/programme-calendar"
+                categorized_links[cats["freq"]].append((faculty_calendar_text, faculty_calendar_url))
+
+                # Hardcode the link to Study rooms in "opp"
+                study_rooms_text = "Aule studio" if language_key == "it" else "Study rooms"
+                study_rooms_url = "https://www.di.uniroma1.it/it/aule-studio" if language_key == "it" else "https://www.di.uniroma1.it/en/study-rooms"
+                categorized_links[cats["opp"]].append((study_rooms_text, study_rooms_url))
 
                 # Inject regular pages
                 for link_text, filename in page_links:
                     cat_key = file_to_cat.get(filename, "info") # Fallback to info
+                    if filename == "apply.html":
+                        cat_key = "guides"
                     categorized_links[cats[cat_key]].append((link_text, filename))
                 
                 # Inject parsed attendance specific links
@@ -1001,8 +1038,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     for link_text, link_url in custom_links[course_id][language_key]:
                         categorized_links[cats["ext"]].append((link_text, link_url))
 
-                # Filter out empty categories, but keep info category if it has metadata
-                categorized_links = {k: v for k, v in categorized_links.items() if v or (k == cats["info"] and extracted_metadata) or (k == cats["freq"] and attendance_freq_metadata_html)}
+                # Filter out empty categories, but keep info/freq category if they have metadata/timetables
+                categorized_links = {k: v for k, v in categorized_links.items() if v or (k == cats["info"] and extracted_metadata) or (k == cats["freq"] and (attendance_freq_metadata_html or timetables_custom_links))}
 
                 # Build language toggle for the index page
                 index_flag_html = ""
@@ -1022,7 +1059,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     flag_html=index_flag_html,
                     info_category_name=cats["info"],
                     freq_category_name=cats["freq"],
-                    freq_metadata_html=attendance_freq_metadata_html
+                    freq_metadata_html=attendance_freq_metadata_html,
+                    timetables_links=timetables_custom_links,
+                    timetables_title=tt_title
                 )
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 

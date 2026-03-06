@@ -96,7 +96,7 @@
         "choice-orientation.html": "info",
         "quality.html": "info",
         "international-experiences.html": "opp",
-        "attendance/instructions.html": "freq",
+        "attendance/instructions.html": "guides",
         "organization.html": "freq",
         "apply.html": "info",
         "teachers.html": "freq",
@@ -105,15 +105,17 @@
     },
     "categories_dict": {
         "it": {
+            "freq": "Frequentare",
+            "guides": "Guide",
             "info": "Informazioni sul corso",
             "opp": "Servizi e Opportunità",
-            "freq": "Frequentare",
             "ext": "Link esterni"
         },
         "en": {
+            "freq": "Attendance",
+            "guides": "Guides",
             "info": "Course Information",
             "opp": "Services and Opportunities",
-            "freq": "Attendance",
             "ext": "External Links"
         }
     },
