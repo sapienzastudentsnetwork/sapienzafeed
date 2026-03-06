@@ -209,6 +209,32 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     # Generate top bars using utility function
     top_bars_html = generate_top_bars_html(language_key, flag_html, original_url, back_url, is_index_page=True)
 
+    # Generate TOC for index pages (categories and subcategories)
+    toc_html = ""
+    if categorized_links:
+        toc_title = "Indice" if language_key == "it" else "Table of Contents"
+        toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
+        for category, cat_links in categorized_links.items():
+            has_metadata = (category == info_category_name and metadata_html)
+            has_freq_metadata = (category == freq_category_name and freq_metadata_html)
+            has_timetables = (category == freq_category_name and timetables_links)
+            
+            if not cat_links and not has_metadata and not has_freq_metadata and not has_timetables:
+                continue 
+                
+            cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
+            if not cat_id: cat_id = f"header-{abs(hash(category))}"
+            
+            toc_html += f'    <li><a href="#{cat_id}">{category}</a></li>\n'
+            
+            # Check for subcategories to add to TOC
+            if category == freq_category_name and timetables_links and timetables_title:
+                sub_id = re.sub(r'[^a-z0-9]+', '-', timetables_title.lower()).strip('-')
+                if not sub_id: sub_id = f"header-{abs(hash(timetables_title))}"
+                toc_html += f'    <li style="margin-left: 20px;"><a href="#{sub_id}">{timetables_title}</a></li>\n'
+        
+        toc_html += '</ul>\n</div>\n'
+
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
 <html lang="{language_key}">
@@ -227,8 +253,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
             {top_bars_html}
         </div>
     </div>
-
-""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path))
+{toc_html}
+""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path, toc_html=toc_html))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -240,8 +266,12 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 
                 if not cat_links and not has_metadata and not has_freq_metadata and not has_timetables:
                     continue 
+                
+                # Apply the same ID generated for the TOC    
+                cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
+                if not cat_id: cat_id = f"header-{abs(hash(category))}"
                     
-                file.write(f'    <h2 class="category-title">{category}</h2>\n')
+                file.write(f'    <h2 id="{cat_id}" class="category-title">{category}</h2>\n')
                 
                 # Render metadata at the top of the info category
                 if category == info_category_name and metadata_html:
@@ -272,7 +302,9 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 # Render sub-category Timetables right after freq category links
                 if category == freq_category_name and timetables_links:
                     if timetables_title:
-                        file.write(f'    <h3 class="subcategory-title" style="margin-top: 20px;">{timetables_title}</h3>\n')
+                        sub_id = re.sub(r'[^a-z0-9]+', '-', timetables_title.lower()).strip('-')
+                        if not sub_id: sub_id = f"header-{abs(hash(timetables_title))}"
+                        file.write(f'    <h3 id="{sub_id}" class="subcategory-title" style="margin-top: 20px;">{timetables_title}</h3>\n')
                     file.write('    <ul class="category-list">\n')
                     for link_text, link_url in sorted(timetables_links):
                         formatted_url = link_url
@@ -990,8 +1022,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 categorized_links = {
                     cats["freq"]: [],
                     cats["guides"]: [],
-                    cats["info"]: [],
                     cats["opp"]: [],
+                    cats["info"]: [],
                     cats["ext"]: []
                 }
                 
