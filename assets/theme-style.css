@@ -302,3 +302,17 @@ html.dyslexic, html.dyslexic * {
         margin-bottom: 10px; 
     }
 }
+
+/* External link icon (↗) */
+.external-icon {
+    font-size: 0.7em;
+    opacity: 0.55;
+    margin-left: 4px;
+    display: inline-block;
+    vertical-align: baseline;
+    text-decoration: none !important;
+    transition: opacity 0.2s;
+}
+a:hover .external-icon {
+    opacity: 0.8;
+}

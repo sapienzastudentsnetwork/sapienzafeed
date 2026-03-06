@@ -5,6 +5,13 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
+def is_external_url(url):
+    """
+    Checks if a URL points to an external domain.
+    """
+    if not url: return False
+    return url.startswith("http")
+
 def fetch_html(url, timeout=15):
     """
     Executes a safe HTTP GET request. 
@@ -88,11 +95,27 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
 def make_urls_absolute(soup, base_url):
     """
     Converts relative URLs in href (for <a>) and src (for <img>) attributes to absolute URLs.
+    Appends a formatted external link icon to external links to make them easily recognizable.
     """
     for tag in soup.find_all(["a", "img"]):
         attr = "href" if tag.name == "a" else "src"
-        if tag.has_attr(attr) and tag[attr].startswith("/"):
-            tag[attr] = urljoin(base_url, tag[attr])
+        if tag.has_attr(attr):
+            url = tag[attr]
+            if url.startswith("/"):
+                tag[attr] = urljoin(base_url, url)
+            
+            # Add external link icon for text-based <a> tags
+            if tag.name == "a":
+                href = tag.get("href", "")
+                if is_external_url(href):
+                    # Ensure we don't add it multiple times or to icon-only/image links
+                    if not tag.find("img") and tag.get_text(strip=True):
+                        # Avoid adding it if it's already there (e.g., from previously processed strings)
+                        if "↗" not in tag.get_text() and not tag.find("span", class_="external-icon"):
+                            icon_span = soup.new_tag("span", attrs={"class": "external-icon"})
+                            icon_span.string = "↗"
+                            tag.append(" ")
+                            tag.append(icon_span)
 
 def extract_course_metadata(soup, language_key):
     """
@@ -209,9 +232,15 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                     file.write('    <ul class="category-list">\n')
                     for link_text, link_url in sorted(cat_links):
                         formatted_url = link_url
+                        display_text = link_text
+                        
+                        # Add external link icon with wrapper span
+                        if is_external_url(link_url) and "external-icon" not in display_text and "↗" not in display_text:
+                            display_text += ' <span class="external-icon">↗</span>'
+                            
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
-                        file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
+                        file.write(f'        <li><a href="{formatted_url}">{display_text}</a></li>\n')
                     file.write('    </ul>\n')
         
         # Render generic flat links (used for Root and Choose Language selection)
@@ -219,9 +248,15 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
             file.write('    <ul class="simple-list">\n')
             for link_text, link_url in sorted(links):
                 formatted_url = link_url
+                display_text = link_text
+                
+                # Add external link icon with wrapper span
+                if is_external_url(link_url) and "external-icon" not in display_text and "↗" not in display_text:
+                    display_text += ' <span class="external-icon">↗</span>'
+                    
                 if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                     formatted_url = link_url.rstrip("/") + "/index.html"
-                file.write(f'        <li><a href="{formatted_url}">{link_text}</a></li>\n')
+                file.write(f'        <li><a href="{formatted_url}">{display_text}</a></li>\n')
             file.write('    </ul>\n')
 
         # Appending metadata_html at the bottom ONLY if it wasn't injected into categorized_links
@@ -347,6 +382,10 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             # Hardcode translation for academic calendar URL in English
                             if language_key == "en" and "calendario-dellanno-accademico" in href:
                                 href = "https://www.uniroma1.it/en/pagina/academic-calendar"
+                                
+                            # Manually attach the external link icon if it became external
+                            if is_external_url(href) and "external-icon" not in text and "↗" not in text:
+                                text += ' <span class="external-icon">↗</span>'
                                 
                             # Let the CSS handle the appearance of these links inside the list
                             sidebar_links_html += f"  <li><a href='{href}'>{text}</a></li>\n"
