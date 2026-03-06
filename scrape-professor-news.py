@@ -178,7 +178,8 @@ def scrape_professor_data(uuid):
         "it_structure": "",
         "en_structure": "",
         "ssd": "",
-        "header_links": [], # List of {text, url} for links in the header
+        "it_header_links": [], # Localized header links (IT)
+        "en_header_links": [], # Localized header links (EN)
         "common_sections": {}, # sec_id -> content_html
         "it_titles": {}, # sec_id -> IT title
         "en_titles": {}, # sec_id -> EN title
@@ -201,16 +202,14 @@ def scrape_professor_data(uuid):
         divs = ssd_div.find_all('div')
         if len(divs) > 1: data["ssd"] = divs[-1].get_text(strip=True)
 
-    # Extract additional links in the docente-base-info (Research Profile, etc.)
-    base_info = it_soup.find('div', class_='docente-base-info')
-    if base_info:
-        for link in base_info.find_all('a'):
+    # Extract IT header links (Research Profile, etc.)
+    base_info_it = it_soup.find('div', class_='docente-base-info')
+    if base_info_it:
+        for link in base_info_it.find_all('a'):
             href = link.get('href', '')
-            # Skip email which is already handled
             if not href or href.startswith('mailto:'):
                 continue
-            # Text already contains ↗ thanks to make_urls_absolute called above
-            data["header_links"].append({
+            data["it_header_links"].append({
                 "text": link.get_text(strip=True),
                 "url": href
             })
@@ -221,14 +220,33 @@ def scrape_professor_data(uuid):
         divs = structure_div.find_all('div')
         if len(divs) > 1: data["it_structure"] = divs[-1].get_text(strip=True)
             
-    # Extract EN Structure (fallback to IT if EN missing)
+    # Extract EN Structure and links
     if en_soup:
+        # Structure
         en_structure_div = en_soup.find('div', class_='field structure')
         if en_structure_div:
             divs = en_structure_div.find_all('div')
             if len(divs) > 1: data["en_structure"] = divs[-1].get_text(strip=True)
         else: data["en_structure"] = data["it_structure"]
-    else: data["en_structure"] = data["it_structure"]
+        
+        # Header links
+        base_info_en = en_soup.find('div', class_='docente-base-info')
+        if base_info_en:
+            for link in base_info_en.find_all('a'):
+                href = link.get('href', '')
+                if not href or href.startswith('mailto:'):
+                    continue
+                data["en_header_links"].append({
+                    "text": link.get_text(strip=True),
+                    "url": href
+                })
+        
+        # Fallback to IT links if EN header has no specific links
+        if not data["en_header_links"]:
+            data["en_header_links"] = data["it_header_links"]
+    else: 
+        data["en_structure"] = data["it_structure"]
+        data["en_header_links"] = data["it_header_links"]
 
     # Helper function to extract clean title text without the '#' anchor
     def get_clean_title(tag_or_div):
@@ -361,10 +379,10 @@ def generate_individual_page(uuid, lang, prof_name, data):
     # Generate mailto link for email
     email_html = f'<a href="mailto:{data["email"]}">{data["email"]}</a>' if data["email"] else "N/A"
 
-    # Generate additional header links HTML (Research Profile, etc.)
-    # We don't add " ↗" here because data['header_links'] text already has it from make_urls_absolute
+    # Generate localized header links (Research Profile, etc.)
+    header_links = data['it_header_links'] if is_it else data['en_header_links']
     header_links_html = ""
-    for link_info in data.get("header_links", []):
+    for link_info in header_links:
         header_links_html += f'\n            <p style="margin: 5px 0;"><a href="{link_info["url"]}" target="_blank" rel="noopener noreferrer">{link_info["text"]}</a></p>'
 
     # Localization for Back to Top
