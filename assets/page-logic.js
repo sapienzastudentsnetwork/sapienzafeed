@@ -10,12 +10,13 @@ window.addEventListener('scroll', function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Handle click on back to top buttons
     var btn = document.getElementById('back-to-top');
     if (btn) {
         btn.addEventListener('click', function() {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth' // Questo aggiunge un piacevole effetto di scorrimento fluido
+                behavior: 'smooth'
             });
         });
     }
