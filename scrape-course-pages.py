@@ -211,15 +211,25 @@ def get_assets_relative_path(directory, filename):
     depth = len(parts)
     return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None, show_search=True):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
     css_path = get_assets_relative_path(directory, "index-style.css")
     js_theme_path = get_assets_relative_path(directory, "theme-switch.js")
+    js_search_path = get_assets_relative_path(directory, "index-search.js")
 
     # Generate top bars using utility function
     top_bars_html = generate_top_bars_html(language_key, flag_html, original_url, back_url, is_index_page=True)
+
+    # Generate search bar HTML
+    search_html = ""
+    if show_search:
+        search_placeholder = "Cerca..." if language_key == "it" else "Search..."
+        search_html = f'''
+    <div class="search-container" style="margin-top: 20px; margin-bottom: 20px;">
+        <input type="text" id="search-input" placeholder="{search_placeholder}" onkeyup="filterLinks()" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 5px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #000);">
+    </div>'''
 
     # Generate TOC for index pages (categories and subcategories)
     toc_html = ""
@@ -265,8 +275,9 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
             {top_bars_html}
         </div>
     </div>
+{search_html}
 {toc_html}
-""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path, toc_html=toc_html))
+""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path, search_html=search_html, toc_html=toc_html))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -355,7 +366,15 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         if not categorized_links and metadata_html:
             file.write(f"\n{metadata_html}\n")
             
-        file.write("""</body>
+        # Include external JavaScript for real-time link filtering functionality only if search is enabled
+        if show_search:
+            file.write(f"""
+<script src="{js_search_path}"></script>
+</body>
+</html>""")
+        else:
+            file.write(f"""
+</body>
 </html>""")
 
 def fix_contacts_collapsibles(soup):
@@ -415,8 +434,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             link_path = f"{cid}/{default_lang}/index.html" if default_lang else f"{cid}/index.html"
             root_links.append((name, link_path))
 
-    # No back button for the root directory
-    generate_index_html(output_dir, links=root_links, title="Degree Courses", back_url=None)
+    # No back button for the root directory, and exclude the search functionality
+    generate_index_html(output_dir, links=root_links, title="Degree Courses", back_url=None, show_search=False)
 
     for course_id in ids:
         acronym = course_acronyms.get(course_id, course_id)
@@ -1062,7 +1081,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
                 # Hardcode the link to Study rooms in "opp"
                 study_rooms_text = "Aule studio" if language_key == "it" else "Study rooms"
-                study_rooms_url = "https://www.di.uniroma1.it/it/aule-studio" if language_key == "it" else "https://www.di.uniroma1.it/en/study-rooms"
+                #study_rooms_url = "https://www.di.uniroma1.it/it/aule-studio" if language_key == "it" else "https://www.di.uniroma1.it/en/study-rooms"
+                study_rooms_url = "https://sapienzastudents.net/rooms/"
                 categorized_links[cats["opp"]].append((study_rooms_text, study_rooms_url))
 
                 # Inject regular pages
