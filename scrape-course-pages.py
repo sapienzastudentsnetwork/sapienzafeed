@@ -95,8 +95,16 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
 def make_urls_absolute(soup, base_url):
     """
     Converts relative URLs in href (for <a>) and src (for <img>) attributes to absolute URLs.
-    Appends a formatted external link icon to external links to make them easily recognizable.
+    Cleans existing Drupal external link indicators and appends a standardized external link icon.
     """
+    # First, clean up existing external link artifacts from the source HTML to avoid duplicates/unformatted text
+    for ext in soup.find_all("span", class_="ext"):
+        ext.decompose()
+    for invisible in soup.find_all("span", class_="element-invisible", string=re.compile(r"link is external", re.I)):
+        invisible.decompose()
+    for icon in soup.find_all(["i", "svg"], class_=re.compile(r"fa-external-link")):
+        icon.decompose()
+
     for tag in soup.find_all(["a", "img"]):
         attr = "href" if tag.name == "a" else "src"
         if tag.has_attr(attr):
@@ -108,13 +116,15 @@ def make_urls_absolute(soup, base_url):
             if tag.name == "a":
                 href = tag.get("href", "")
                 if is_external_url(href):
-                    # Ensure we don't add it multiple times or to icon-only/image links
                     if not tag.find("img") and tag.get_text(strip=True):
-                        # Avoid adding it if it's already there (e.g., from previously processed strings)
-                        if "↗" not in tag.get_text() and not tag.find("span", class_="external-icon"):
+                        if not tag.find("span", class_="external-icon"):
+                            # Strip any hardcoded text arrows to standardize formatting
+                            for t in tag.find_all(string=re.compile(r"↗")):
+                                t.replace_with(t.replace("↗", "").strip())
+                                
                             icon_span = soup.new_tag("span", attrs={"class": "external-icon"})
                             icon_span.string = "↗"
-                            tag.append(" ")
+                            tag.append(soup.new_string(" "))
                             tag.append(icon_span)
 
 def extract_course_metadata(soup, language_key):
@@ -235,8 +245,11 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                         display_text = link_text
                         
                         # Add external link icon with wrapper span
-                        if is_external_url(link_url) and "external-icon" not in display_text and "↗" not in display_text:
-                            display_text += ' <span class="external-icon">↗</span>'
+                        if is_external_url(link_url):
+                            # Ensure we don't end up with unstyled or duplicated arrows 
+                            display_text = display_text.replace("↗", "").strip()
+                            if "external-icon" not in display_text:
+                                display_text += ' <span class="external-icon">↗</span>'
                             
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
@@ -251,8 +264,11 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 display_text = link_text
                 
                 # Add external link icon with wrapper span
-                if is_external_url(link_url) and "external-icon" not in display_text and "↗" not in display_text:
-                    display_text += ' <span class="external-icon">↗</span>'
+                if is_external_url(link_url):
+                    # Ensure we don't end up with unstyled or duplicated arrows
+                    display_text = display_text.replace("↗", "").strip()
+                    if "external-icon" not in display_text:
+                        display_text += ' <span class="external-icon">↗</span>'
                     
                 if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                     formatted_url = link_url.rstrip("/") + "/index.html"
@@ -377,14 +393,15 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         sidebar_links_html = "<ul class='course-metadata-list'>\n"
                         for a_tag in sidebar.find_all("a"):
                             href = a_tag.get("href", "#")
-                            text = a_tag.get_text(strip=True)
+                            # We extract text, clean any unstyled arrows picked up by get_text, and inject our styled html span
+                            text = a_tag.get_text(strip=True).replace("↗", "").strip()
                             
                             # Hardcode translation for academic calendar URL in English
                             if language_key == "en" and "calendario-dellanno-accademico" in href:
                                 href = "https://www.uniroma1.it/en/pagina/academic-calendar"
                                 
-                            # Manually attach the external link icon if it became external
-                            if is_external_url(href) and "external-icon" not in text and "↗" not in text:
+                            # Manually attach the external link icon properly if it became external
+                            if is_external_url(href) and "external-icon" not in text:
                                 text += ' <span class="external-icon">↗</span>'
                                 
                             # Let the CSS handle the appearance of these links inside the list
@@ -422,7 +439,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         if a_tag and a_tag.has_attr("href") and not a_tag["href"].startswith("#"):
                             a_href = a_tag["href"]
                             a_text_raw = a_tag.get_text(strip=True)
-                            a_text_clean = re.sub(r'\(.*?\)', '', a_text_raw).strip() # clean extra icons text
+                            # Strip any unstyled arrows here so they can be securely formatted later in generate_index_html
+                            a_text_clean = re.sub(r'\(.*?\)', '', a_text_raw).replace('↗', '').strip() 
                             
                             # Hardcode for Lessons / Lezioni to make it clear it's about course descriptions
                             if "lessons-plan" in a_href or "insegnamenti" in a_href or a_text_clean in ["Lessons", "Lezioni"]:
@@ -596,7 +614,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         print(f"Saved standalone section: {output_path}")
 
                         anchor_url = f"attendance/{acc_id}.html"
-                        attendance_custom_links.append((data["link_text"], anchor_url, data["target_cat"]))
+                        # Clean link text before storage for index categorization
+                        clean_link_text = data["link_text"].replace("↗", "").strip()
+                        attendance_custom_links.append((clean_link_text, anchor_url, data["target_cat"]))
 
                     # Skip the standard combined page generation for "attendance"
                     continue
