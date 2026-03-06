@@ -214,10 +214,10 @@ def scrape_professor_data(uuid):
         else: data["en_structure"] = data["it_structure"]
     else: data["en_structure"] = data["it_structure"]
 
-    # Internal helper to extract title text without the '#' anchor
-    def get_clean_text_only(tag_or_div):
+    # Helper function to extract clean title text without the '#' anchor
+    def get_clean_title(tag_or_div):
         if not tag_or_div: return ""
-        # Clone tag to avoid modifying the main soup
+        # Clone to avoid modifying the main soup object
         temp_soup = BeautifulSoup(str(tag_or_div), 'html.parser')
         # Remove any anchor injected by add_heading_anchors
         for a in temp_soup.find_all("a", class_="heading-anchor"):
@@ -236,12 +236,12 @@ def scrape_professor_data(uuid):
             sec_id = title_div.get('id', '')
             if not sec_id:
                 h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                text = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
+                text = get_clean_title(h_tag) if h_tag else get_clean_title(title_div)
                 sec_id = re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
                 
             h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-            # Clean title to prevent '#' appearing in collapsable summary
-            title = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
+            # Extract clean title to ensure no '#' appears in collapsable summary labels
+            title = get_clean_title(h_tag) if h_tag else get_clean_title(title_div)
             
             content_html = "".join(str(child) for child in content_div.children)
                 
@@ -265,12 +265,12 @@ def scrape_professor_data(uuid):
                 sec_id = title_div.get('id', '')
                 if not sec_id:
                     h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                    text = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
+                    text = get_clean_title(h_tag) if h_tag else get_clean_title(title_div)
                     sec_id = re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
                     
                 h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                # Clean title to prevent '#' appearing in collapsable summary
-                title = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
+                # Extract clean title to ensure no '#' appears in collapsable summary labels
+                title = get_clean_title(h_tag) if h_tag else get_clean_title(title_div)
                 
                 if sec_id == 'lecturer-activities':
                     content_html = "".join(str(child) for child in content_div.children)
@@ -320,6 +320,9 @@ def generate_individual_page(uuid, lang, prof_name, data):
     
     top_bars_html = generate_top_bars_html(lang, flag_html=flag_html, original_url=original_url, back_url=back_url, is_index_page=False)
     
+    # Generate mailto link for email
+    email_html = f'<a href="mailto:{data["email"]}">{data["email"]}</a>' if data["email"] else "N/A"
+
     html_content = f'''<!DOCTYPE html>
 <html lang="{lang}">
 <head>
@@ -343,7 +346,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
             <img src="{data['picture']}" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
         </div>
         <div class="docente-info">
-            <p style="margin: 5px 0;"><strong>Email:</strong> {data['email']}</p>
+            <p style="margin: 5px 0;"><strong>Email:</strong> {email_html}</p>
             <p style="margin: 5px 0;"><strong>{structure_label}:</strong> {structure_val}</p>
             <p style="margin: 5px 0;"><strong>SSD:</strong> {data['ssd']}</p>
         </div>
@@ -451,6 +454,9 @@ def generate_main_indexes(professors_data):
             email = prof_meta.get('email', 'N/A')
             structure = prof_meta.get(f'{lang}_structure', 'N/A')
             
+            # Generate mailto link for email in list view
+            email_link_html = f'<a href="mailto:{email}">{email}</a>' if email != 'N/A' else 'N/A'
+            
             html += f'''        <div class="docente-card">
             <div class="content">
                 <div class="docente-picture">
@@ -458,7 +464,7 @@ def generate_main_indexes(professors_data):
                 </div>
                 <div class="docente-info">
                     <div class="full-name"><a href="../{uuid}/{lang}/index.html">{prof_name}</a></div>
-                    <div class="email"><strong>Email:</strong> {email}</div>
+                    <div class="email"><strong>Email:</strong> {email_link_html}</div>
                     <div class="structure"><strong>{structure_label}:</strong> {structure}</div>
                 </div>
             </div>
