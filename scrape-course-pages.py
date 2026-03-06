@@ -199,12 +199,14 @@ def extract_announcements(soup, language_key):
     """
     Extracts the announcements accordion (Avvisi in evidenza) and converts 
     it to HTML5 details/summary tags for better accessibility and styling.
+    Appends a link to view all announcements.
     """
     accordion = soup.find('div', id='announcement-accordion')
     if not accordion:
         return ""
 
     title_text = "Avvisi in evidenza" if language_key == "it" else "Featured announcements"
+    link_text = "Vedi tutti gli avvisi" if language_key == "it" else "See all announcements"
     
     html = f"<div class='announcements-section' style='margin-bottom: 20px;'>\n"
     html += f"  <h2 class='category-title' id='announcements'>{title_text}</h2>\n"
@@ -235,6 +237,11 @@ def extract_announcements(soup, language_key):
                 "    </div>\n"
                 "  </details>\n"
             )
+            
+    # Append the link at the bottom of the featured announcements list
+    html += f"  <div class='all-announcements-link' style='margin-top: 15px;'>\n"
+    html += f"    <a href='announcements.html'>{link_text} &rarr;</a>\n"
+    html += f"  </div>\n"
             
     html += "</div>\n"
     return html
@@ -1164,8 +1171,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 # Inject regular pages
                 for link_text, filename in page_links:
                     cat_key = file_to_cat.get(filename, "info") # Fallback to info
-                    if filename == "apply.html":
-                        cat_key = "guides"
+                    if filename == "announcements.html":
+                        continue
                     categorized_links[cats[cat_key]].append((link_text, filename))
                 
                 # Inject parsed attendance specific links

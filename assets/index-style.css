@@ -229,3 +229,43 @@ summary[class="announcement-summary"]:hover {
     color: #003d82; 
     background-color: rgba(0, 123, 255, 0.08);
 }
+
+/* ====================================================
+   ALL ANNOUNCEMENTS LINK (Classic Clean Button)
+   ==================================================== */
+.all-announcements-link {
+    display: flex;
+    justify-content: flex-end; /* Aligns the button to the right */
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.all-announcements-link a {
+    display: inline-flex;
+    align-items: center;
+    background: var(--card-bg); 
+    color: var(--link-color) !important; /* Matches the blue color of the navigation cards */
+    border: 1px solid var(--card-border); 
+    padding: 8px 20px; 
+    border-radius: 8px; 
+    font-size: 0.95em;
+    font-weight: 500;
+    transition: all 0.2s ease; 
+    text-decoration: none; 
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+/* Hover effect: slight lift and shadow increase */
+.all-announcements-link a:hover {
+    background: var(--card-bg-hover); 
+    border-color: var(--link-color);
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px var(--shadow-color);
+    color: var(--link-hover-color) !important;
+}
+
+/* Force removal of any pseudo-element arrows added previously */
+.all-announcements-link a::before,
+.all-announcements-link a::after {
+    content: none !important;
+}
