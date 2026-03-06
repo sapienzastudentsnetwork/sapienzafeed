@@ -103,10 +103,10 @@ jobs:
             commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
           
             # Send Telegram Notification
-            python send-course-page-update-to-telegram.py \
-              "$commit_message" \
-              "$file_url" \
-              "$commit_url" \
-              "${{ secrets.TELEGRAM_BOT_TOKEN }}" \
-              "${{ secrets.TELEGRAM_CHAT_ID }}"
+            #python send-course-page-update-to-telegram.py \
+            #  "$commit_message" \
+            #  "$file_url" \
+            #  "$commit_url" \
+            #  "${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+            #  "${{ secrets.TELEGRAM_CHAT_ID }}"
           done
