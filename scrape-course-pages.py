@@ -276,6 +276,12 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     if categorized_links:
         toc_title = "Indice" if language_key == "it" else "Table of Contents"
         toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
+        
+        # Add Announcements to TOC if present
+        if announcements_html:
+            announcements_toc_text = "Avvisi in evidenza" if language_key == "it" else "Featured announcements"
+            toc_html += f'    <li><a href="#announcements">{announcements_toc_text}</a></li>\n'
+            
         for category, cat_links in categorized_links.items():
             has_metadata = (category == info_category_name and metadata_html)
             has_freq_metadata = (category == freq_category_name and freq_metadata_html)
