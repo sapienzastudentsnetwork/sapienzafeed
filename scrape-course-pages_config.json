@@ -122,5 +122,19 @@
     ],
     "excluded_attendance_ids": [
         "biblio"
-    ]
+    ],
+    "timetables_education_office_links": {
+        "33502": "https://timetables-33502.sapienzastudents.net/",
+        "33503": "https://timetables-33503.sapienzastudents.net/",
+        "33508": "https://timetables-33508.sapienzastudents.net/",
+        "33516": "https://timetables-33516.sapienzastudents.net/",
+        "33519": "https://timetables-33519.sapienzastudents.net/"
+    },
+    "timetables_sapienza_students_links": {
+        "33502": "https://sapienzastudents.net/acsai/courses/timetables/",
+        "33503": "https://sapienzastudents.net/it/insegnamenti/orari/",
+        "33508": "https://sapienzastudents.net/compsci/courses/timetables/",
+        "33516": "https://sapienzastudents.net/cybersec/courses/timetables/",
+        "33519": "https://sapienzastudents.net/datasci/courses/timetables/"
+    }
 }

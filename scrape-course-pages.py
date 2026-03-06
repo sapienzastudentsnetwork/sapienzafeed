@@ -71,7 +71,7 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
 
     print_btn_html = ""
     if not is_index_page:
-        print_btn_text = "🖨️ Salva come PDF" if language_key == "it" else "🖨️ Save to PDF"
+        print_btn_text = "🖨️ Salva come PDF" if language_key == "it" else "🖨️ Save as PDF"
         print_btn_html = f'<button class="print-btn" onclick="window.print()">{print_btn_text}</button>'
 
     original_btn_html = ""
@@ -273,7 +273,7 @@ def clean_excessive_newlines(soup):
             if cleaned_text != text_node:
                 text_node.replace_with(cleaned_text)
 
-def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links={}, file_to_cat={}, categories_dict={}, excluded_attendance_ids=[]):
+def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, course_acronyms, output_dir="corsidilaurea", custom_links={}, file_to_cat={}, categories_dict={}, excluded_attendance_ids=[], timetables_education_office_links={}, timetables_sapienza_students_links={}):
     base_url = "https://corsidilaurea.uniroma1.it"
     url_pattern = base_url + "/{}/course/{}/{}"
     os.makedirs(output_dir, exist_ok=True)
@@ -315,6 +315,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             # Additional variables to handle attendance specific logic
             attendance_custom_links = []
             attendance_freq_metadata_html = ""
+            scraped_timetable_link = None # Variable to hold the scraped timetable link
 
             for language_page in pages:
                 url = url_pattern.format(language_key, course_id, language_page)
@@ -392,7 +393,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             if "/lessons-plan" in a_href or "/insegnamenti" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
                             elif "/timetable" in a_href or "orario" in a_href:
-                                attendance_custom_links.append((a_text_clean, a_href, "freq"))
+                                # Save the link for the custom Timetables processing below
+                                scraped_timetable_link = a_href
                             elif "calendario-dellanno-accademico" in a_href or "academic-calendar" in a_href:
                                 if language_key == "en":
                                     a_href = "https://www.uniroma1.it/en/pagina/academic-calendar"
@@ -400,7 +402,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             elif "/exams" in a_href or "esami" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
                             elif "/instructions" in a_href or "istruzioni" in a_href:
-                                attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
+                                #attendance_custom_links.append((a_text_clean, "attendance/instructions.html", "freq"))
+                                continue
                             elif "cla.web.uniroma1.it" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "opp"))
                             else:
@@ -863,6 +866,25 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             # Append manual links for apply and teachers
             page_links.append(("How and When to Enroll" if language_key == "en" else "Come e quando iscriversi", "apply.html"))
             page_links.append(("Teachers" if language_key == "en" else "Docenti", "teachers.html"))
+            
+            # CUSTOM TIMETABLE SEPARATE LINKS GENERATION
+            # Define language-specific prefix
+            tt_prefix = "Orario delle Lezioni" if language_key == "it" else "Timetables"
+            
+            # 1. corsidilaurea (scraped link)
+            if scraped_timetable_link:
+                attendance_custom_links.append((f"{tt_prefix} (corsidilaurea)", scraped_timetable_link, "freq"))
+                
+            # 2. Education Office / Segreteria Didattica
+            ed_office_link = timetables_education_office_links.get(course_id, {})
+            if ed_office_link:
+                office_suffix = "Segr. Didattica" if language_key == "it" else "Education Office"
+                attendance_custom_links.append((f"{tt_prefix} ({office_suffix})", ed_office_link, "freq"))
+                
+            # 3. sapienzastudents.net
+            sap_students_link = timetables_sapienza_students_links.get(course_id, {})
+            if sap_students_link:
+                attendance_custom_links.append((f"{tt_prefix} (sapienzastudents.net)", sap_students_link, "freq"))
 
             if page_links or attendance_custom_links:
                 # Always go back to global catalogue root since language selection page is removed
@@ -1199,6 +1221,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                     file.write(html_content)
                 print(f"Saved: {output_path}")
 
+
 if __name__ == "__main__":
     # Load configuration from JSON file
     json_path = "scrape-course-pages_config.json"
@@ -1217,6 +1240,8 @@ if __name__ == "__main__":
     FILE_TO_CAT = CONFIG.get("file_to_cat", {})
     CATEGORIES_DICT = CONFIG.get("categories_dict", {})
     EXCLUDED_ATTENDANCE_IDS = CONFIG.get("excluded_attendance_ids", [])
+    EDUCATION_OFFICE_LINKS = CONFIG.get("timetables_education_office_links", {})
+    SAPIENZA_STUDENTS_LINKS = CONFIG.get("timetables_sapienza_students_links", {})
 
     LANGUAGES = ["it", "en"]
     PAGES = CONFIG.get("pages", [])
@@ -1226,4 +1251,18 @@ if __name__ == "__main__":
     # Run scraping
     fetch_and_save_apply(LANGUAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
     fetch_and_save_teachers(LANGUAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_ACRONYMS, OUTPUT_DIRECTORY)
-    fetch_and_save_page(LANGUAGES, PAGES, COURSE_IDS, EXCLUDED_EN_IDS, COURSE_NAMES, COURSE_ACRONYMS, OUTPUT_DIRECTORY, custom_links=CUSTOM_LINKS, file_to_cat=FILE_TO_CAT, categories_dict=CATEGORIES_DICT, excluded_attendance_ids=EXCLUDED_ATTENDANCE_IDS)
+    fetch_and_save_page(
+        LANGUAGES, 
+        PAGES, 
+        COURSE_IDS, 
+        EXCLUDED_EN_IDS, 
+        COURSE_NAMES, 
+        COURSE_ACRONYMS, 
+        OUTPUT_DIRECTORY, 
+        custom_links=CUSTOM_LINKS, 
+        file_to_cat=FILE_TO_CAT, 
+        categories_dict=CATEGORIES_DICT, 
+        excluded_attendance_ids=EXCLUDED_ATTENDANCE_IDS,
+        timetables_education_office_links=EDUCATION_OFFICE_LINKS,
+        timetables_sapienza_students_links=SAPIENZA_STUDENTS_LINKS
+    )
