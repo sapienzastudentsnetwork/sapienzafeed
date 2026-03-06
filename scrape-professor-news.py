@@ -167,6 +167,7 @@ def scrape_professor_data(uuid):
     it_soup = BeautifulSoup(it_resp.text, 'html.parser')
     en_soup = BeautifulSoup(en_resp.text, 'html.parser') if en_resp else None
     
+    # Process relative URLs and inject ↗ icons
     make_urls_absolute(it_soup, base_domain)
     if en_soup:
         make_urls_absolute(en_soup, base_domain)
@@ -208,6 +209,7 @@ def scrape_professor_data(uuid):
             # Skip email which is already handled
             if not href or href.startswith('mailto:'):
                 continue
+            # Text already contains ↗ thanks to make_urls_absolute called above
             data["header_links"].append({
                 "text": link.get_text(strip=True),
                 "url": href
@@ -360,9 +362,10 @@ def generate_individual_page(uuid, lang, prof_name, data):
     email_html = f'<a href="mailto:{data["email"]}">{data["email"]}</a>' if data["email"] else "N/A"
 
     # Generate additional header links HTML (Research Profile, etc.)
+    # We don't add " ↗" here because data['header_links'] text already has it from make_urls_absolute
     header_links_html = ""
     for link_info in data.get("header_links", []):
-        header_links_html += f'\n            <p style="margin: 5px 0;"><a href="{link_info["url"]}" target="_blank" rel="noopener noreferrer">{link_info["text"]} ↗</a></p>'
+        header_links_html += f'\n            <p style="margin: 5px 0;"><a href="{link_info["url"]}" target="_blank" rel="noopener noreferrer">{link_info["text"]}</a></p>'
 
     # Localization for Back to Top
     btt_text = "Torna sù" if is_it else "Back to top"
