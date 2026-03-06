@@ -54,7 +54,7 @@ def add_heading_anchors(soup, content_block):
             h_tag.append(" ")
             h_tag.append(anchor)
 
-def generate_top_bars_html(language_key, flag_html="", original_url=None, back_url=None, is_index_page=False):
+def generate_top_bars_html(language_key, flag_html="", original_url=None, back_url=None, is_index_page=False, custom_back_text=None):
     """
     Generates the standard HTML for the two top bars.
     Bar 1: Controls (Language, Font, Theme).
@@ -72,7 +72,9 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
     # Bar 2: Navigation (Back, Print, Source)
     back_btn_html = ""
     if back_url:
-        if is_index_page:
+        if custom_back_text:
+            back_text = custom_back_text
+        elif is_index_page:
             back_text = "🏠 Corsi di Laurea" if language_key == "it" else "🏠 Degree Courses"
         else:
             back_text = "◀️ Indice" if language_key == "it" else "◀️ Homepage"
@@ -211,7 +213,7 @@ def get_assets_relative_path(directory, filename):
     depth = len(parts)
     return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None, show_search=True):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None, show_search=True, custom_back_text=None):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
@@ -220,7 +222,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     js_search_path = get_assets_relative_path(directory, "index-search.js")
 
     # Generate top bars using utility function
-    top_bars_html = generate_top_bars_html(language_key, flag_html, original_url, back_url, is_index_page=True)
+    top_bars_html = generate_top_bars_html(language_key, flag_html, original_url, back_url, is_index_page=True, custom_back_text=custom_back_text)
 
     # Generate search bar HTML
     search_html = ""
@@ -434,8 +436,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             link_path = f"{cid}/{default_lang}/index.html" if default_lang else f"{cid}/index.html"
             root_links.append((name, link_path))
 
-    # No back button for the root directory, and exclude the search functionality
-    generate_index_html(output_dir, links=root_links, title="Degree Courses", back_url=None, show_search=False)
+    # Exclude search functionality for the root directory and set custom back text
+    generate_index_html(output_dir, links=root_links, title="Degree Courses", back_url="../index.html", show_search=False, custom_back_text="🏠 sapienzafeed")
 
     for course_id in ids:
         acronym = course_acronyms.get(course_id, course_id)
