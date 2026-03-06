@@ -479,6 +479,7 @@ def generate_main_indexes(professors_data):
         index_path = os.path.join(lang_dir, "index.html")
         
         title = "Lecturers" if lang == "en" else "Docenti"
+        search_placeholder = "Search lecturers by name, email or structure..." if lang == "en" else "Cerca docenti per nome, email o struttura..."
         back_url = "../../index.html"
         
         other_lang = "en" if lang == "it" else "it"
@@ -496,6 +497,7 @@ def generate_main_indexes(professors_data):
     <link rel="stylesheet" href="../../assets/theme-style.css">
     <link rel="stylesheet" href="../../assets/teachers-style.css">
     <script src="../../assets/theme-switch.js"></script>
+    <script src="../../assets/teachers-search.js"></script>
 </head>
 <body>
     <div class="header-dashboard">
@@ -503,6 +505,10 @@ def generate_main_indexes(professors_data):
         <div class="header-actions">
             {top_bars_html}
         </div>
+    </div>
+    
+    <div class="search-container" style="margin: 20px auto; max-width: 800px; padding: 0 20px;">
+        <input type="text" id="search-input" onkeyup="filterTeachers()" placeholder="{search_placeholder}" style="width: 100%; padding: 12px 20px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 8px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #333);">
     </div>
     
     <div class="teachers-container">
