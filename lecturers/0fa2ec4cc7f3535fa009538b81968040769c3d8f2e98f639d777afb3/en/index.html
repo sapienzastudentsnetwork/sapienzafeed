@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRANCESCHINI GIANNI</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">FRANCESCHINI GIANNI</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/0fa2ec4cc7f3535fa009538b81968040769c3d8f2e98f639d777afb3" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> gianni.franceschini@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di INFORMATICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> INFO-01/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>News#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33503/attendance/lesson/9781479b-be5c-4911-9165-6b8c0b1e889f/3/2/be04b2fc-52b5-4944-9e83-45cd119d8192/f3218073-0b38-4b71-8dfd-12b00fb0cfbb" target="_blank">1041761 <span class="external-icon">↗</span></a></td><td>LINGUAGGI E COMPILATORI</td><td>3rd</td><td>2nd</td><td>ITA</td><td>Computer Science</td><td>33503</td><td>Tecnologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33455/attendance/lesson/79964c48-aa40-4d44-9818-23f8da11e489/3/2/834e2685-88b0-4a57-ae05-699284293acb/04b953d8-16fc-4f4a-8d6e-f134a1aa8390" target="_blank">1049269 <span class="external-icon">↗</span></a></td><td>ALGORITHMS</td><td>3rd</td><td>2nd</td><td>ENG</td><td>Bioinformatics</td><td>33455</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33503/attendance/lesson/9781479b-be5c-4911-9165-6b8c0b1e889f/3/2/e61e0db8-4d96-428e-8ad3-788eb56edd82/3b3f96d1-1768-4611-b483-65c3f675e80d" target="_blank">1041761 <span class="external-icon">↗</span></a></td><td>LINGUAGGI E COMPILATORI</td><td>3rd</td><td>2nd</td><td>ITA</td><td>Computer Science</td><td>33503</td><td>Tecnologico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

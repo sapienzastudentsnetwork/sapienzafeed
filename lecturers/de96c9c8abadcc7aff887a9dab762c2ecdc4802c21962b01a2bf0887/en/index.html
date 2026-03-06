@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STERBINI ANDREA</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">STERBINI ANDREA</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/de96c9c8abadcc7aff887a9dab762c2ecdc4802c21962b01a2bf0887" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> </p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di INFORMATICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> INFO-01/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Receiving hours#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33508/attendance/lesson/3ba39561-6ee1-4627-a23a-f0bf95b871c0/1/2/1056b643-b416-44a0-b79e-746be4787a66/794fbe68-8127-4952-b122-d484f5cbd6ac" target="_blank">10620666 <span class="external-icon">↗</span></a></td><td>METHODS IN COMPUTER SCIENCE EDUCATION</td><td>1st</td><td>2nd</td><td>ENG</td><td>Computer Science</td><td>33508</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33508/attendance/lesson/3ba39561-6ee1-4627-a23a-f0bf95b871c0/1/2/fbba6c3d-f090-476e-9a3a-b3af34e583fe/7ad163db-d35c-4f65-9331-039ab7e08404" target="_blank">10620666 <span class="external-icon">↗</span></a></td><td>METHODS IN COMPUTER SCIENCE EDUCATION</td><td>1st</td><td>2nd</td><td>ENG</td><td>Computer Science</td><td>33508</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33508/attendance/lesson/3ba39561-6ee1-4627-a23a-f0bf95b871c0/2/2/701a6985-0550-4c16-b475-5515ffbae213/6a083d97-f8ed-4447-b29f-2448264adfe0" target="_blank">10589557 <span class="external-icon">↗</span></a></td><td>METHODS IN COMPUTER SCIENCE EDUCATION: ANALYSIS</td><td>2nd</td><td>2nd</td><td>ENG</td><td>Computer Science</td><td>33508</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33504/attendance/lesson/cb3aa567-38ec-4660-a0e8-60ffed75ea90/1/1/e26b6218-a596-4fc9-ace6-10bf1a1f9900" target="_blank">1015883 <span class="external-icon">↗</span></a></td><td>FONDAMENTI DI PROGRAMMAZIONE</td><td>1st</td><td>1st</td><td>ITA</td><td>Computer Science</td><td>33504</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33503/attendance/lesson/eb2e09e3-a50c-452b-b812-cd6032f393f0/1/1/ca439e37-10c1-44ce-ac79-fcc2d67e7421" target="_blank">1015883 <span class="external-icon">↗</span></a></td><td>FONDAMENTI DI PROGRAMMAZIONE</td><td>1st</td><td>1st</td><td>ITA</td><td>Computer Science</td><td>33503</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

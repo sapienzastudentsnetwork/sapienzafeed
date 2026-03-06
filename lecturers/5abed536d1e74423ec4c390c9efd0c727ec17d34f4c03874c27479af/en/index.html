@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVITABILE LUISA</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">AVITABILE LUISA</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/5abed536d1e74423ec4c390c9efd0c727ec17d34f4c03874c27479af" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> luisa.avitabile@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di SCIENZE GIURIDICHE</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> GIUR-17/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>News#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Receiving hours#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33465/attendance/lesson/8b909ff5-e7dc-4f31-8f95-df749352157c/2/2/f6b9074a-9fef-404c-afe1-8ecd484ad038/4338ba8a-cd5c-4a10-bc01-7dc103fe5a70" target="_blank">1030688 <span class="external-icon">↗</span></a></td><td>TEORIA DELL'INTERPRETAZIONE</td><td>2nd</td><td>2nd</td><td>ITA</td><td>law</td><td>33465</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33516/attendance/lesson/721cce62-ad29-424e-b2e4-936e851b7ff4/1/2/d2fdc7f7-6415-4ae0-b089-1629c5259841" target="_blank">1055055 <span class="external-icon">↗</span></a></td><td>CYBER AND COMPUTER LAW</td><td>1st</td><td>2nd</td><td>ENG</td><td>Cybersecurity</td><td>33516</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33465/attendance/lesson/8b909ff5-e7dc-4f31-8f95-df749352157c/1/1/a36b6382-ca97-46ba-931b-633086456ad7" target="_blank">1009229 <span class="external-icon">↗</span></a></td><td>Filosofia del diritto</td><td>1st</td><td>1st</td><td>ITA</td><td>law</td><td>33465</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

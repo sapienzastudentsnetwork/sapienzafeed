@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIAZZA PAOLO</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">PIAZZA PAOLO</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../en/index.html" class="lang-btn" title="Switch language">🇮🇹 Lingua</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button></div>
+<div class="navigation-bar"><a href="../../it/index.html" class="back-link-btn">◀️ Docenti</a><button class="print-btn" onclick="window.print()">🖨️ Salva come PDF</button><a href="https://corsidilaurea.uniroma1.it/it/lecturer/f92bef1a8f2f1066d80ce36539412fe083a105b7f1a73473875ba2f4" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Fonte</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> paolo.piazza@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Struttura:</strong> Dipartimento di MATEMATICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> MATH-02/B</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>Notizie#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Orari di ricevimento#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Insegnamenti#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Codice insegnamento</th><th>Insegnamento</th><th>Anno</th><th>Semestre</th><th>Lingua</th><th> Corso</th><th>Codice corso</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33590/attendance/lesson/71160751-b60e-428f-ba3e-c20828773090/1/2/da3f140c-0577-4d0a-a42d-2bf076aafc07/52c515ba-3763-45fd-8ad0-4ed8e2ce25b9" target="_blank">10616566 <span class="external-icon">↗</span></a></td><td>ISTITUZIONI DI MATEMATICA - CALCOLO AVANZATO</td><td>1º</td><td>2º</td><td>ITA</td><td>Scienze Naturali</td><td>33590</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33592/attendance/lesson/e95116af-9dc6-4296-a6ec-6ef15d562f55/1/2/93768601-d437-4890-af0d-031fe94659cd" target="_blank">1022431 <span class="external-icon">↗</span></a></td><td>GEOMETRIA I</td><td>1º</td><td>2º</td><td>ITA</td><td>Matematica</td><td>33592</td><td>Matematica per le applicazioni</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33592/attendance/lesson/ca0bc588-203f-4145-9969-295cd89b744a/1/2/2a791f27-5dc3-4432-88f6-5b38356f31f3" target="_blank">1022431 <span class="external-icon">↗</span></a></td><td>GEOMETRIA I</td><td>1º</td><td>2º</td><td>ITA</td><td>Matematica</td><td>33592</td><td>Generale</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33592/attendance/lesson/9cd1eb58-16d6-4d6e-abc1-a2b9f2294ef8/1/2/2d43c64e-073a-48cf-9db5-9867e837bf7c" target="_blank">1022431 <span class="external-icon">↗</span></a></td><td>GEOMETRIA I</td><td>1º</td><td>2º</td><td>ITA</td><td>Matematica</td><td>33592</td><td>Storia, didattica e fondamenti</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

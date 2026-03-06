@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O'GRADY KIERAN GREGORY</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">O'GRADY KIERAN GREGORY</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../en/index.html" class="lang-btn" title="Switch language">🇮🇹 Lingua</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button></div>
+<div class="navigation-bar"><a href="../../it/index.html" class="back-link-btn">◀️ Docenti</a><button class="print-btn" onclick="window.print()">🖨️ Salva come PDF</button><a href="https://corsidilaurea.uniroma1.it/it/lecturer/9bd239ea5332b21bb947eb6fe7ed3814e7051109d817e4e49b8c2e10" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Fonte</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/default/files/styles/lecturer_picture/public/pictures/picture-15643-1615587628_0.jpg?itok=Tm4mOQNU" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> kieran.ogrady@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Struttura:</strong> Dipartimento di MATEMATICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> MATH-02/B</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-activities">
+            <summary>Insegnamenti#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Codice insegnamento</th><th>Insegnamento</th><th>Anno</th><th>Semestre</th><th>Lingua</th><th> Corso</th><th>Codice corso</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33588/attendance/lesson/0ed75425-512b-4984-abeb-f3a070558014/1/1/9bb5ced3-2e4a-4a20-a43e-47ff045717fe" target="_blank">1015375 <span class="external-icon">↗</span></a></td><td>GEOMETRIA</td><td>1º</td><td>1º</td><td>ITA</td><td>Fisica</td><td>33588</td><td>Fisica applicata</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33588/attendance/lesson/4e52b433-ee92-4f95-a658-bd0d7f7f3a54/1/1/d8bc0519-3949-4300-a959-9142e7a469df" target="_blank">1015375 <span class="external-icon">↗</span></a></td><td>GEOMETRIA</td><td>1º</td><td>1º</td><td>ITA</td><td>Fisica</td><td>33588</td><td>Fisica</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33588/attendance/lesson/54d5f6d1-555b-40a9-8257-5632565c0d7c/1/1/5a5c42b1-5932-4867-a17e-3f3f97f83e0b" target="_blank">1015375 <span class="external-icon">↗</span></a></td><td>GEOMETRIA</td><td>1º</td><td>1º</td><td>ITA</td><td>Fisica</td><td>33588</td><td>Astrofisica</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33503/attendance/lesson/eb2e09e3-a50c-452b-b812-cd6032f393f0/1/2/887b498c-a70a-4e5e-bdfa-d237c84dec36" target="_blank">10621298 <span class="external-icon">↗</span></a></td><td>ALGEBRA LINEARE E GEOMETRIA</td><td>1º</td><td>2º</td><td>ITA</td><td>Informatica</td><td>33503</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

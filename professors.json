@@ -1,143 +1,558 @@
 {
-  "CIUFFETELLI ANNALISA": "https://corsidilaurea.uniroma1.it/it/lecturer/b295b8218b1ef6aad684c9e37c1e144ffa153a139630d5df9f2831bb",
-  "LIBERATI FRANCO": "https://corsidilaurea.uniroma1.it/it/lecturer/c8965baceea33bd548c429eaa8ea5a54c3f1515930000881b75a2b89",
-  "TERRACINA ANDREA": "https://corsidilaurea.uniroma1.it/it/lecturer/c9eb495c6faf1401a715905f4e81b0d9778b536d0937143cf6f65bae",
-  "PONSIGLIONE MARCELLO": "https://corsidilaurea.uniroma1.it/it/lecturer/88a423560e30cf933c8412abc425bfa4d843ab8c39df8a59f571a9b7",
-  "CALAMONERI TIZIANA": "https://corsidilaurea.uniroma1.it/it/lecturer/8353250b517d80413abcb5ed6e7c1b3644cfdda01f2c4f67324cf0be",
-  "SAMORY MATTIA": "https://corsidilaurea.uniroma1.it/it/lecturer/1a1ac86e28807c8465fd68d17a0b76adaa1bdfc769ab8836a774c2d9",
-  "CHECCO ALESSANDRO": "https://corsidilaurea.uniroma1.it/it/lecturer/973ff60addc4d38eb1d834f638aa4cad5b13824dee721d16debdeff6",
-  "MONTI ANGELO": "https://corsidilaurea.uniroma1.it/it/lecturer/eb20887b37d59d3572c799cece964a04d1237cffb2bab9e31bb8dc2b",
-  "FARALLI STEFANO": "https://corsidilaurea.uniroma1.it/it/lecturer/4ebfbe5cb9997b03daadfbe341896cd80637c80fe101cc29787937c0",
-  "MANCINI TONI": "https://corsidilaurea.uniroma1.it/it/lecturer/03ed820157baa29c9671ff82b11d1fbda0f06d117976e3de3f67b766",
-  "WOLLAN PAUL JOSEPH": "https://corsidilaurea.uniroma1.it/it/lecturer/1bc0b942e1da31ffa70f9a65719bb0fc4331711da1602e311918d8e3",
-  "ZULIANI PAOLO": "https://corsidilaurea.uniroma1.it/it/lecturer/71a5cf24a1542dffce1962c7f2b4ce9f215ec20f318292197f21a163",
-  "MASELLI GAIA": "https://corsidilaurea.uniroma1.it/it/lecturer/b911a093aa5200e6bee385aafccfb05592c8b08acc8d5024cb52ceb4",
-  "CASALICCHIO EMILIANO": "https://corsidilaurea.uniroma1.it/it/lecturer/a694c7295093c4c327056a69b52ca84415bfb8978639a3a32a24ba40",
-  "CASTRIGNANO' TIZIANA": "https://corsidilaurea.uniroma1.it/it/lecturer/b580c54bfb84caf6244b9174a6a741906b3f5ed73d5eb9d5d7937040",
-  "FRANCESCHINI GIANNI": "https://corsidilaurea.uniroma1.it/it/lecturer/0fa2ec4cc7f3535fa009538b81968040769c3d8f2e98f639d777afb3",
-  "CAPPARELLI STEFANO": "https://corsidilaurea.uniroma1.it/it/lecturer/be67ada94f05ddff2f83ea03c356a47a43ff62b65a3ac0ba70251f21",
-  "SALVO IVANO": "https://corsidilaurea.uniroma1.it/it/lecturer/31e8d1fee8bd6eb239f9c985f4b2e5d4786ff9588d67330262644a78",
-  "TRONCI ENRICO": "https://corsidilaurea.uniroma1.it/it/lecturer/d0333aace56233062e9617115fb0e6c5e8e3dfa4a9d74793105ff698",
-  "CHIERICHETTI FLAVIO": "https://corsidilaurea.uniroma1.it/it/lecturer/401a2ee6cc7c26671171d1d7ff50a3c99b00490c62b9c58e0fd08073",
-  "MASSINI ANNALISA": "https://corsidilaurea.uniroma1.it/it/lecturer/1b04a8290feae16f8d78e35fa2adf42dd7668423a4bf33075cd4edcd",
-  "BOTTONI PAOLO GASPARE": "https://corsidilaurea.uniroma1.it/it/lecturer/0367319152d06ab660b81cb70e940cfd03c7937775e6a32962e3dd9b",
-  "GORLA DANIELE": "https://corsidilaurea.uniroma1.it/it/lecturer/56d2725466cb5953459d7a47a23b8bbd320a15bedc6cef3ebf8306aa",
-  "HITAJ DORJAN": "https://corsidilaurea.uniroma1.it/it/lecturer/1d7f2572efcc18caab227fcf62db9ca08022e850ac3f90bda80c0afb",
-  "RODOLA' EMANUELE": "https://corsidilaurea.uniroma1.it/it/lecturer/39ac1000ee2d70ccee6238d30a628c9789f427784a6bc9fe600fe89a",
-  "PANIZZI EMANUELE": "https://corsidilaurea.uniroma1.it/it/lecturer/d0ab2313982ae31335bf0ca9ec541c1e29015850654190038e83754d",
-  "BARTOLINI NOVELLA": "https://corsidilaurea.uniroma1.it/it/lecturer/fbe3938b0e1589813248bf7b34f7e7162627e8dcd0a57d18a9ac7ab6",
-  "CARLUCCI LORENZO": "https://corsidilaurea.uniroma1.it/it/lecturer/4fa70537ab8f306cdd60f6d50076b8863bc60228463838ddd83c46d2",
-  "DE MARSICO MARIA": "https://corsidilaurea.uniroma1.it/it/lecturer/65816d4db3c3490a6f9ebd8ceed2d87fead474a980f41016a6d61e8e",
-  "MASI IACOPO": "https://corsidilaurea.uniroma1.it/it/lecturer/a10b1c7ed1eb88f53aea8974f203e8f296af399a2977880ee858367d",
-  "SPOGNARDI ANGELO": "https://corsidilaurea.uniroma1.it/it/lecturer/cb07c5c1ada02c8f7a23ce6e20e20a7bf1365e3bc64f0a48c22bc1f5",
-  "RAPAGNANI PIERO": "https://corsidilaurea.uniroma1.it/it/lecturer/ea834617dcca919142be398afbcc19a68f86d12094962fb974a9bf76",
-  "ANSINI NADIA": "https://corsidilaurea.uniroma1.it/it/lecturer/f239f16747654cfca4b4f64364f85827f3e4af654fa236b61c69213b",
-  "MEI ALESSANDRO": "https://corsidilaurea.uniroma1.it/it/lecturer/b88986f842b5c00afe548279b3eec4a640918f8270a87b49c5d0e056",
-  "CUNQUEIRO MENDEZ LETICIA": "https://corsidilaurea.uniroma1.it/it/lecturer/2cda4d12b4f3d6210693893d2f2e76244b257eafa18d1869ecc2c895",
-  "CENCIARELLI PIETRO": "https://corsidilaurea.uniroma1.it/it/lecturer/d78c07674587ddd7ce68859a88057950c43c4a764b11412a1ccee5da",
-  "PANNONE DANIELE": "https://corsidilaurea.uniroma1.it/it/lecturer/d3f7ca79a7c6273260043d4df626937432cc0926e1cb3e83a9262a98",
-  "SPINELLI INDRO": "https://corsidilaurea.uniroma1.it/it/lecturer/8436bfd2acec3b603a44c49e144bfa1bfed17aae4e5ebd23cf01d3bb",
-  "QUATTROCIOCCHI WALTER": "https://corsidilaurea.uniroma1.it/it/lecturer/d2de0549580acf978f938219f8c90d7529a2a8bf5616c9a18cbb134a",
-  "BARTOLI GIANPAOLO": "https://corsidilaurea.uniroma1.it/it/lecturer/5c2d929718bb4d64ef2b8bbf7525e3d1caef188d1656d32624fca1ea",
-  "GARRONI ADRIANA": "https://corsidilaurea.uniroma1.it/it/lecturer/e1aceceeb5646d24ca7a390ec4d2e9d4ab8267bd2949b6b0ad9c6563",
-  "STERBINI ANDREA": "https://corsidilaurea.uniroma1.it/it/lecturer/de96c9c8abadcc7aff887a9dab762c2ecdc4802c21962b01a2bf0887",
-  "PIPERNO ADOLFO": "https://corsidilaurea.uniroma1.it/it/lecturer/1d392b437964acb80534d84b84be20957804098a0842162d88461b32",
-  "PONTARELLI SALVATORE": "https://corsidilaurea.uniroma1.it/it/lecturer/2d49d15a1021a18aee7768bb09de37397225857acf9ea64699447bdc",
-  "ORSINA LUIGI": "https://corsidilaurea.uniroma1.it/it/lecturer/dea8e9f545c121c2bfee184813542ebd9bb7247fac6161ad6b25b94b",
-  "PIAZZA PAOLO": "https://corsidilaurea.uniroma1.it/it/lecturer/f92bef1a8f2f1066d80ce36539412fe083a105b7f1a73473875ba2f4",
-  "PERELLI GIUSEPPE": "https://corsidilaurea.uniroma1.it/it/lecturer/c7916dc0ae86ebc56ee3b1499c08d6df6224338a7e762644db158c3e",
-  "BERTINI MALGARINI LORENZO": "https://corsidilaurea.uniroma1.it/it/lecturer/2c4aa35769031376592596089780bed74d78c7a2e0bc229dafd36a2e",
-  "TOLOMEI GABRIELE": "https://corsidilaurea.uniroma1.it/it/lecturer/e9b9b49f482d35b60f1a56d2e1afdac03f6cd59f033d5e6ede41b247",
-  "PELLARIN FEDERICO": "https://corsidilaurea.uniroma1.it/it/lecturer/1e8332c3d3a479250212ca7e148332ff08a6db9192577d1312216ffc",
-  "TAGGI LORENZO": "https://corsidilaurea.uniroma1.it/it/lecturer/713c0b31bd63d96bb863bc6e1dd6160edad0042319757e001289f1d2",
-  "DE GASPARI FABIO": "https://corsidilaurea.uniroma1.it/it/lecturer/a18623c9d0a55e5a48c88bcc0313c4e37e0f7c61462e2096589c3baf",
-  "VENTURI DANIELE": "https://corsidilaurea.uniroma1.it/it/lecturer/f2a274462a073d014053257c7c37e8aa8b40000ae03fc48baf4acf64",
-  "GERMANO MASSIMO": "https://corsidilaurea.uniroma1.it/it/lecturer/c0e06d16ba5f3e0661337506aaf59f180e1081067c990ead60b50014",
-  "MANCINI MAURIZIO": "https://corsidilaurea.uniroma1.it/it/lecturer/602fc59d475eb3424350ecb321baa87767d50003ddf1043a40f1fd90",
-  "GALASSO FABIO": "https://corsidilaurea.uniroma1.it/it/lecturer/51f8a826f48cc117e58434915b54a21b6fedfd426dec0087a3de2826",
-  "LA MORGIA MASSIMO": "https://corsidilaurea.uniroma1.it/it/lecturer/c5892bf42eac27f3720899ef025482c4a0d09778117424bd25be0c48",
-  "LAURIA MASSIMO": "https://corsidilaurea.uniroma1.it/it/lecturer/33d2504d767f677ee6070d9f0ce6ef7065464613b94d701aff37706e",
-  "CINQUE LUIGI": "https://corsidilaurea.uniroma1.it/it/lecturer/559cd99f7f86fcae59cf4f08e349490a12345d4d2034ed6c7d4fa62b",
-  "VELARDI PAOLA": "https://corsidilaurea.uniroma1.it/it/lecturer/ea4537a3b98738b91fe574e49f4ce2a93d6b5f3302c08edf2ad18cd6",
-  "DE VITIS ALESSANDRA": "https://corsidilaurea.uniroma1.it/it/lecturer/42f623501dd7a602ad72075ad288fa0c9914e822b68de2425b76c542",
-  "FRIOLO DANIELE": "https://corsidilaurea.uniroma1.it/it/lecturer/92e4cf0c6bdf3e64296b4b6c3449f0fb440dea02e1fd588c10d42099",
-  "BIRINDELLI ISABELLA": "https://corsidilaurea.uniroma1.it/it/lecturer/854ad85fd374fa8dbcfe12385cb301cdeba0817ebc21c653fc5c61a8",
-  "DE SENSI DANIELE": "https://corsidilaurea.uniroma1.it/it/lecturer/5a8f6a013fb4503b6b55abf0114f043adb6bdfa185925129038b66ab",
-  "ZABAD SAHAR": "https://corsidilaurea.uniroma1.it/it/lecturer/7f787d7691e62979856e206591ca4f7966bc1ad728e71ba904f8777d",
-  "SILVESTRI VITTORIA": "https://corsidilaurea.uniroma1.it/it/lecturer/ecf21e46efa0f790d7d9d7867444474b472130b52c5c014de7ea19bd",
-  "HUYNH TONY CHI THONG": "https://corsidilaurea.uniroma1.it/it/lecturer/202b80b1ed66400d2a4f83f066ff81e17836857882eff2143804b906",
-  "FAGGIONATO ALESSANDRA": "https://corsidilaurea.uniroma1.it/it/lecturer/d6d44640fc02c0af2aa03387b443f630276f0e7afb315dd2e6334d9f",
-  "SAVIO RICCARDO": "https://corsidilaurea.uniroma1.it/it/lecturer/0300241ab4a2e657cc93a815c8727b6f4029ae9818854e5845d67998",
-  "NAPPO GIOVANNA": "https://corsidilaurea.uniroma1.it/it/lecturer/84760469f12833e2cc551f6586313536c3d505747b4ede0f5f35f158",
-  "PISANTE ADRIANO": "https://corsidilaurea.uniroma1.it/it/lecturer/1eacbfca7b69e71d1a536ff19f1a8ab1b74d3721fa3c1888f1a35e52",
-  "ASARO CARMELO": "https://corsidilaurea.uniroma1.it/it/lecturer/bd39fe2c4f5005d585cf24ca7d4f8dfa6142b0e0597802923699e688",
-  "SMERIGLIO MICHELANGELO": "https://corsidilaurea.uniroma1.it/it/lecturer/cbaeac0521b3744df43fd752f324c84724781c8d363b302679c25acd",
-  "RICHELLI GIORGIO": "https://corsidilaurea.uniroma1.it/it/lecturer/fe89d218146f928b93d072069f7a09e0b53c73f1929d2c13e4bae634",
-  "DI LUNA GIUSEPPE ANTONIO": "https://corsidilaurea.uniroma1.it/it/lecturer/4c66b6b5b325da811da1984148bb74f364dc5f95c3aee7f43b08d8b3",
-  "POLVERINI MARCO": "https://corsidilaurea.uniroma1.it/it/lecturer/0c78e43351e850cb2be8beabcae820c350058cdc7b29a4c5dc52666b",
-  "GASTALDI TOMMASO": "https://corsidilaurea.uniroma1.it/it/lecturer/c576aff061883e7e1abb092f4808c36b9118a21d065cd74ce854b703",
-  "BERALDI ROBERTO": "https://corsidilaurea.uniroma1.it/it/lecturer/46396e48252043a0ba97dd0a92412fafa7be4b4138f42951943ae1d9",
-  "BONOMI SILVIA": "https://corsidilaurea.uniroma1.it/it/lecturer/3b9cee710dcf9ec86cade7bd5ee3c7dd886ebe3e71a9a2b6591d9246",
-  "AIELLO VALERIANO": "https://corsidilaurea.uniroma1.it/it/lecturer/efb32bb89b2a3360eeea76125b7ae187d32f9f2efa0ae11e20079d00",
-  "D'ADAMO IDIANO": "https://corsidilaurea.uniroma1.it/it/lecturer/3097fd484e15641601eb5b871b61a77a7966ddaf7c1716fbf749a66c",
-  "LIBERATI FRANCESCO": "https://corsidilaurea.uniroma1.it/it/lecturer/161ab7fa4b64110aef03808cb13cfd36cedeb6f1d49730eebad9099f",
-  "VITALETTI ANDREA": "https://corsidilaurea.uniroma1.it/it/lecturer/c6156a120bb5870a5b7b9d1e23fdb2e62f159be2e0a5ab9dd9348a00",
-  "SIGISMONDI IRENE": "https://corsidilaurea.uniroma1.it/it/lecturer/e99edbc49e0fda47418d2ff1519111cfb300f81c25730557016ebbe3",
-  "POLESE DAVIDE": "https://corsidilaurea.uniroma1.it/it/lecturer/7a52621289055e27e31f5bc9082227a47cf954bb2e08a73756e17245",
-  "AVOLA DANILO": "https://corsidilaurea.uniroma1.it/it/lecturer/e46974dc481037d0583a126f393319b8ed49a28a60be4e8194b1679d",
-  "LAZZERETTI RICCARDO": "https://corsidilaurea.uniroma1.it/it/lecturer/6ff4ba2e4c4d78e9d49b44c20727bab8ef65534ccde90e97df0d6422",
-  "D'ELIA DANIELE CONO": "https://corsidilaurea.uniroma1.it/it/lecturer/d1f1cb20a781b6b1c42e90d4a26e16c10b9190124b5c4d36395bc1b5",
-  "DE LA TORRE PEDRAZA AZAHARA": "https://corsidilaurea.uniroma1.it/it/lecturer/7a5f4e596334e85705e1b59478cc9e7aca718c9f9bb6b97e5814c05c",
-  "VEGLIANTI ELEONORA": "https://corsidilaurea.uniroma1.it/it/lecturer/9ea70dc6-a3d6-447d-addf-592abe8ad7e7",
-  "VIAGGI GABRIELE": "https://corsidilaurea.uniroma1.it/it/lecturer/4f48ed3f37b3bcc4ce604798800b1c65edce091e76aa01a3cb235719",
-  "ALLA ALESSANDRO": "https://corsidilaurea.uniroma1.it/it/lecturer/27af4a3359aeb0104645902f1ea25495ef8eec404c993b28362dc074",
-  "VISCONTI IVAN": "https://corsidilaurea.uniroma1.it/it/lecturer/a1e9700ddc085d2684fc2c1cda6496b4b18e59d00f333ec058d5a7b8",
-  "ESPOSITO MARCO": "https://corsidilaurea.uniroma1.it/it/lecturer/1310d579c7a352a478e1634057c547d1c038233284472bc63796d604",
-  "ARRIGONI VIVIANA": "https://corsidilaurea.uniroma1.it/it/lecturer/c9c0ea5062ab91edd804bfaeefff966cca8c6b8c21b755d269ef1add",
-  "AVITABILE LUISA": "https://corsidilaurea.uniroma1.it/it/lecturer/5abed536d1e74423ec4c390c9efd0c727ec17d34f4c03874c27479af",
-  "MOLCHO SAMOUIL": "https://corsidilaurea.uniroma1.it/it/lecturer/1c56724ae56a9a6dd62fe2d96d751295502095dde352a2d5fb52c296",
-  "D'ALESSANDRO FLAVIO": "https://corsidilaurea.uniroma1.it/it/lecturer/877234eaec4e010fc4e230ab5e683208f72274d5e073b05a54991bb3",
-  "CINELLI MATTEO": "https://corsidilaurea.uniroma1.it/it/lecturer/69f4965b064dc997920d90041ff6345a1f04a33a59d9f13196060073",
-  "LANZARA FLAVIA": "https://corsidilaurea.uniroma1.it/it/lecturer/6f7a12ae2d349c788c5d08abc288eb88e6835d7742f8925933eabb62",
-  "MARINI MARCO RAOUL": "https://corsidilaurea.uniroma1.it/it/lecturer/6463ffc418404edf2e493dc1b39661eb389aa43f98aa7d5855a631ca",
-  "TSCHAIKOWSKI MAX": "https://corsidilaurea.uniroma1.it/it/lecturer/0ab860a416b8b37f38529f8f7cd0e5cf67a5214ad60e04af6ba7c3b6",
-  "DE SOLE ALBERTO": "https://corsidilaurea.uniroma1.it/it/lecturer/19a466d41691535803deec449cc94150b9f217ce0f0c3326ca5abe9e",
-  "QUERZONI LEONARDO": "https://corsidilaurea.uniroma1.it/it/lecturer/18b7ab9238460e4989271457a4e48801b59a676855286a2a504ee673",
-  "FABRIZIO D'AMORE": "https://corsidilaurea.uniroma1.it/it/lecturer/c7077354-e19e-49c5-a528-9a6094a07b76",
-  "FRANCESCA CUOMO": "https://corsidilaurea.uniroma1.it/it/lecturer/61eac323-9fc2-4e48-b469-957e446ddaff",
-  "BIGLINO LAURA": "https://corsidilaurea.uniroma1.it/it/lecturer/d95efa9d-7db1-4ae4-9d53-4dd5d00e7955",
-  "ZATTI STEFANO": "https://corsidilaurea.uniroma1.it/it/lecturer/987320833b51f80dfb0da7cc0f48ccf336622615be73ed3c17e66333",
-  "FRANCATI DANILO": "https://corsidilaurea.uniroma1.it/it/lecturer/04be579af80ce4071b63bda30a71717fe853fe3df7bd03582ad070cd",
-  "O'GRADY KIERAN GREGORY": "https://corsidilaurea.uniroma1.it/it/lecturer/9bd239ea5332b21bb947eb6fe7ed3814e7051109d817e4e49b8c2e10",
-  "TIOZZO GIULIO": "https://corsidilaurea.uniroma1.it/it/lecturer/33b485f38f83b317f13c82ffc50130f4d49d0a0122dc057866bb1ebc",
-  "GATTI MAURO": "https://corsidilaurea.uniroma1.it/it/lecturer/fab9ea8edd39472cf128c9d8c088ea53b60632e596151ea63f766ee0",
-  "MANCINI LUIGI VINCENZO": "https://corsidilaurea.uniroma1.it/it/lecturer/70769f6c7421a78996077ee50349a49bd73720aa32a34f33f86c9193",
-  "": "https://corsidilaurea.uniroma1.it/it/lecturer/00000000-0000-0000-0000-000000000000",
-  "SCHLEICHER DOMINIK REINHOLD GEORG": "https://corsidilaurea.uniroma1.it/it/lecturer/18589bad163db57d144db930f02b27e9159c5801e5be8c268c3d55c3",
-  "DE VITO ROBERTA": "https://corsidilaurea.uniroma1.it/it/lecturer/7214f143e19aed4b58c9743e09a3834b889f42e50a406aad74b8adcb",
-  "D'AMORE FABRIZIO": "https://corsidilaurea.uniroma1.it/it/lecturer/6d025bf03e09d4ccfcf51bdc52a9c982c0dd1f2c12a67e5f28e91b50",
-  "CUOMO FRANCESCA": "https://corsidilaurea.uniroma1.it/it/lecturer/8861ac6edb9b40024e5eaa83e4a8e255503869da589725fc18069377",
-  "MAGGI BERNARDO": "https://corsidilaurea.uniroma1.it/it/lecturer/09ad21de38199739b33dbc9909edab5e9400fa5347c3c3793de86a90",
-  "ERAMO VINCENZO": "https://corsidilaurea.uniroma1.it/it/lecturer/0f1032e1a67fd22ad52f5e6c704df4131d8e29231a5119a7f98aa105",
-  "TARDELLA LUCA": "https://corsidilaurea.uniroma1.it/it/lecturer/f78e65ee0942edd9eecca37d6e90c402f20fe40f876ee5cb178105db",
-  "SILVESTRI FABRIZIO": "https://corsidilaurea.uniroma1.it/it/lecturer/2cbb4122228c5e76f2afd7843cab5d2faf3f6a2f23afbed910e573d7",
-  "SALZO SAVERIO": "https://corsidilaurea.uniroma1.it/it/lecturer/05fd5b57cce9673317cab2c93728addbdd36ee8952dc4d91aea63891",
-  "DARAIO CINZIA": "https://corsidilaurea.uniroma1.it/it/lecturer/b038c0bfb696668b1bfa1a4dd217cad43060b93ef961f694f5439679",
-  "BRUTTI PIERPAOLO": "https://corsidilaurea.uniroma1.it/it/lecturer/1b749331b4241719b72be3d21a0c920aaf4ee73f0afd73647a1f295b",
-  "SCALAS ENRICO": "https://corsidilaurea.uniroma1.it/it/lecturer/796348dd17181b0e5bc5b7ff12602f4bfdbc419b7338730911747e78",
-  "NUNZIATA FERDINANDO": "https://corsidilaurea.uniroma1.it/it/lecturer/1f88d3c450db0f7cc8e954feea81a05b3e1f424005e410c38accdb8d",
-  "REVERBERI PIERFRANCESCO": "https://corsidilaurea.uniroma1.it/it/lecturer/cb9abcdfd622d0b1bb07b235dc3b6326d00a43518e0fa65bca8b389e",
-  "ANAGNOSTOPOULOS ARISTIDIS": "https://corsidilaurea.uniroma1.it/it/lecturer/f2851c21b90cd4c1e1d818c6d9b658767d01dc157bd0437a6ade3312",
-  "ORLANDO SALVATORE": "https://corsidilaurea.uniroma1.it/it/lecturer/b70440297f6627f9dd71d2c33864950a9f1686dfdccbf6385a0f04ec",
-  "COLONNESE STEFANIA": "https://corsidilaurea.uniroma1.it/it/lecturer/4b0e4fbd4999e8aaa21b213b3f5423d3b77aba584d204370113fc635",
-  "LEMBO DOMENICO": "https://corsidilaurea.uniroma1.it/it/lecturer/b8ce18660a487f6576f571621c66cfdc5c8b112560d9433892c7562a",
-  "ROSATI RICCARDO": "https://corsidilaurea.uniroma1.it/it/lecturer/f6f544ea031b5756b8c51c0663c8d4051da94ff9fe9595281df731af",
-  "BECCHETTI LUCA": "https://corsidilaurea.uniroma1.it/it/lecturer/4105fcca79634e057caa6828b1663d8d21f44c9a8f551f66c57310a7",
-  "MARZANO RICCARDO": "https://corsidilaurea.uniroma1.it/it/lecturer/e1d8136293f36d389d14ce2f01ec8e8a64deab877e26c7d44f6c60d2",
-  "IOCCHI LUCA": "https://corsidilaurea.uniroma1.it/it/lecturer/f1c41ed9f77244cd05f84b72eaa5563045643d01ee589b473192cad1",
-  "CRESPI MATTIA GIOVANNI": "https://corsidilaurea.uniroma1.it/it/lecturer/c4ab26f1b1dc2ac39cb930ee0713f4189efcbefc9b10498b2d160a7e",
-  "LEONARDI STEFANO": "https://corsidilaurea.uniroma1.it/it/lecturer/3c2d5b0d3bd0d4575e15f53155c97320f9fd7546dd1a927231e29029",
-  "BRUESTLE JOHANNES": "https://corsidilaurea.uniroma1.it/it/lecturer/c50724273ffdbe4d2268abec20bc0cfd6bd448f170dfb42babe48bb4",
-  "SPADACCINO PIETRO": "https://corsidilaurea.uniroma1.it/it/lecturer/1f83a5408282953c50f215c4fad15d975dfc7d64bb6e3c04eae31c0f",
-  "PENNESI ALICE": "https://corsidilaurea.uniroma1.it/it/lecturer/d043d6be-c18b-4866-98ab-f41ee5f1e7f8"
+  "9ea70dc6-a3d6-447d-addf-592abe8ad7e7": {
+    "name": "VEGLIANTI ELEONORA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/9ea70dc6-a3d6-447d-addf-592abe8ad7e7"
+  },
+  "d95efa9d-7db1-4ae4-9d53-4dd5d00e7955": {
+    "name": "BIGLINO LAURA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d95efa9d-7db1-4ae4-9d53-4dd5d00e7955"
+  },
+  "00000000-0000-0000-0000-000000000000": {
+    "name": "",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/00000000-0000-0000-0000-000000000000"
+  },
+  "c50724273ffdbe4d2268abec20bc0cfd6bd448f170dfb42babe48bb4": {
+    "name": "BRUESTLE JOHANNES",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c50724273ffdbe4d2268abec20bc0cfd6bd448f170dfb42babe48bb4"
+  },
+  "b295b8218b1ef6aad684c9e37c1e144ffa153a139630d5df9f2831bb": {
+    "name": "CIUFFETELLI ANNALISA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/b295b8218b1ef6aad684c9e37c1e144ffa153a139630d5df9f2831bb"
+  },
+  "c8965baceea33bd548c429eaa8ea5a54c3f1515930000881b75a2b89": {
+    "name": "LIBERATI FRANCO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c8965baceea33bd548c429eaa8ea5a54c3f1515930000881b75a2b89"
+  },
+  "c9eb495c6faf1401a715905f4e81b0d9778b536d0937143cf6f65bae": {
+    "name": "TERRACINA ANDREA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c9eb495c6faf1401a715905f4e81b0d9778b536d0937143cf6f65bae"
+  },
+  "88a423560e30cf933c8412abc425bfa4d843ab8c39df8a59f571a9b7": {
+    "name": "PONSIGLIONE MARCELLO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/88a423560e30cf933c8412abc425bfa4d843ab8c39df8a59f571a9b7"
+  },
+  "8353250b517d80413abcb5ed6e7c1b3644cfdda01f2c4f67324cf0be": {
+    "name": "CALAMONERI TIZIANA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/8353250b517d80413abcb5ed6e7c1b3644cfdda01f2c4f67324cf0be"
+  },
+  "1a1ac86e28807c8465fd68d17a0b76adaa1bdfc769ab8836a774c2d9": {
+    "name": "SAMORY MATTIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1a1ac86e28807c8465fd68d17a0b76adaa1bdfc769ab8836a774c2d9"
+  },
+  "973ff60addc4d38eb1d834f638aa4cad5b13824dee721d16debdeff6": {
+    "name": "CHECCO ALESSANDRO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/973ff60addc4d38eb1d834f638aa4cad5b13824dee721d16debdeff6"
+  },
+  "eb20887b37d59d3572c799cece964a04d1237cffb2bab9e31bb8dc2b": {
+    "name": "MONTI ANGELO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/eb20887b37d59d3572c799cece964a04d1237cffb2bab9e31bb8dc2b"
+  },
+  "4ebfbe5cb9997b03daadfbe341896cd80637c80fe101cc29787937c0": {
+    "name": "FARALLI STEFANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/4ebfbe5cb9997b03daadfbe341896cd80637c80fe101cc29787937c0"
+  },
+  "03ed820157baa29c9671ff82b11d1fbda0f06d117976e3de3f67b766": {
+    "name": "MANCINI TONI",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/03ed820157baa29c9671ff82b11d1fbda0f06d117976e3de3f67b766"
+  },
+  "1bc0b942e1da31ffa70f9a65719bb0fc4331711da1602e311918d8e3": {
+    "name": "WOLLAN PAUL JOSEPH",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1bc0b942e1da31ffa70f9a65719bb0fc4331711da1602e311918d8e3"
+  },
+  "71a5cf24a1542dffce1962c7f2b4ce9f215ec20f318292197f21a163": {
+    "name": "ZULIANI PAOLO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/71a5cf24a1542dffce1962c7f2b4ce9f215ec20f318292197f21a163"
+  },
+  "b911a093aa5200e6bee385aafccfb05592c8b08acc8d5024cb52ceb4": {
+    "name": "MASELLI GAIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/b911a093aa5200e6bee385aafccfb05592c8b08acc8d5024cb52ceb4"
+  },
+  "a694c7295093c4c327056a69b52ca84415bfb8978639a3a32a24ba40": {
+    "name": "CASALICCHIO EMILIANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/a694c7295093c4c327056a69b52ca84415bfb8978639a3a32a24ba40"
+  },
+  "b580c54bfb84caf6244b9174a6a741906b3f5ed73d5eb9d5d7937040": {
+    "name": "CASTRIGNANO' TIZIANA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/b580c54bfb84caf6244b9174a6a741906b3f5ed73d5eb9d5d7937040"
+  },
+  "0fa2ec4cc7f3535fa009538b81968040769c3d8f2e98f639d777afb3": {
+    "name": "FRANCESCHINI GIANNI",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/0fa2ec4cc7f3535fa009538b81968040769c3d8f2e98f639d777afb3"
+  },
+  "be67ada94f05ddff2f83ea03c356a47a43ff62b65a3ac0ba70251f21": {
+    "name": "CAPPARELLI STEFANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/be67ada94f05ddff2f83ea03c356a47a43ff62b65a3ac0ba70251f21"
+  },
+  "31e8d1fee8bd6eb239f9c985f4b2e5d4786ff9588d67330262644a78": {
+    "name": "SALVO IVANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/31e8d1fee8bd6eb239f9c985f4b2e5d4786ff9588d67330262644a78"
+  },
+  "d0333aace56233062e9617115fb0e6c5e8e3dfa4a9d74793105ff698": {
+    "name": "TRONCI ENRICO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d0333aace56233062e9617115fb0e6c5e8e3dfa4a9d74793105ff698"
+  },
+  "401a2ee6cc7c26671171d1d7ff50a3c99b00490c62b9c58e0fd08073": {
+    "name": "CHIERICHETTI FLAVIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/401a2ee6cc7c26671171d1d7ff50a3c99b00490c62b9c58e0fd08073"
+  },
+  "1b04a8290feae16f8d78e35fa2adf42dd7668423a4bf33075cd4edcd": {
+    "name": "MASSINI ANNALISA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1b04a8290feae16f8d78e35fa2adf42dd7668423a4bf33075cd4edcd"
+  },
+  "0367319152d06ab660b81cb70e940cfd03c7937775e6a32962e3dd9b": {
+    "name": "BOTTONI PAOLO GASPARE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/0367319152d06ab660b81cb70e940cfd03c7937775e6a32962e3dd9b"
+  },
+  "56d2725466cb5953459d7a47a23b8bbd320a15bedc6cef3ebf8306aa": {
+    "name": "GORLA DANIELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/56d2725466cb5953459d7a47a23b8bbd320a15bedc6cef3ebf8306aa"
+  },
+  "1d7f2572efcc18caab227fcf62db9ca08022e850ac3f90bda80c0afb": {
+    "name": "HITAJ DORJAN",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1d7f2572efcc18caab227fcf62db9ca08022e850ac3f90bda80c0afb"
+  },
+  "39ac1000ee2d70ccee6238d30a628c9789f427784a6bc9fe600fe89a": {
+    "name": "RODOLA' EMANUELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/39ac1000ee2d70ccee6238d30a628c9789f427784a6bc9fe600fe89a"
+  },
+  "d0ab2313982ae31335bf0ca9ec541c1e29015850654190038e83754d": {
+    "name": "PANIZZI EMANUELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d0ab2313982ae31335bf0ca9ec541c1e29015850654190038e83754d"
+  },
+  "fbe3938b0e1589813248bf7b34f7e7162627e8dcd0a57d18a9ac7ab6": {
+    "name": "BARTOLINI NOVELLA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/fbe3938b0e1589813248bf7b34f7e7162627e8dcd0a57d18a9ac7ab6"
+  },
+  "4fa70537ab8f306cdd60f6d50076b8863bc60228463838ddd83c46d2": {
+    "name": "CARLUCCI LORENZO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/4fa70537ab8f306cdd60f6d50076b8863bc60228463838ddd83c46d2"
+  },
+  "65816d4db3c3490a6f9ebd8ceed2d87fead474a980f41016a6d61e8e": {
+    "name": "DE MARSICO MARIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/65816d4db3c3490a6f9ebd8ceed2d87fead474a980f41016a6d61e8e"
+  },
+  "a10b1c7ed1eb88f53aea8974f203e8f296af399a2977880ee858367d": {
+    "name": "MASI IACOPO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/a10b1c7ed1eb88f53aea8974f203e8f296af399a2977880ee858367d"
+  },
+  "cb07c5c1ada02c8f7a23ce6e20e20a7bf1365e3bc64f0a48c22bc1f5": {
+    "name": "SPOGNARDI ANGELO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/cb07c5c1ada02c8f7a23ce6e20e20a7bf1365e3bc64f0a48c22bc1f5"
+  },
+  "ea834617dcca919142be398afbcc19a68f86d12094962fb974a9bf76": {
+    "name": "RAPAGNANI PIERO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/ea834617dcca919142be398afbcc19a68f86d12094962fb974a9bf76"
+  },
+  "f239f16747654cfca4b4f64364f85827f3e4af654fa236b61c69213b": {
+    "name": "ANSINI NADIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/f239f16747654cfca4b4f64364f85827f3e4af654fa236b61c69213b"
+  },
+  "b88986f842b5c00afe548279b3eec4a640918f8270a87b49c5d0e056": {
+    "name": "MEI ALESSANDRO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/b88986f842b5c00afe548279b3eec4a640918f8270a87b49c5d0e056"
+  },
+  "2cda4d12b4f3d6210693893d2f2e76244b257eafa18d1869ecc2c895": {
+    "name": "CUNQUEIRO MENDEZ LETICIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/2cda4d12b4f3d6210693893d2f2e76244b257eafa18d1869ecc2c895"
+  },
+  "d78c07674587ddd7ce68859a88057950c43c4a764b11412a1ccee5da": {
+    "name": "CENCIARELLI PIETRO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d78c07674587ddd7ce68859a88057950c43c4a764b11412a1ccee5da"
+  },
+  "d3f7ca79a7c6273260043d4df626937432cc0926e1cb3e83a9262a98": {
+    "name": "PANNONE DANIELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d3f7ca79a7c6273260043d4df626937432cc0926e1cb3e83a9262a98"
+  },
+  "8436bfd2acec3b603a44c49e144bfa1bfed17aae4e5ebd23cf01d3bb": {
+    "name": "SPINELLI INDRO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/8436bfd2acec3b603a44c49e144bfa1bfed17aae4e5ebd23cf01d3bb"
+  },
+  "d2de0549580acf978f938219f8c90d7529a2a8bf5616c9a18cbb134a": {
+    "name": "QUATTROCIOCCHI WALTER",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d2de0549580acf978f938219f8c90d7529a2a8bf5616c9a18cbb134a"
+  },
+  "5c2d929718bb4d64ef2b8bbf7525e3d1caef188d1656d32624fca1ea": {
+    "name": "BARTOLI GIANPAOLO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/5c2d929718bb4d64ef2b8bbf7525e3d1caef188d1656d32624fca1ea"
+  },
+  "e1aceceeb5646d24ca7a390ec4d2e9d4ab8267bd2949b6b0ad9c6563": {
+    "name": "GARRONI ADRIANA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/e1aceceeb5646d24ca7a390ec4d2e9d4ab8267bd2949b6b0ad9c6563"
+  },
+  "de96c9c8abadcc7aff887a9dab762c2ecdc4802c21962b01a2bf0887": {
+    "name": "STERBINI ANDREA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/de96c9c8abadcc7aff887a9dab762c2ecdc4802c21962b01a2bf0887"
+  },
+  "1d392b437964acb80534d84b84be20957804098a0842162d88461b32": {
+    "name": "PIPERNO ADOLFO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1d392b437964acb80534d84b84be20957804098a0842162d88461b32"
+  },
+  "2d49d15a1021a18aee7768bb09de37397225857acf9ea64699447bdc": {
+    "name": "PONTARELLI SALVATORE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/2d49d15a1021a18aee7768bb09de37397225857acf9ea64699447bdc"
+  },
+  "dea8e9f545c121c2bfee184813542ebd9bb7247fac6161ad6b25b94b": {
+    "name": "ORSINA LUIGI",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/dea8e9f545c121c2bfee184813542ebd9bb7247fac6161ad6b25b94b"
+  },
+  "f92bef1a8f2f1066d80ce36539412fe083a105b7f1a73473875ba2f4": {
+    "name": "PIAZZA PAOLO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/f92bef1a8f2f1066d80ce36539412fe083a105b7f1a73473875ba2f4"
+  },
+  "c7916dc0ae86ebc56ee3b1499c08d6df6224338a7e762644db158c3e": {
+    "name": "PERELLI GIUSEPPE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c7916dc0ae86ebc56ee3b1499c08d6df6224338a7e762644db158c3e"
+  },
+  "2c4aa35769031376592596089780bed74d78c7a2e0bc229dafd36a2e": {
+    "name": "BERTINI MALGARINI LORENZO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/2c4aa35769031376592596089780bed74d78c7a2e0bc229dafd36a2e"
+  },
+  "e9b9b49f482d35b60f1a56d2e1afdac03f6cd59f033d5e6ede41b247": {
+    "name": "TOLOMEI GABRIELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/e9b9b49f482d35b60f1a56d2e1afdac03f6cd59f033d5e6ede41b247"
+  },
+  "1e8332c3d3a479250212ca7e148332ff08a6db9192577d1312216ffc": {
+    "name": "PELLARIN FEDERICO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1e8332c3d3a479250212ca7e148332ff08a6db9192577d1312216ffc"
+  },
+  "713c0b31bd63d96bb863bc6e1dd6160edad0042319757e001289f1d2": {
+    "name": "TAGGI LORENZO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/713c0b31bd63d96bb863bc6e1dd6160edad0042319757e001289f1d2"
+  },
+  "a18623c9d0a55e5a48c88bcc0313c4e37e0f7c61462e2096589c3baf": {
+    "name": "DE GASPARI FABIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/a18623c9d0a55e5a48c88bcc0313c4e37e0f7c61462e2096589c3baf"
+  },
+  "f2a274462a073d014053257c7c37e8aa8b40000ae03fc48baf4acf64": {
+    "name": "VENTURI DANIELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/f2a274462a073d014053257c7c37e8aa8b40000ae03fc48baf4acf64"
+  },
+  "c0e06d16ba5f3e0661337506aaf59f180e1081067c990ead60b50014": {
+    "name": "GERMANO MASSIMO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c0e06d16ba5f3e0661337506aaf59f180e1081067c990ead60b50014"
+  },
+  "602fc59d475eb3424350ecb321baa87767d50003ddf1043a40f1fd90": {
+    "name": "MANCINI MAURIZIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/602fc59d475eb3424350ecb321baa87767d50003ddf1043a40f1fd90"
+  },
+  "51f8a826f48cc117e58434915b54a21b6fedfd426dec0087a3de2826": {
+    "name": "GALASSO FABIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/51f8a826f48cc117e58434915b54a21b6fedfd426dec0087a3de2826"
+  },
+  "c5892bf42eac27f3720899ef025482c4a0d09778117424bd25be0c48": {
+    "name": "LA MORGIA MASSIMO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c5892bf42eac27f3720899ef025482c4a0d09778117424bd25be0c48"
+  },
+  "33d2504d767f677ee6070d9f0ce6ef7065464613b94d701aff37706e": {
+    "name": "LAURIA MASSIMO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/33d2504d767f677ee6070d9f0ce6ef7065464613b94d701aff37706e"
+  },
+  "559cd99f7f86fcae59cf4f08e349490a12345d4d2034ed6c7d4fa62b": {
+    "name": "CINQUE LUIGI",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/559cd99f7f86fcae59cf4f08e349490a12345d4d2034ed6c7d4fa62b"
+  },
+  "ea4537a3b98738b91fe574e49f4ce2a93d6b5f3302c08edf2ad18cd6": {
+    "name": "VELARDI PAOLA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/ea4537a3b98738b91fe574e49f4ce2a93d6b5f3302c08edf2ad18cd6"
+  },
+  "42f623501dd7a602ad72075ad288fa0c9914e822b68de2425b76c542": {
+    "name": "DE VITIS ALESSANDRA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/42f623501dd7a602ad72075ad288fa0c9914e822b68de2425b76c542"
+  },
+  "92e4cf0c6bdf3e64296b4b6c3449f0fb440dea02e1fd588c10d42099": {
+    "name": "FRIOLO DANIELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/92e4cf0c6bdf3e64296b4b6c3449f0fb440dea02e1fd588c10d42099"
+  },
+  "854ad85fd374fa8dbcfe12385cb301cdeba0817ebc21c653fc5c61a8": {
+    "name": "BIRINDELLI ISABELLA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/854ad85fd374fa8dbcfe12385cb301cdeba0817ebc21c653fc5c61a8"
+  },
+  "5a8f6a013fb4503b6b55abf0114f043adb6bdfa185925129038b66ab": {
+    "name": "DE SENSI DANIELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/5a8f6a013fb4503b6b55abf0114f043adb6bdfa185925129038b66ab"
+  },
+  "7f787d7691e62979856e206591ca4f7966bc1ad728e71ba904f8777d": {
+    "name": "ZABAD SAHAR",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/7f787d7691e62979856e206591ca4f7966bc1ad728e71ba904f8777d"
+  },
+  "ecf21e46efa0f790d7d9d7867444474b472130b52c5c014de7ea19bd": {
+    "name": "SILVESTRI VITTORIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/ecf21e46efa0f790d7d9d7867444474b472130b52c5c014de7ea19bd"
+  },
+  "202b80b1ed66400d2a4f83f066ff81e17836857882eff2143804b906": {
+    "name": "HUYNH TONY CHI THONG",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/202b80b1ed66400d2a4f83f066ff81e17836857882eff2143804b906"
+  },
+  "d6d44640fc02c0af2aa03387b443f630276f0e7afb315dd2e6334d9f": {
+    "name": "FAGGIONATO ALESSANDRA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d6d44640fc02c0af2aa03387b443f630276f0e7afb315dd2e6334d9f"
+  },
+  "0300241ab4a2e657cc93a815c8727b6f4029ae9818854e5845d67998": {
+    "name": "SAVIO RICCARDO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/0300241ab4a2e657cc93a815c8727b6f4029ae9818854e5845d67998"
+  },
+  "4f48ed3f37b3bcc4ce604798800b1c65edce091e76aa01a3cb235719": {
+    "name": "VIAGGI GABRIELE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/4f48ed3f37b3bcc4ce604798800b1c65edce091e76aa01a3cb235719"
+  },
+  "84760469f12833e2cc551f6586313536c3d505747b4ede0f5f35f158": {
+    "name": "NAPPO GIOVANNA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/84760469f12833e2cc551f6586313536c3d505747b4ede0f5f35f158"
+  },
+  "1eacbfca7b69e71d1a536ff19f1a8ab1b74d3721fa3c1888f1a35e52": {
+    "name": "PISANTE ADRIANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1eacbfca7b69e71d1a536ff19f1a8ab1b74d3721fa3c1888f1a35e52"
+  },
+  "bd39fe2c4f5005d585cf24ca7d4f8dfa6142b0e0597802923699e688": {
+    "name": "ASARO CARMELO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/bd39fe2c4f5005d585cf24ca7d4f8dfa6142b0e0597802923699e688"
+  },
+  "27af4a3359aeb0104645902f1ea25495ef8eec404c993b28362dc074": {
+    "name": "ALLA ALESSANDRO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/27af4a3359aeb0104645902f1ea25495ef8eec404c993b28362dc074"
+  },
+  "cbaeac0521b3744df43fd752f324c84724781c8d363b302679c25acd": {
+    "name": "SMERIGLIO MICHELANGELO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/cbaeac0521b3744df43fd752f324c84724781c8d363b302679c25acd"
+  },
+  "fe89d218146f928b93d072069f7a09e0b53c73f1929d2c13e4bae634": {
+    "name": "RICHELLI GIORGIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/fe89d218146f928b93d072069f7a09e0b53c73f1929d2c13e4bae634"
+  },
+  "4c66b6b5b325da811da1984148bb74f364dc5f95c3aee7f43b08d8b3": {
+    "name": "DI LUNA GIUSEPPE ANTONIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/4c66b6b5b325da811da1984148bb74f364dc5f95c3aee7f43b08d8b3"
+  },
+  "0c78e43351e850cb2be8beabcae820c350058cdc7b29a4c5dc52666b": {
+    "name": "POLVERINI MARCO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/0c78e43351e850cb2be8beabcae820c350058cdc7b29a4c5dc52666b"
+  },
+  "c576aff061883e7e1abb092f4808c36b9118a21d065cd74ce854b703": {
+    "name": "GASTALDI TOMMASO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c576aff061883e7e1abb092f4808c36b9118a21d065cd74ce854b703"
+  },
+  "d1f1cb20a781b6b1c42e90d4a26e16c10b9190124b5c4d36395bc1b5": {
+    "name": "D'ELIA DANIELE CONO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d1f1cb20a781b6b1c42e90d4a26e16c10b9190124b5c4d36395bc1b5"
+  },
+  "46396e48252043a0ba97dd0a92412fafa7be4b4138f42951943ae1d9": {
+    "name": "BERALDI ROBERTO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/46396e48252043a0ba97dd0a92412fafa7be4b4138f42951943ae1d9"
+  },
+  "3b9cee710dcf9ec86cade7bd5ee3c7dd886ebe3e71a9a2b6591d9246": {
+    "name": "BONOMI SILVIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/3b9cee710dcf9ec86cade7bd5ee3c7dd886ebe3e71a9a2b6591d9246"
+  },
+  "efb32bb89b2a3360eeea76125b7ae187d32f9f2efa0ae11e20079d00": {
+    "name": "AIELLO VALERIANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/efb32bb89b2a3360eeea76125b7ae187d32f9f2efa0ae11e20079d00"
+  },
+  "3097fd484e15641601eb5b871b61a77a7966ddaf7c1716fbf749a66c": {
+    "name": "D'ADAMO IDIANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/3097fd484e15641601eb5b871b61a77a7966ddaf7c1716fbf749a66c"
+  },
+  "161ab7fa4b64110aef03808cb13cfd36cedeb6f1d49730eebad9099f": {
+    "name": "LIBERATI FRANCESCO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/161ab7fa4b64110aef03808cb13cfd36cedeb6f1d49730eebad9099f"
+  },
+  "c6156a120bb5870a5b7b9d1e23fdb2e62f159be2e0a5ab9dd9348a00": {
+    "name": "VITALETTI ANDREA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c6156a120bb5870a5b7b9d1e23fdb2e62f159be2e0a5ab9dd9348a00"
+  },
+  "e99edbc49e0fda47418d2ff1519111cfb300f81c25730557016ebbe3": {
+    "name": "SIGISMONDI IRENE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/e99edbc49e0fda47418d2ff1519111cfb300f81c25730557016ebbe3"
+  },
+  "7a52621289055e27e31f5bc9082227a47cf954bb2e08a73756e17245": {
+    "name": "POLESE DAVIDE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/7a52621289055e27e31f5bc9082227a47cf954bb2e08a73756e17245"
+  },
+  "e46974dc481037d0583a126f393319b8ed49a28a60be4e8194b1679d": {
+    "name": "AVOLA DANILO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/e46974dc481037d0583a126f393319b8ed49a28a60be4e8194b1679d"
+  },
+  "6ff4ba2e4c4d78e9d49b44c20727bab8ef65534ccde90e97df0d6422": {
+    "name": "LAZZERETTI RICCARDO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/6ff4ba2e4c4d78e9d49b44c20727bab8ef65534ccde90e97df0d6422"
+  },
+  "7a5f4e596334e85705e1b59478cc9e7aca718c9f9bb6b97e5814c05c": {
+    "name": "DE LA TORRE PEDRAZA AZAHARA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/7a5f4e596334e85705e1b59478cc9e7aca718c9f9bb6b97e5814c05c"
+  },
+  "a1e9700ddc085d2684fc2c1cda6496b4b18e59d00f333ec058d5a7b8": {
+    "name": "VISCONTI IVAN",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/a1e9700ddc085d2684fc2c1cda6496b4b18e59d00f333ec058d5a7b8"
+  },
+  "1310d579c7a352a478e1634057c547d1c038233284472bc63796d604": {
+    "name": "ESPOSITO MARCO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1310d579c7a352a478e1634057c547d1c038233284472bc63796d604"
+  },
+  "c9c0ea5062ab91edd804bfaeefff966cca8c6b8c21b755d269ef1add": {
+    "name": "ARRIGONI VIVIANA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c9c0ea5062ab91edd804bfaeefff966cca8c6b8c21b755d269ef1add"
+  },
+  "5abed536d1e74423ec4c390c9efd0c727ec17d34f4c03874c27479af": {
+    "name": "AVITABILE LUISA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/5abed536d1e74423ec4c390c9efd0c727ec17d34f4c03874c27479af"
+  },
+  "1c56724ae56a9a6dd62fe2d96d751295502095dde352a2d5fb52c296": {
+    "name": "MOLCHO SAMOUIL",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1c56724ae56a9a6dd62fe2d96d751295502095dde352a2d5fb52c296"
+  },
+  "877234eaec4e010fc4e230ab5e683208f72274d5e073b05a54991bb3": {
+    "name": "D'ALESSANDRO FLAVIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/877234eaec4e010fc4e230ab5e683208f72274d5e073b05a54991bb3"
+  },
+  "69f4965b064dc997920d90041ff6345a1f04a33a59d9f13196060073": {
+    "name": "CINELLI MATTEO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/69f4965b064dc997920d90041ff6345a1f04a33a59d9f13196060073"
+  },
+  "6f7a12ae2d349c788c5d08abc288eb88e6835d7742f8925933eabb62": {
+    "name": "LANZARA FLAVIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/6f7a12ae2d349c788c5d08abc288eb88e6835d7742f8925933eabb62"
+  },
+  "6463ffc418404edf2e493dc1b39661eb389aa43f98aa7d5855a631ca": {
+    "name": "MARINI MARCO RAOUL",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/6463ffc418404edf2e493dc1b39661eb389aa43f98aa7d5855a631ca"
+  },
+  "0ab860a416b8b37f38529f8f7cd0e5cf67a5214ad60e04af6ba7c3b6": {
+    "name": "TSCHAIKOWSKI MAX",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/0ab860a416b8b37f38529f8f7cd0e5cf67a5214ad60e04af6ba7c3b6"
+  },
+  "19a466d41691535803deec449cc94150b9f217ce0f0c3326ca5abe9e": {
+    "name": "DE SOLE ALBERTO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/19a466d41691535803deec449cc94150b9f217ce0f0c3326ca5abe9e"
+  },
+  "18b7ab9238460e4989271457a4e48801b59a676855286a2a504ee673": {
+    "name": "QUERZONI LEONARDO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/18b7ab9238460e4989271457a4e48801b59a676855286a2a504ee673"
+  },
+  "6d025bf03e09d4ccfcf51bdc52a9c982c0dd1f2c12a67e5f28e91b50": {
+    "name": "D'AMORE FABRIZIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/6d025bf03e09d4ccfcf51bdc52a9c982c0dd1f2c12a67e5f28e91b50"
+  },
+  "8861ac6edb9b40024e5eaa83e4a8e255503869da589725fc18069377": {
+    "name": "CUOMO FRANCESCA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/8861ac6edb9b40024e5eaa83e4a8e255503869da589725fc18069377"
+  },
+  "987320833b51f80dfb0da7cc0f48ccf336622615be73ed3c17e66333": {
+    "name": "ZATTI STEFANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/987320833b51f80dfb0da7cc0f48ccf336622615be73ed3c17e66333"
+  },
+  "04be579af80ce4071b63bda30a71717fe853fe3df7bd03582ad070cd": {
+    "name": "FRANCATI DANILO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/04be579af80ce4071b63bda30a71717fe853fe3df7bd03582ad070cd"
+  },
+  "9bd239ea5332b21bb947eb6fe7ed3814e7051109d817e4e49b8c2e10": {
+    "name": "O'GRADY KIERAN GREGORY",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/9bd239ea5332b21bb947eb6fe7ed3814e7051109d817e4e49b8c2e10"
+  },
+  "33b485f38f83b317f13c82ffc50130f4d49d0a0122dc057866bb1ebc": {
+    "name": "TIOZZO GIULIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/33b485f38f83b317f13c82ffc50130f4d49d0a0122dc057866bb1ebc"
+  },
+  "fab9ea8edd39472cf128c9d8c088ea53b60632e596151ea63f766ee0": {
+    "name": "GATTI MAURO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/fab9ea8edd39472cf128c9d8c088ea53b60632e596151ea63f766ee0"
+  },
+  "70769f6c7421a78996077ee50349a49bd73720aa32a34f33f86c9193": {
+    "name": "MANCINI LUIGI VINCENZO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/70769f6c7421a78996077ee50349a49bd73720aa32a34f33f86c9193"
+  },
+  "18589bad163db57d144db930f02b27e9159c5801e5be8c268c3d55c3": {
+    "name": "SCHLEICHER DOMINIK REINHOLD GEORG",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/18589bad163db57d144db930f02b27e9159c5801e5be8c268c3d55c3"
+  },
+  "7214f143e19aed4b58c9743e09a3834b889f42e50a406aad74b8adcb": {
+    "name": "DE VITO ROBERTA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/7214f143e19aed4b58c9743e09a3834b889f42e50a406aad74b8adcb"
+  },
+  "09ad21de38199739b33dbc9909edab5e9400fa5347c3c3793de86a90": {
+    "name": "MAGGI BERNARDO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/09ad21de38199739b33dbc9909edab5e9400fa5347c3c3793de86a90"
+  },
+  "0f1032e1a67fd22ad52f5e6c704df4131d8e29231a5119a7f98aa105": {
+    "name": "ERAMO VINCENZO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/0f1032e1a67fd22ad52f5e6c704df4131d8e29231a5119a7f98aa105"
+  },
+  "f78e65ee0942edd9eecca37d6e90c402f20fe40f876ee5cb178105db": {
+    "name": "TARDELLA LUCA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/f78e65ee0942edd9eecca37d6e90c402f20fe40f876ee5cb178105db"
+  },
+  "2cbb4122228c5e76f2afd7843cab5d2faf3f6a2f23afbed910e573d7": {
+    "name": "SILVESTRI FABRIZIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/2cbb4122228c5e76f2afd7843cab5d2faf3f6a2f23afbed910e573d7"
+  },
+  "05fd5b57cce9673317cab2c93728addbdd36ee8952dc4d91aea63891": {
+    "name": "SALZO SAVERIO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/05fd5b57cce9673317cab2c93728addbdd36ee8952dc4d91aea63891"
+  },
+  "b038c0bfb696668b1bfa1a4dd217cad43060b93ef961f694f5439679": {
+    "name": "DARAIO CINZIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/b038c0bfb696668b1bfa1a4dd217cad43060b93ef961f694f5439679"
+  },
+  "1b749331b4241719b72be3d21a0c920aaf4ee73f0afd73647a1f295b": {
+    "name": "BRUTTI PIERPAOLO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1b749331b4241719b72be3d21a0c920aaf4ee73f0afd73647a1f295b"
+  },
+  "796348dd17181b0e5bc5b7ff12602f4bfdbc419b7338730911747e78": {
+    "name": "SCALAS ENRICO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/796348dd17181b0e5bc5b7ff12602f4bfdbc419b7338730911747e78"
+  },
+  "1f88d3c450db0f7cc8e954feea81a05b3e1f424005e410c38accdb8d": {
+    "name": "NUNZIATA FERDINANDO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1f88d3c450db0f7cc8e954feea81a05b3e1f424005e410c38accdb8d"
+  },
+  "cb9abcdfd622d0b1bb07b235dc3b6326d00a43518e0fa65bca8b389e": {
+    "name": "REVERBERI PIERFRANCESCO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/cb9abcdfd622d0b1bb07b235dc3b6326d00a43518e0fa65bca8b389e"
+  },
+  "f2851c21b90cd4c1e1d818c6d9b658767d01dc157bd0437a6ade3312": {
+    "name": "ANAGNOSTOPOULOS ARISTIDIS",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/f2851c21b90cd4c1e1d818c6d9b658767d01dc157bd0437a6ade3312"
+  },
+  "b70440297f6627f9dd71d2c33864950a9f1686dfdccbf6385a0f04ec": {
+    "name": "ORLANDO SALVATORE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/b70440297f6627f9dd71d2c33864950a9f1686dfdccbf6385a0f04ec"
+  },
+  "4b0e4fbd4999e8aaa21b213b3f5423d3b77aba584d204370113fc635": {
+    "name": "COLONNESE STEFANIA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/4b0e4fbd4999e8aaa21b213b3f5423d3b77aba584d204370113fc635"
+  },
+  "b8ce18660a487f6576f571621c66cfdc5c8b112560d9433892c7562a": {
+    "name": "LEMBO DOMENICO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/b8ce18660a487f6576f571621c66cfdc5c8b112560d9433892c7562a"
+  },
+  "f6f544ea031b5756b8c51c0663c8d4051da94ff9fe9595281df731af": {
+    "name": "ROSATI RICCARDO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/f6f544ea031b5756b8c51c0663c8d4051da94ff9fe9595281df731af"
+  },
+  "4105fcca79634e057caa6828b1663d8d21f44c9a8f551f66c57310a7": {
+    "name": "BECCHETTI LUCA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/4105fcca79634e057caa6828b1663d8d21f44c9a8f551f66c57310a7"
+  },
+  "e1d8136293f36d389d14ce2f01ec8e8a64deab877e26c7d44f6c60d2": {
+    "name": "MARZANO RICCARDO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/e1d8136293f36d389d14ce2f01ec8e8a64deab877e26c7d44f6c60d2"
+  },
+  "f1c41ed9f77244cd05f84b72eaa5563045643d01ee589b473192cad1": {
+    "name": "IOCCHI LUCA",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/f1c41ed9f77244cd05f84b72eaa5563045643d01ee589b473192cad1"
+  },
+  "d043d6be-c18b-4866-98ab-f41ee5f1e7f8": {
+    "name": "PENNESI ALICE",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/d043d6be-c18b-4866-98ab-f41ee5f1e7f8"
+  },
+  "c4ab26f1b1dc2ac39cb930ee0713f4189efcbefc9b10498b2d160a7e": {
+    "name": "CRESPI MATTIA GIOVANNI",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/c4ab26f1b1dc2ac39cb930ee0713f4189efcbefc9b10498b2d160a7e"
+  },
+  "3c2d5b0d3bd0d4575e15f53155c97320f9fd7546dd1a927231e29029": {
+    "name": "LEONARDI STEFANO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/3c2d5b0d3bd0d4575e15f53155c97320f9fd7546dd1a927231e29029"
+  },
+  "1f83a5408282953c50f215c4fad15d975dfc7d64bb6e3c04eae31c0f": {
+    "name": "SPADACCINO PIETRO",
+    "url": "https://corsidilaurea.uniroma1.it/it/lecturer/1f83a5408282953c50f215c4fad15d975dfc7d64bb6e3c04eae31c0f"
+  }
 }

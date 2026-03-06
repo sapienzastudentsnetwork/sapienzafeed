@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BERALDI ROBERTO</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">BERALDI ROBERTO</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/46396e48252043a0ba97dd0a92412fafa7be4b4138f42951943ae1d9" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/default/files/styles/lecturer_picture/public/pictures/picture-1367-1583680114.png?itok=Yb_BRkR1" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> roberto.beraldi@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di INGEGNERIA INFORMATICA, AUTOMATICA E GESTIONALE "ANTONIO RUBERTI"</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> IINF-05/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>News#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Receiving hours#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33516/attendance/lesson/721cce62-ad29-424e-b2e4-936e851b7ff4/2/1/3c37ff0b-0bc9-4844-a3b3-1edb0eb51f8c/0dd244c2-9576-4afa-a95c-94ec5e3e486c" target="_blank">1044415 <span class="external-icon">↗</span></a></td><td>MOBILE APPLICATIONS AND CLOUD COMPUTING</td><td>2nd</td><td>1st</td><td>ENG</td><td>Cybersecurity</td><td>33516</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33498/attendance/lesson/88c2be66-d1f4-463b-bb01-ddc0ffc3e52c/3/2/e509dc1d-7923-4365-b8ef-4a378b2e06d0/7810031d-2890-479f-86fd-a0051418e108" target="_blank">1035355 <span class="external-icon">↗</span></a></td><td>RETI E SISTEMI OPERATIVI</td><td>3rd</td><td>2nd</td><td>ITA</td><td>Information Engineering</td><td>33498</td><td>Informatica</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33498/attendance/lesson/5fb8acfc-9695-413c-801b-253432786c00/3/2/0bfafd61-cc1e-4be6-b904-21ebea352aa0" target="_blank">1035355 <span class="external-icon">↗</span></a></td><td>RETI E SISTEMI OPERATIVI</td><td>3rd</td><td>2nd</td><td>ITA</td><td>Information Engineering</td><td>33498</td><td>Gestionale</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33515/attendance/lesson/e3149c44-204c-4665-b078-b49194f40798/2/1/6ae52e15-eef7-4b6c-8b60-a8f5bd8a3d0d/b23a91fd-d67b-4175-84c0-14166410c9d3" target="_blank">1044415 <span class="external-icon">↗</span></a></td><td>MOBILE APPLICATIONS AND CLOUD COMPUTING</td><td>2nd</td><td>1st</td><td>ENG</td><td>Engineering in Computer Science and Artificial Intelligence</td><td>33515</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

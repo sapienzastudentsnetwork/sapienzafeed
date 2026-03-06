@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCHLEICHER DOMINIK REINHOLD GEORG</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">SCHLEICHER DOMINIK REINHOLD GEORG</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../en/index.html" class="lang-btn" title="Switch language">🇮🇹 Lingua</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button></div>
+<div class="navigation-bar"><a href="../../it/index.html" class="back-link-btn">◀️ Docenti</a><button class="print-btn" onclick="window.print()">🖨️ Salva come PDF</button><a href="https://corsidilaurea.uniroma1.it/it/lecturer/18589bad163db57d144db930f02b27e9159c5801e5be8c268c3d55c3" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Fonte</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> dominik.schleicher@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Struttura:</strong> Dipartimento di FISICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> PHYS-05/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-activities">
+            <summary>Insegnamenti#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Codice insegnamento</th><th>Insegnamento</th><th>Anno</th><th>Semestre</th><th>Lingua</th><th> Corso</th><th>Codice corso</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33502/attendance/lesson/76f4910a-58e9-45a3-9b5b-2088d9e79d2f/1/2/354bb21a-e10c-48ae-b828-126e16f1af9f" target="_blank">10595523 <span class="external-icon">↗</span></a></td><td>PHYSICS</td><td>1º</td><td>2º</td><td>ENG</td><td>Applied Computer Science and Artificial Intelligence – Informatica Applicata e Intelligenza Artificiale</td><td>33502</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33607/attendance/lesson/09ff7e1b-7ea9-4ac9-b547-a86b563c45d0/1/2/de1dfbb8-c493-4f0a-a1e6-546f4484ced7/86e27a35-4fd6-4905-af45-0a64562bf0ad" target="_blank">1044553 <span class="external-icon">↗</span></a></td><td>THEORETICAL ASTROPHYSICS</td><td>1º</td><td>2º</td><td>ENG</td><td>Astrophysics and Cosmology - Astrofisica e Cosmologia</td><td>33607</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33502/attendance/lesson/76f4910a-58e9-45a3-9b5b-2088d9e79d2f/1/2/354bb21a-e10c-48ae-b828-126e16f1af9f" target="_blank">10595523 <span class="external-icon">↗</span></a></td><td>PHYSICS</td><td>1º</td><td>2º</td><td>ENG</td><td>Applied Computer Science and Artificial Intelligence – Informatica Applicata e Intelligenza Artificiale</td><td>33502</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

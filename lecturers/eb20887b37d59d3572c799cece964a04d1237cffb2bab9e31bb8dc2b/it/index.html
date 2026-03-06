@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONTI ANGELO</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">MONTI ANGELO</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../en/index.html" class="lang-btn" title="Switch language">🇮🇹 Lingua</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button></div>
+<div class="navigation-bar"><a href="../../it/index.html" class="back-link-btn">◀️ Docenti</a><button class="print-btn" onclick="window.print()">🖨️ Salva come PDF</button><a href="https://corsidilaurea.uniroma1.it/it/lecturer/eb20887b37d59d3572c799cece964a04d1237cffb2bab9e31bb8dc2b" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Fonte</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> </p>
+            <p style="margin: 5px 0;"><strong>Struttura:</strong> Dipartimento di INFORMATICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> INFO-01/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Orari di ricevimento#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Insegnamenti#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Codice insegnamento</th><th>Insegnamento</th><th>Anno</th><th>Semestre</th><th>Lingua</th><th> Corso</th><th>Codice corso</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33503/attendance/lesson/9781479b-be5c-4911-9165-6b8c0b1e889f/2/2/fe020ab9-5d53-4976-8732-3e0d617ffc1f" target="_blank">1015888 <span class="external-icon">↗</span></a></td><td>PROGETTAZIONE DI ALGORITMI</td><td>2º</td><td>2º</td><td>ITA</td><td>Informatica</td><td>33503</td><td>Tecnologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33504/attendance/lesson/cb3aa567-38ec-4660-a0e8-60ffed75ea90/2/2/429acdc5-b58e-44e7-891b-109ec20cdaa2" target="_blank">1015888 <span class="external-icon">↗</span></a></td><td>PROGETTAZIONE DI ALGORITMI</td><td>2º</td><td>2º</td><td>ITA</td><td>Informatica - erogato in modalità prevalentemente a distanza</td><td>33504</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33503/attendance/lesson/f5f44ff7-7320-4c9d-8047-db0a8d0e2c11/2/2/4d926f18-5f67-4c11-84db-b568d90c9e9c" target="_blank">1015888 <span class="external-icon">↗</span></a></td><td>PROGETTAZIONE DI ALGORITMI</td><td>2º</td><td>2º</td><td>ITA</td><td>Informatica</td><td>33503</td><td>Metodologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33503/attendance/lesson/eb2e09e3-a50c-452b-b812-cd6032f393f0/1/2/93cd6d78-970e-48c2-bae3-1a53bde6b019" target="_blank">10620599 <span class="external-icon">↗</span></a></td><td>ALGORITMI 1</td><td>1º</td><td>2º</td><td>ITA</td><td>Informatica</td><td>33503</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

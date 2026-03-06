@@ -12,7 +12,7 @@ data = response.json()
 
 # Build the new dictionary from the downloaded data
 base_url = "https://corsidilaurea.uniroma1.it/it/lecturer/"
-new_data = {info["name"].upper(): f"{base_url}{uuid}" for uuid, info in data.items()}
+new_data = {uuid: {"name": info["name"].upper(), "url": f"{base_url}{uuid}"} for uuid, info in data.items()}
 
 # Read existing professors.json if it exists
 professors_file = "professors.json"
@@ -23,8 +23,8 @@ else:
     professors = {}
 
 # Update or add professors from the new data
-for name, link in new_data.items():
-    professors[name] = link  # overwrite if already present, add if new
+for uuid, info in new_data.items():
+    professors[uuid] = info  # overwrite if already present, add if new
 
 # Keep professors that were in professors.json but are no longer in the new data
 # (no action needed, since we just overwrite/add without deleting)

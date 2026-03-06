@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DE GASPARI FABIO</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">DE GASPARI FABIO</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../en/index.html" class="lang-btn" title="Switch language">🇮🇹 Lingua</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button></div>
+<div class="navigation-bar"><a href="../../it/index.html" class="back-link-btn">◀️ Docenti</a><button class="print-btn" onclick="window.print()">🖨️ Salva come PDF</button><a href="https://corsidilaurea.uniroma1.it/it/lecturer/a18623c9d0a55e5a48c88bcc0313c4e37e0f7c61462e2096589c3baf" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Fonte</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/default/files/styles/lecturer_picture/public/pictures/foto_profilo_small_0.png?itok=PU9Uz92i" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> fabio.degaspari@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Struttura:</strong> Dipartimento di INFORMATICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> INFO-01/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>Notizie#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Insegnamenti#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Codice insegnamento</th><th>Insegnamento</th><th>Anno</th><th>Semestre</th><th>Lingua</th><th> Corso</th><th>Codice corso</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33503/attendance/lesson/9781479b-be5c-4911-9165-6b8c0b1e889f/2/1/e5654809-1506-4a14-8628-85500e6ba743/293b38d7-a050-4417-9d87-cda0db9f6cc8" target="_blank">1020422 <span class="external-icon">↗</span></a></td><td>SISTEMI OPERATIVI - I MODULO</td><td>2º</td><td>1º</td><td>ITA</td><td>Informatica</td><td>33503</td><td>Tecnologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33503/attendance/lesson/f5f44ff7-7320-4c9d-8047-db0a8d0e2c11/2/1/6560c3bb-6bfe-41ff-97db-666f15fb8d8c/3a9da8a5-4e3c-4887-9b36-7154cdd4b3f3" target="_blank">1020422 <span class="external-icon">↗</span></a></td><td>SISTEMI OPERATIVI - I MODULO</td><td>2º</td><td>1º</td><td>ITA</td><td>Informatica</td><td>33503</td><td>Metodologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/it/course/33516/attendance/lesson/721cce62-ad29-424e-b2e4-936e851b7ff4/2/1/3c37ff0b-0bc9-4844-a3b3-1edb0eb51f8c/973e47cb-f47e-46ad-913c-73e4995cc6e0" target="_blank">10616636 <span class="external-icon">↗</span></a></td><td>MACHINE LEARNING SECURITY</td><td>2º</td><td>1º</td><td>ENG</td><td>Cybersecurity</td><td>33516</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

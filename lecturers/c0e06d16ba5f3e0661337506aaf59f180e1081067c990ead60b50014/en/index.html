@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GERMANO MASSIMO</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">GERMANO MASSIMO</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/c0e06d16ba5f3e0661337506aaf59f180e1081067c990ead60b50014" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> Massimo.Germano@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di SCIENZE DI BASE ED APPLICATE PER L'INGEGNERIA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> PHYS-03/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>News#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33503/attendance/lesson/16967f2a-6a4a-4b04-a7f1-5eefa51fd1ed/3/1/78618a2b-a232-4bc1-9037-2a98f120a8ec/fed92e02-9df5-4277-a972-9a4b171e1c23" target="_blank">97597 <span class="external-icon">↗</span></a></td><td>FISICA</td><td>3rd</td><td>1st</td><td>ITA</td><td>Computer Science</td><td>33503</td><td>Metodologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33501/attendance/lesson/65f6f576-6ed9-4f55-a183-3b338bd216a8/1/2/459b7c6e-f437-4cbc-8e06-d60bc4de79ac" target="_blank">1017400 <span class="external-icon">↗</span></a></td><td>FISICA</td><td>1st</td><td>2nd</td><td>ITA</td><td>Computer and Control Engineering</td><td>33501</td><td>Informatica</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33501/attendance/lesson/df2429ba-037b-48ec-a2b6-f8b407b836b5/1/2/94b94bf2-2353-4731-91ef-2d5eeb26f03f" target="_blank">1017400 <span class="external-icon">↗</span></a></td><td>FISICA</td><td>1st</td><td>2nd</td><td>ITA</td><td>Computer and Control Engineering</td><td>33501</td><td>Automatica</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

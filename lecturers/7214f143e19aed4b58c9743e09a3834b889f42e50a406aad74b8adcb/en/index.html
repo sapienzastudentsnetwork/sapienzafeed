@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DE VITO ROBERTA</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">DE VITO ROBERTA</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/7214f143e19aed4b58c9743e09a3834b889f42e50a406aad74b8adcb" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/default/files/styles/lecturer_picture/public/pictures/whatsapp_image_2018-10-07_at_11.58.13_am.jpeg?itok=wxyedOjF" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> roberta.devito@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di SCIENZE STATISTICHE</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> STAT-01/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>News#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Receiving hours#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33507/attendance/lesson/dc237161-6c5a-4b51-9d74-0ca0d1fba694/3/2/d12c501b-c209-4669-97bf-cbba98b36876/0762c378-103d-493e-b6ce-680738b6b7bf" target="_blank">AAF1454 <span class="external-icon">↗</span></a></td><td>LABORATORIO DI SOFTWARE STATISTICI I</td><td>3rd</td><td>2nd</td><td>ITA</td><td>Statistics for management</td><td>33507</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33505/attendance/lesson/43e67b16-5347-4dbb-8bd6-39c608468321/3/2/822f28b3-5771-4792-a461-5cfc0a8ae0fc/16585839-e3ff-4c26-bcc6-8f610c3b6f2c" target="_blank">AAF1454 <span class="external-icon">↗</span></a></td><td>LABORATORIO DI SOFTWARE STATISTICI I</td><td>3rd</td><td>2nd</td><td>ITA</td><td>Statistics, Economics, and Social Sciences</td><td>33505</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33502/attendance/lesson/76f4910a-58e9-45a3-9b5b-2088d9e79d2f/2/2/b924d8eb-716d-4cdc-b6bc-cf2dd036a75b" target="_blank">1055043 <span class="external-icon">↗</span></a></td><td>STATISTICS</td><td>2nd</td><td>2nd</td><td>ENG</td><td>Applied Computer Science and Artificial Intelligence</td><td>33502</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33502/attendance/lesson/76f4910a-58e9-45a3-9b5b-2088d9e79d2f/2/2/b924d8eb-716d-4cdc-b6bc-cf2dd036a75b" target="_blank">1055043 <span class="external-icon">↗</span></a></td><td>STATISTICS</td><td>2nd</td><td>2nd</td><td>ENG</td><td>Applied Computer Science and Artificial Intelligence</td><td>33502</td><td>Curriculum unico</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

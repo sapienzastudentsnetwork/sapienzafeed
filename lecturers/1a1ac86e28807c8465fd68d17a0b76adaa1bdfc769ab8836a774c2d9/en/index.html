@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMORY MATTIA</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">SAMORY MATTIA</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/1a1ac86e28807c8465fd68d17a0b76adaa1bdfc769ab8836a774c2d9" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/default/files/styles/lecturer_picture/public/pictures/mattia_samory.jpg?itok=K9rBTBEb" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> mattia.samory@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di INFORMATICA</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> INFO-01/A</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>News#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Receiving hours#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33503/attendance/lesson/9781479b-be5c-4911-9165-6b8c0b1e889f/3/1/be04b2fc-52b5-4944-9e83-45cd119d8192/2acf2f46-1176-4c70-8837-ac0ffa27fd8d" target="_blank">1022267 <span class="external-icon">↗</span></a></td><td>PROGRAMMAZIONE PER IL WEB</td><td>3rd</td><td>1st</td><td>ITA</td><td>Computer Science</td><td>33503</td><td>Tecnologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33503/attendance/lesson/eb2e09e3-a50c-452b-b812-cd6032f393f0/1/1/ca439e37-10c1-44ce-ac79-fcc2d67e7421" target="_blank">1015883 <span class="external-icon">↗</span></a></td><td>FONDAMENTI DI PROGRAMMAZIONE</td><td>1st</td><td>1st</td><td>ITA</td><td>Computer Science</td><td>33503</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33503/attendance/lesson/9781479b-be5c-4911-9165-6b8c0b1e889f/3/1/e61e0db8-4d96-428e-8ad3-788eb56edd82/595f7b27-0326-431c-841b-da3b0b374432" target="_blank">1022267 <span class="external-icon">↗</span></a></td><td>PROGRAMMAZIONE PER IL WEB</td><td>3rd</td><td>1st</td><td>ITA</td><td>Computer Science</td><td>33503</td><td>Tecnologico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33578/attendance/lesson/2f8b3f74-0369-4011-b304-b6221f903c6a/1/1/ad9f33f0-fb02-4a5e-abf2-790d13d7de7b/8020f2e5-fdaf-4aec-8dd0-f15415679196" target="_blank">10599053 <span class="external-icon">↗</span></a></td><td>STILI DI VITA ATTIVI ED E-HEALTH - STILI DI VITA ATTIVI ED E-HEALTH II</td><td>1st</td><td>1st</td><td>ITA</td><td>Clinical and health psychology for medical contests</td><td>33578</td><td>Psicologia clinica e della salute per i contesti sanitari (percorso formativo valido anche ai fini del rilascio del doppio titolo italo-colombiano)</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>

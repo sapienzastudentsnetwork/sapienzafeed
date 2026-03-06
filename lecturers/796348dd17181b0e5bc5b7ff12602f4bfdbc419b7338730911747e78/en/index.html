@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCALAS ENRICO</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-switch.js"></script>
+</head>
+<body>
+    <div class="header-dashboard">
+        <h1 id="page-title">SCALAS ENRICO</h1>
+        <div class="header-actions">
+            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="../../en/index.html" class="back-link-btn">◀️ Lecturers</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/lecturer/796348dd17181b0e5bc5b7ff12602f4bfdbc419b7338730911747e78" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+        </div>
+    </div>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> enrico.scalas@uniroma1.it</p>
+            <p style="margin: 5px 0;"><strong>Structure:</strong> Dipartimento di SCIENZE STATISTICHE</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> MATH-03/B</p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;" open>
+            <summary>News#</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;" >
+            <summary>Receiving hours#</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary>Lessons#</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Lesson code</th><th>Lesson</th><th>Year</th><th>Semester</th><th>Language</th><th>Course</th><th>Course code</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33526/attendance/lesson/2637d8d0-cad9-4e57-8c7b-64a7dec92635/2/2/5cfc26b6-e1fd-4844-aaae-a6aaceea1ce5/9b95e553-c81d-4ff5-8598-4d3e71c289f5" target="_blank">1011710 <span class="external-icon">↗</span></a></td><td>PROBABILITA' E STATISTICA</td><td>2nd</td><td>2nd</td><td>ITA</td><td>Philosophy and Artificial Intelligence</td><td>33526</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33519/attendance/lesson/57c6368b-1013-445e-b969-8964718eb224/1/2/19e47738-163f-4274-8f43-db11fe24e830/12618a14-70f8-4f48-a3b5-a5e31cbf2386" target="_blank">10615930 <span class="external-icon">↗</span></a></td><td>STOCHASTIC PROCESSES FOR DATA SCIENCE</td><td>1st</td><td>2nd</td><td>ENG</td><td>Data Science</td><td>33519</td><td>Curriculum unico</td> </tr>
+<tr><td><a href="https://corsidilaurea.uniroma1.it/en/course/33518/attendance/lesson/9d74173f-15df-49a5-8e97-f189c4f37358/1/1/3334d36f-4059-4707-a7aa-9a06a775482c/e98e582c-cfb1-464d-aa7e-86156985366f/6525c8cd-a718-4e37-a117-c6f30f219336" target="_blank">10612089 <span class="external-icon">↗</span></a></td><td>PROBABILITA' E STATISTICA - PROBABILITA'</td><td>1st</td><td>1st</td><td>ITA</td><td>Statistical Sciences</td><td>33518</td><td>Demografico sociale</td> </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+            </div>
+        </details>
+    </div>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>
