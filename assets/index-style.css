@@ -174,3 +174,58 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
     width: 100%;
     height: 100%;
 }
+
+/* ====================================================
+   ANNOUNCEMENT SUMMARIES
+   Arrow on the FAR RIGHT, pointing down, rotates up.
+   ==================================================== */
+
+summary.announcement-summary { 
+    color: var(--heading-color) !important; 
+    font-size: 1.15em; 
+    font-weight: normal; 
+    margin-top: 25px; 
+    margin-bottom: 10px; 
+}
+
+details[open] summary.announcement-details { border-bottom-color: #0056b3; }
+
+.announcement-details-body { 
+    padding-left: 15px; 
+    border-left: 3px solid #f4f4f4; 
+    margin-top: 10px;
+}
+
+summary[class="announcement-summary"] { 
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    margin-left: -15px; 
+    margin-right: -15px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease; 
+}
+
+/* Custom downward arrow pushed to the far right */
+summary[class="announcement-summary"]::after {
+    content: '';
+    display: inline-block;
+    flex-shrink: 0;
+    margin-left: 15px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid currentColor;
+    transition: transform 0.2s ease;
+}
+
+/* Rotate arrow upwards when open */
+details[open] > summary[class="announcement-summary"]::after {
+    transform: rotate(180deg);
+}
+
+/* Visual feedback on hover */
+summary[class="announcement-summary"]:hover { 
+    color: #003d82; 
+    background-color: rgba(0, 123, 255, 0.08);
+}

@@ -195,6 +195,41 @@ def extract_course_metadata(soup, language_key):
         
     return "", None
 
+def extract_announcements(soup, language_key):
+    """
+    Extracts the announcements accordion (Avvisi in evidenza) and converts 
+    it to HTML5 details/summary tags for better accessibility and styling.
+    """
+    accordion = soup.find('div', id='announcement-accordion')
+    if not accordion:
+        return ""
+
+    title_text = "Avvisi in evidenza" if language_key == "it" else "Featured announcements"
+    
+    html = f"<div class='announcements-section' style='margin-bottom: 20px;'>\n"
+    html += f"  <h2 class='category-title' id='announcements'>{title_text}</h2>\n"
+    
+    panels = accordion.find_all('div', class_='panel-default')
+    for panel in panels:
+        title_elem = panel.find('h4', class_='panel-title')
+        body_elem = panel.find('div', class_='panel-body')
+        
+        if title_elem and body_elem:
+            title = title_elem.get_text(strip=True)
+            body_html = body_elem.decode_contents()
+            
+            html += (
+                "  <details class='announcement-details'>\n"
+                f"    <summary class='announcement-summary'>{title}</summary>\n"
+                f"    <div class='announcement-details-body'>\n"
+                f"      {body_html}\n"
+                "    </div>\n"
+                "  </details>\n"
+            )
+            
+    html += "</div>\n"
+    return html
+
 def get_fallback_title(soup):
     """
     Extracts the title from the last item of the breadcrumb list.
@@ -213,13 +248,16 @@ def get_assets_relative_path(directory, filename):
     depth = len(parts)
     return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None, show_search=True, custom_back_text=None):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None, show_search=True, custom_back_text=None, announcements_html=""):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
     css_path = get_assets_relative_path(directory, "index-style.css")
+    js_page_logic = get_assets_relative_path(directory, "page-logic.js")
     js_theme_path = get_assets_relative_path(directory, "theme-switch.js")
     js_search_path = get_assets_relative_path(directory, "index-search.js")
+
+    back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
 
     # Generate top bars using utility function
     top_bars_html = generate_top_bars_html(language_key, flag_html, original_url, back_url, is_index_page=True, custom_back_text=custom_back_text)
@@ -279,7 +317,10 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     </div>
 {search_html}
 {toc_html}
-""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path, search_html=search_html, toc_html=toc_html))
+{announcements_html}
+<button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
+<script src="{js_page_logic}"></script>
+""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -460,18 +501,21 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             homepage_url = f"{base_url}/{language_key}/course/{course_id}"
             extracted_metadata = ""
             youtube_video_url = None
+            homepage_announcements_html = ""
             
             hp_resp = fetch_html(homepage_url)
             if hp_resp:
                 hp_soup = BeautifulSoup(hp_resp.text, 'html.parser')
                 extracted_metadata, youtube_video_url = extract_course_metadata(hp_soup, language_key)
-
+                # Extract featured announcements from homepage
+                homepage_announcements_html = extract_announcements(hp_soup, language_key)
+                
             page_links = []
             
             # Additional variables to handle attendance specific logic
             attendance_custom_links = []
             attendance_freq_metadata_html = ""
-            scraped_timetable_link = None # Variable to hold the scraped timetable link
+            scraped_timetable_link = None
 
             for language_page in pages:
                 url = url_pattern.format(language_key, course_id, language_page)
@@ -587,10 +631,10 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                 process_block = soup.new_tag("div")
                                 for child in list(content_div.children):
                                     process_block.append(child)
-                                    
+                                
                                 for script in process_block.find_all(["script", "manifesto"]):
                                     script.decompose()
-                                    
+                                
                                 toc_items = []
                                 for ht in process_block.find_all(['h2', 'h3', 'h4', 'h5', 'h6']):
                                     # Unwrap any p or div tags inside headings
@@ -727,6 +771,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 main_div = soup.find("div", id="cdl-course-home-text")
                 if not main_div:
                     main_div = soup.find("div", id="cdl-course-attendance-text")
+                if language_page == "announcements":
+                    main_div = soup.find("div", id="announcement-accordion")
 
                 if main_div:
                     content_blocks.append(main_div)
@@ -854,11 +900,11 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                                 summary_tag.append(a_tag_inside)
                                             else:
                                                 summary_tag.string = title_div.get_text(separator=" ", strip=True)
-                                                
+                                            
                                             title_div.decompose()
                                         else:
                                             summary_tag.string = "Dettagli" if language_key == "it" else "Details"
-                                            
+                                        
                                         summary_tag['class'] = level_class
                                         details_tag.append(summary_tag)
                                         body_div = soup.new_tag("div", attrs={"class": "details-body"})
@@ -902,7 +948,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                                 level_class = "level-h4"
                                             else:
                                                 summary_tag.string = "Approfondimento" if language_key == "it" else "More details"
-                                            
+                                        
                                         summary_tag['class'] = level_class
                                         details_tag.append(summary_tag)
                                         body_div = soup.new_tag("div", attrs={"class": "details-body"})
@@ -1131,7 +1177,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     freq_category_name=cats["freq"],
                     freq_metadata_html=attendance_freq_metadata_html,
                     timetables_links=timetables_custom_links,
-                    timetables_title=tt_title
+                    timetables_title=tt_title,
+                    announcements_html=homepage_announcements_html
                 )
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))
 

@@ -138,24 +138,6 @@ details[open] summary.level-h2, details[open] summary.level-h3, details[open] su
 .accordion-title { font-weight: bold; color: #0056b3; font-size: 1.1em; margin-bottom: 5px; }
 .accordion-content { padding-left: 10px; border-left: 3px solid #eee; }
 
-/* Back to top button */
-#back-to-top {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 0.9em;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    z-index: 1000;
-}
-#back-to-top:hover { background-color: #003d82; }
-
 /* =========================================
    PRINT OPTIMIZATION (Overrides for page-style.css)
    ========================================= */

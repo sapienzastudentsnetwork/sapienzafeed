@@ -132,6 +132,24 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
 }
 .heading-anchor:hover { color: var(--link-color) !important; }
 
+/* Back to top button */
+#back-to-top {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 0.9em;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 1000;
+}
+#back-to-top:hover { background-color: #003d82; }
+
 /* Unified button styles (Card Style) */
 .theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label, .back-link-btn, .print-btn { 
     display: inline-flex; 

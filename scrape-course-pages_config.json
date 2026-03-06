@@ -101,7 +101,8 @@
         "apply.html": "info",
         "teachers.html": "freq",
         "contacts.html": "info",
-        "sapienza-for-you.html": "opp"
+        "sapienza-for-you.html": "opp",
+        "announcements.html": "freq"
     },
     "categories_dict": {
         "it": {
@@ -130,7 +131,8 @@
         "attendance/instructions",
         "contacts",
         "sapienza-for-you",
-        "attendance"
+        "attendance",
+        "announcements"
     ],
     "excluded_attendance_ids": [
         "biblio"
