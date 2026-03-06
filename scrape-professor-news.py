@@ -345,6 +345,9 @@ def generate_individual_page(uuid, lang, prof_name, data):
     # Generate mailto link for email
     email_html = f'<a href="mailto:{data["email"]}">{data["email"]}</a>' if data["email"] else "N/A"
 
+    # Localization for Back to Top
+    btt_text = "Torna sù" if is_it else "Back to top"
+
     html_content = f'''<!DOCTYPE html>
 <html lang="{lang}">
 <head>
@@ -354,6 +357,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
     <link rel="stylesheet" href="../../../assets/theme-style.css">
     <link rel="stylesheet" href="../../../assets/page-style.css">
     <script src="../../../assets/theme-switch.js"></script>
+    <script src="../../../assets/page-logic.js" defer></script>
 </head>
 <body>
     <div class="header-dashboard">
@@ -397,24 +401,26 @@ def generate_individual_page(uuid, lang, prof_name, data):
             </div>
         </details>\n'''
 
-    html_content += '''    </div>
+    html_content += f'''    </div>
+
+    <button id="back-to-top" title="{btt_text}">▲ {btt_text}</button>
 
     <script>
     fetch('../common.html')
         .then(response => response.text())
-        .then(html => {
+        .then(html => {{
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
-            document.querySelectorAll('details[data-common-id]').forEach(details => {
+            document.querySelectorAll('details[data-common-id]').forEach(details => {{
                 const commonId = details.getAttribute('data-common-id');
                 const source = doc.getElementById(commonId);
-                if (source && source.innerHTML.trim()) {
+                if (source && source.innerHTML.trim()) {{
                     details.querySelector('.details-body').innerHTML = source.innerHTML;
                     details.style.display = 'block'; // Make visible if content exists
-                }
-            });
-        })
+                }}
+            }});
+        }})
         .catch(err => console.error('Error loading common content:', err));
     </script>
 </body>
