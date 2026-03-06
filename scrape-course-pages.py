@@ -1011,7 +1011,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             timetables_custom_links = []
             
             # 1. corsidilaurea (scraped link)
-            if scraped_timetable_link:
+            if scraped_timetable_link and course_id != "33504":
                 timetables_custom_links.append(("corsidilaurea.uniroma1.it", scraped_timetable_link))
                 
             # 2. Education Office / Segreteria Didattica
