@@ -997,12 +997,13 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             
             # 1. corsidilaurea (scraped link)
             if scraped_timetable_link:
-                timetables_custom_links.append(("corsidilaurea", scraped_timetable_link))
+                timetables_custom_links.append(("corsidilaurea.uniroma1.it", scraped_timetable_link))
                 
             # 2. Education Office / Segreteria Didattica
             ed_office_link = timetables_education_office_links.get(course_id, {})
             if ed_office_link:
-                office_suffix = "Segreteria Didattica" if language_key == "it" else "Education Affairs Office"
+                #office_suffix = "Segreteria Didattica" if language_key == "it" else "Education Affairs Office"
+                office_suffix = "docs.google.com"
                 timetables_custom_links.append((office_suffix, ed_office_link))
                 
             # 3. sapienzastudents.net

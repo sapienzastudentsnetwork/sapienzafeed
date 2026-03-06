@@ -41,11 +41,62 @@ document.addEventListener("DOMContentLoaded", function() {
             history.pushState(null, null, targetId);
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
+                // Open parent details if target is inside a collapsible
+                let parentDetails = targetElement.closest('details');
+                while (parentDetails) {
+                    parentDetails.setAttribute('open', '');
+                    parentDetails = parentDetails.parentElement ? parentDetails.parentElement.closest('details') : null;
+                }
+                
+                // If the target itself is a details element, open it
+                if (targetElement.tagName.toLowerCase() === 'details') {
+                    targetElement.setAttribute('open', '');
+                }
+
                 targetElement.scrollIntoView({ behavior: 'smooth' });
             }
         });
     });
 });
+
+/* =========================================
+   AUTO-EXPAND COLLAPSIBLES ON HASH NAVIGATION
+   ========================================= */
+function expandTargetDetails() {
+    if (window.location.hash) {
+        try {
+            // Remove the '#' to get the exact ID
+            const targetId = window.location.hash.substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                // Open all parent details elements
+                let parentDetails = targetElement.closest('details');
+                while (parentDetails) {
+                    parentDetails.setAttribute('open', '');
+                    parentDetails = parentDetails.parentElement ? parentDetails.parentElement.closest('details') : null;
+                }
+                
+                // If the target itself is a details element, open it
+                if (targetElement.tagName.toLowerCase() === 'details') {
+                    targetElement.setAttribute('open', '');
+                }
+                
+                // Scroll into view
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        } catch (e) {
+            // Safely ignore invalid selectors
+            console.error("Error expanding target details:", e);
+        }
+    }
+}
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', expandTargetDetails);
+
+// Run on hash change (e.g., clicking anchor links pointing to the same page)
+window.addEventListener('hashchange', expandTargetDetails);
 
 /* =========================================
    PRINT OPTIMIZATION LOGIC
