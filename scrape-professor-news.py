@@ -214,6 +214,16 @@ def scrape_professor_data(uuid):
         else: data["en_structure"] = data["it_structure"]
     else: data["en_structure"] = data["it_structure"]
 
+    # Internal helper to extract title text without the '#' anchor
+    def get_clean_text_only(tag_or_div):
+        if not tag_or_div: return ""
+        # Clone tag to avoid modifying the main soup
+        temp_soup = BeautifulSoup(str(tag_or_div), 'html.parser')
+        # Remove any anchor injected by add_heading_anchors
+        for a in temp_soup.find_all("a", class_="heading-anchor"):
+            a.decompose()
+        return temp_soup.get_text(strip=True)
+
     # Process IT sections
     it_info = it_soup.find('div', class_='docente-info')
     if it_info:
@@ -226,11 +236,12 @@ def scrape_professor_data(uuid):
             sec_id = title_div.get('id', '')
             if not sec_id:
                 h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                text = h_tag.get_text(strip=True) if h_tag else title_div.get_text(strip=True)
+                text = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
                 sec_id = re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
                 
             h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-            title = h_tag.get_text(strip=True) if h_tag else title_div.get_text(strip=True)
+            # Clean title to prevent '#' appearing in collapsable summary
+            title = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
             
             content_html = "".join(str(child) for child in content_div.children)
                 
@@ -254,11 +265,12 @@ def scrape_professor_data(uuid):
                 sec_id = title_div.get('id', '')
                 if not sec_id:
                     h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                    text = h_tag.get_text(strip=True) if h_tag else title_div.get_text(strip=True)
+                    text = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
                     sec_id = re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
                     
                 h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                title = h_tag.get_text(strip=True) if h_tag else title_div.get_text(strip=True)
+                # Clean title to prevent '#' appearing in collapsable summary
+                title = get_clean_text_only(h_tag) if h_tag else get_clean_text_only(title_div)
                 
                 if sec_id == 'lecturer-activities':
                     content_html = "".join(str(child) for child in content_div.children)
@@ -343,9 +355,8 @@ def generate_individual_page(uuid, lang, prof_name, data):
     # Build shared/common sections hooks
     for sec_id in data['common_sections'].keys():
         title = titles.get(sec_id) or data['it_titles'].get(sec_id, sec_id)
-        open_attr = "open" if sec_id == "lecturer-news" else ""
         
-        html_content += f'''        <details id="details-{sec_id}" data-common-id="common-{sec_id}" style="display:none;" {open_attr}>
+        html_content += f'''        <details id="details-{sec_id}" data-common-id="common-{sec_id}" style="display:none;">
             <summary class="level-h4" id="{sec_id}">{title}</summary>
             <div class="details-body" id="body-{sec_id}"></div>
         </details>\n'''
@@ -354,7 +365,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
     act_id = "lecturer-activities"
     if activities_val:
         act_title = titles.get(act_id) or data['it_titles'].get(act_id, "Insegnamenti" if is_it else "Course catalogue")
-        html_content += f'''        <details id="details-{act_id}" open>
+        html_content += f'''        <details id="details-{act_id}">
             <summary class="level-h4" id="{act_id}">{act_title}</summary>
             <div class="details-body" id="body-{act_id}">
 {activities_val}
