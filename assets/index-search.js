@@ -1,14 +1,44 @@
 /**
  * Filters the links dynamically in the index page based on user input.
- * Hides empty categories and toggles the Table of Contents visibility.
+ * Hides empty categories and toggles the Table of Contents and Announcements visibility.
  * Expands a <details> block ONLY if its inner elements match the search.
  * Restores the collapsed state of auto-expanded <details> when the search is cleared.
  */
 function filterLinks() {
     var input = document.getElementById('search-input');
+    if (!input) return; // Failsafe if input doesn't exist
+    
     // Added trim() to prevent trailing spaces from breaking the stemming logic
     var filter = input.value.toUpperCase().trim();
     
+    // ----------------------------------------------------------------------
+    // 1. HIDE TOC AND ANNOUNCEMENTS IMMEDIATELY DURING SEARCH
+    // ----------------------------------------------------------------------
+    
+    // Hide the Table of Contents (TOC)
+    var toc = document.querySelector('.toc');
+    if (toc) {
+        if (filter === '') {
+            toc.style.display = '';
+        } else {
+            toc.style.setProperty('display', 'none', 'important');
+        }
+    }
+
+    // Hide the announcements-section
+    var announcementSections = document.querySelectorAll('.announcements-section');
+    announcementSections.forEach(function(section) {
+        if (filter === '') {
+            section.style.display = '';
+        } else {
+            section.style.setProperty('display', 'none', 'important');
+        }
+    });
+
+    // ----------------------------------------------------------------------
+    // 2. FILTER LINKS LOGIC
+    // ----------------------------------------------------------------------
+
     // Basic stemming: drop the last letter if it's a common singular/plural ending (O, A, E, I, S)
     // This allows "tirocinio" to match "tirocini" (stem: "tirocini") and vice versa (stem: "tirocin").
     var flexibleFilter = filter;
@@ -22,7 +52,7 @@ function filterLinks() {
         var isCategoryMatch = false;
         var isDetailsMatch = false;
         
-        // 1. Check if the parent category title (H2/H3) matches the search query
+        // Check if the parent category title (H2/H3) matches the search query
         var startElem = ul.closest('details') || ul;
         var elem = startElem.previousElementSibling;
         
@@ -37,7 +67,7 @@ function filterLinks() {
             elem = elem.previousElementSibling;
         }
 
-        // 2. Check if the parent details summary matches the search query
+        // Check if the parent details summary matches the search query
         var parentDetails = ul.closest('details');
         if (parentDetails) {
             var summary = parentDetails.querySelector('summary');
@@ -100,7 +130,7 @@ function filterLinks() {
             ul.style.display = '';
         }
         
-        // 3. Handle visibility and automatic expansion of <details>
+        // Handle visibility and automatic expansion of <details>
         if (parentDetails) {
             var shouldShow = (isCategoryMatch || isDetailsMatch || hasMatchingInnerItem || filter === '');
             parentDetails.style.display = shouldShow ? '' : 'none';
@@ -153,10 +183,4 @@ function filterLinks() {
         
         heading.style.display = (isCategoryMatch || hasVisibleContent || filter === '') ? '' : 'none';
     });
-    
-    // Hide the Table of Contents (TOC) during the search
-    var toc = document.querySelector('.toc');
-    if (toc) {
-        toc.style.display = filter === '' ? '' : 'none';
-    }
 }
