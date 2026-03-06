@@ -315,4 +315,5 @@ html.dyslexic, html.dyslexic * {
 }
 a:hover .external-icon {
     opacity: 0.8;
+    text-decoration: none !important;
 }

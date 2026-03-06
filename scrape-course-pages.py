@@ -35,6 +35,9 @@ def add_heading_anchors(soup, content_block):
         if h_tag.find_parent('summary') or h_tag.find_parent('details'):
             continue
 
+        if h_tag.find_parent('a'):
+            continue
+
         raw_text = h_tag.get_text(strip=True)
         if not raw_text: continue
         
@@ -102,7 +105,7 @@ def make_urls_absolute(soup, base_url):
         ext.decompose()
     for invisible in soup.find_all("span", class_="element-invisible", string=re.compile(r"link is external", re.I)):
         invisible.decompose()
-    for icon in soup.find_all(["i", "svg"], class_=re.compile(r"fa-external-link")):
+    for icon in soup.find_all(["i", "svg"], class_=re.compile(r"(fa-)?external-link")):
         icon.decompose()
 
     for tag in soup.find_all(["a", "img"]):
@@ -124,8 +127,14 @@ def make_urls_absolute(soup, base_url):
                                 
                             icon_span = soup.new_tag("span", attrs={"class": "external-icon"})
                             icon_span.string = "↗"
-                            tag.append(soup.new_string(" "))
-                            tag.append(icon_span)
+
+                            inner_h = tag.find(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+                            if inner_h:
+                                inner_h.append(soup.new_string(" "))
+                                inner_h.append(icon_span)
+                            else:
+                                tag.append(soup.new_string(" "))
+                                tag.append(icon_span)
 
 def extract_course_metadata(soup, language_key):
     """
