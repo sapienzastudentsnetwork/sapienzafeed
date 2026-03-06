@@ -406,7 +406,15 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
     os.makedirs(output_dir, exist_ok=True)
 
     # Root index
-    root_links = [(name, cid) for cid, name in course_names.items() if cid in ids]
+    root_links = []
+    for cid, name in course_names.items():
+        if cid in ids:
+            # Determine default language to link directly, skipping the intermediate redirect
+            valid_langs = [l for l in languages if not (l == "en" and cid in excluded_en_ids)]
+            default_lang = "en" if "en" in valid_langs else (valid_langs[0] if valid_langs else "")
+            link_path = f"{cid}/{default_lang}/index.html" if default_lang else f"{cid}/index.html"
+            root_links.append((name, link_path))
+
     # No back button for the root directory
     generate_index_html(output_dir, links=root_links, title="Degree Courses", back_url=None)
 
