@@ -50,6 +50,7 @@ function filterLinks() {
         }
         
         var hasMatchingInnerItem = false;
+        var hasVisibleItems = false;
         var lis = ul.getElementsByTagName('li');
         
         for (var i = 0; i < lis.length; i++) {
@@ -82,6 +83,7 @@ function filterLinks() {
             // Show the item if it matches the category, details, the item itself, or if the search is empty
             if (isCategoryMatch || isDetailsMatch || isItemMatch || filter === '') {
                 lis[i].style.display = '';
+                hasVisibleItems = true;
                 // Keep track if there is AT LEAST one actual match on the inner items
                 if (isItemMatch) {
                     hasMatchingInnerItem = true;
@@ -89,6 +91,13 @@ function filterLinks() {
             } else {
                 lis[i].style.display = 'none';
             }
+        }
+        
+        // Hide the entire ul if it has no visible items to prevent empty margins in layout
+        if (filter !== '' && !hasVisibleItems) {
+            ul.style.display = 'none';
+        } else {
+            ul.style.display = '';
         }
         
         // 3. Handle visibility and automatic expansion of <details>
