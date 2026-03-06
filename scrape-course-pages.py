@@ -217,10 +217,19 @@ def extract_announcements(soup, language_key):
         if title_elem and body_elem:
             title = title_elem.get_text(strip=True)
             body_html = body_elem.decode_contents()
+
+            a_tag = panel.find('a', attrs={'data-toggle': 'collapse'})
+            summary_id_attr = ""
+            
+            if a_tag and a_tag.has_attr('href'):
+                href_val = a_tag['href']
+                if href_val.startswith('#'):
+                    clean_id = href_val[1:]
+                    summary_id_attr = f" id='{clean_id}'"
             
             html += (
                 "  <details class='announcement-details'>\n"
-                f"    <summary class='announcement-summary'>{title}</summary>\n"
+                f"    <summary class='announcement-summary'{summary_id_attr}>{title}</summary>\n"
                 f"    <div class='announcement-details-body'>\n"
                 f"      {body_html}\n"
                 "    </div>\n"
@@ -934,19 +943,32 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                         level_class = "level-default"
                                         
                                         first_tag = child_elem.find(['h2', 'h3', 'h4', 'h5', 'strong'])
-                                        if first_tag and len(first_tag.get_text(strip=True)) < 100:
+                                        
+                                        if first_tag and len(first_tag.get_text(strip=True)) < 300:
                                             if first_tag.name in ['h2', 'h3', 'h4', 'h5', 'h6']:
                                                 level_class = f"level-{first_tag.name}"
-                                                # Transfer ID
-                                                if first_tag.has_attr('id'):
-                                                    summary_tag['id'] = first_tag['id']
                                             elif first_tag.name == 'strong':
                                                 level_class = "level-h4"
-                                                # Transfer ID
+                                            
+                                            a_toggle = None
+                                            if language_page == "announcements":
+                                                a_toggle = child_elem.find('a', attrs={'data-toggle': 'collapse'})
+                                                if a_toggle and a_toggle.has_attr('href') and a_toggle['href'].startswith('#'):
+                                                    summary_tag['id'] = a_toggle['href'][1:]
+                                                elif first_tag.has_attr('id'):
+                                                    summary_tag['id'] = first_tag['id']
+                                            else:
+                                                # For all other pages, keep the standard behavior
                                                 if first_tag.has_attr('id'):
                                                     summary_tag['id'] = first_tag['id']
+                                                
                                             summary_tag.string = first_tag.get_text(separator=" ", strip=True)
                                             first_tag.decompose()
+                                            
+                                            # Clean up the <a> tag (only if we are in announcements and it's left empty)
+                                            if a_toggle and not a_toggle.get_text(strip=True):
+                                                a_toggle.decompose()
+                                                
                                         else:
                                             th_tag = child_elem.select_one("thead tr th")
                                             if th_tag and len(th_tag.get_text(strip=True)) < 150:
