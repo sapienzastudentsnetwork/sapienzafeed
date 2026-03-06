@@ -243,6 +243,27 @@ def scrape_professor_data(uuid):
             # Extract clean title to ensure no '#' appears in collapsable summary labels
             title = get_clean_title(h_tag) if h_tag else get_clean_title(title_div)
             
+            # Recursively remove trailing empty tags or whitespace-only strings
+            def clean_trailing_empty(container):
+                while container.contents:
+                    last = container.contents[-1]
+                    if isinstance(last, str):
+                        if not last.strip().replace('\xa0', ''):
+                            last.extract()
+                            continue
+                    elif last.name in ['p', 'div', 'br', 'span']:
+                        # If the tag has children, try to clean them first
+                        if hasattr(last, 'contents') and last.contents:
+                            clean_trailing_empty(last)
+                        
+                        # After potential internal cleaning, check if tag is now empty
+                        if not last.get_text(strip=True).replace('\xa0', ''):
+                            last.decompose()
+                            continue
+                    break
+
+            clean_trailing_empty(content_div)
+
             content_html = "".join(str(child) for child in content_div.children)
                 
             if sec_id == 'lecturer-activities':
@@ -252,7 +273,7 @@ def scrape_professor_data(uuid):
                 
             data['it_titles'][sec_id] = title
                 
-    # Process EN sections (only for localized activities & titles translation)
+    # Process EN sections
     if en_soup:
         en_info = en_soup.find('div', class_='docente-info')
         if en_info:
@@ -273,6 +294,7 @@ def scrape_professor_data(uuid):
                 title = get_clean_title(h_tag) if h_tag else get_clean_title(title_div)
                 
                 if sec_id == 'lecturer-activities':
+                    clean_trailing_empty(content_div)
                     content_html = "".join(str(child) for child in content_div.children)
                     data['en_activities'] = content_html
                     
