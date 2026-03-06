@@ -136,6 +136,18 @@ def make_urls_absolute(soup, base_url):
                                 tag.append(soup.new_string(" "))
                                 tag.append(icon_span)
 
+def translate_global_links(soup, language_key):
+    """
+    Translates specific hardcoded external URLs across the entire page DOM 
+    depending on the selected language.
+    """
+    if language_key == "en":
+        for a_tag in soup.find_all("a", href=True):
+            if "regolamento-studenti" in a_tag["href"]:
+                a_tag["href"] = "https://www.uniroma1.it/en/pagina/student-regulations"
+            elif "calendario-dellanno-accademico" in a_tag["href"]:
+                a_tag["href"] = "https://www.uniroma1.it/en/pagina/academic-calendar"
+
 def extract_course_metadata(soup, language_key):
     """
     Extracts course metadata (e.g., degree class, faculty, language) from the homepage's 'corso-info' list
@@ -445,6 +457,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 fix_contacts_collapsibles(soup)
                 clean_excessive_newlines(soup)
                 make_urls_absolute(soup, base_url)
+                translate_global_links(soup, language_key)
                 
                 # SPECIAL HANDLING FOR ATTENDANCE PAGE
                 if language_page == "attendance":
@@ -459,10 +472,6 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             href = a_tag.get("href", "#")
                             # We extract text, clean any unstyled arrows picked up by get_text, and inject our styled html span
                             text = a_tag.get_text(strip=True).replace("↗", "").strip()
-                            
-                            # Hardcode translation for academic calendar URL in English
-                            if language_key == "en" and "calendario-dellanno-accademico" in href:
-                                href = "https://www.uniroma1.it/en/pagina/academic-calendar"
                                 
                             # Manually attach the external link icon properly if it became external
                             if is_external_url(href) and "external-icon" not in text:
@@ -517,8 +526,6 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                 # Save the link for the custom Timetables processing below
                                 scraped_timetable_link = a_href
                             elif "calendario-dellanno-accademico" in a_href or "academic-calendar" in a_href:
-                                if language_key == "en":
-                                    a_href = "https://www.uniroma1.it/en/pagina/academic-calendar"
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
                             elif "/exams" in a_href or "esami" in a_href:
                                 attendance_custom_links.append((a_text_clean, a_href, "freq"))
@@ -1130,6 +1137,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
             
             # Fix absolute links using utility function
             make_urls_absolute(soup, base_url)
+            translate_global_links(soup, language_key)
                     
             teachers_container = soup.find("div", class_="docente-cerca-results")
             
@@ -1262,6 +1270,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
             
             # Absolute URL conversion for links and images using utility function
             make_urls_absolute(soup, base_url)
+            translate_global_links(soup, language_key)
 
             content_blocks = []
 
