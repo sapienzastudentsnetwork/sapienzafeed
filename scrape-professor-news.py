@@ -177,6 +177,7 @@ def scrape_professor_data(uuid):
         "it_structure": "",
         "en_structure": "",
         "ssd": "",
+        "header_links": [], # List of {text, url} for links in the header
         "common_sections": {}, # sec_id -> content_html
         "it_titles": {}, # sec_id -> IT title
         "en_titles": {}, # sec_id -> EN title
@@ -198,6 +199,19 @@ def scrape_professor_data(uuid):
     if ssd_div:
         divs = ssd_div.find_all('div')
         if len(divs) > 1: data["ssd"] = divs[-1].get_text(strip=True)
+
+    # Extract additional links in the docente-base-info (Research Profile, etc.)
+    base_info = it_soup.find('div', class_='docente-base-info')
+    if base_info:
+        for link in base_info.find_all('a'):
+            href = link.get('href', '')
+            # Skip email which is already handled
+            if not href or href.startswith('mailto:'):
+                continue
+            data["header_links"].append({
+                "text": link.get_text(strip=True),
+                "url": href
+            })
 
     # Extract IT Structure
     structure_div = it_soup.find('div', class_='field structure')
@@ -345,6 +359,11 @@ def generate_individual_page(uuid, lang, prof_name, data):
     # Generate mailto link for email
     email_html = f'<a href="mailto:{data["email"]}">{data["email"]}</a>' if data["email"] else "N/A"
 
+    # Generate additional header links HTML (Research Profile, etc.)
+    header_links_html = ""
+    for link_info in data.get("header_links", []):
+        header_links_html += f'\n            <p style="margin: 5px 0;"><a href="{link_info["url"]}" target="_blank" rel="noopener noreferrer">{link_info["text"]} ↗</a></p>'
+
     # Localization for Back to Top
     btt_text = "Torna sù" if is_it else "Back to top"
 
@@ -374,7 +393,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
         <div class="docente-info">
             <p style="margin: 5px 0;"><strong>Email:</strong> {email_html}</p>
             <p style="margin: 5px 0;"><strong>{structure_label}:</strong> {structure_val}</p>
-            <p style="margin: 5px 0;"><strong>SSD:</strong> {data['ssd']}</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> {data['ssd']}</p>{header_links_html}
         </div>
     </div>
     
