@@ -611,7 +611,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 <div class="content-wrapper">
 {{combined_content}}
 </div>
-<button id="back-to-top" title="{{back_to_top_text}}" onclick="window.scrollTo({{{{top: 0, behavior: 'smooth'}}}})">▲ {{back_to_top_text}}</button>
+<button id="back-to-top" title="{{back_to_top_text}}">▲ {{back_to_top_text}}</button>
 <script src="{{js_path}}"></script>
 </body>
 </html>"""
@@ -914,7 +914,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 <div class="content-wrapper">
 {combined_content}
 </div>
-<button id="back-to-top" title="{back_to_top_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {back_to_top_text}</button>
+<button id="back-to-top" title="{back_to_top_text}">▲ {back_to_top_text}</button>
 <script src="{js_path}"></script>
 </body>
 </html>"""
@@ -1140,7 +1140,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
 </div>
 {content}
 
-<button id="back-to-top" title="{btn_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {btn_text}</button>
+<button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
 <script src="{js_path}"></script>
 </body>
 </html>""".format(
@@ -1279,7 +1279,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
     <div class="content-wrapper">
         {combined_content}
     </div>
-    <button id="back-to-top" title="{back_to_top_text}" onclick="window.scrollTo({{top: 0, behavior: 'smooth'}})">▲ {back_to_top_text}</button>
+    <button id="back-to-top" title="{back_to_top_text}">▲ {back_to_top_text}</button>
     <script src="{js_path}"></script>
 </body>
 </html>"""

@@ -1,4 +1,3 @@
-
 window.addEventListener('scroll', function() {
     var btn = document.getElementById('back-to-top');
     if (btn) {
@@ -10,8 +9,18 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// Handle click on heading anchors to copy URL to clipboard
 document.addEventListener("DOMContentLoaded", function() {
+    var btn = document.getElementById('back-to-top');
+    if (btn) {
+        btn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Questo aggiunge un piacevole effetto di scorrimento fluido
+            });
+        });
+    }
+
+    // Handle click on heading anchors to copy URL to clipboard
     const anchors = document.querySelectorAll('.heading-anchor');
     anchors.forEach(anchor => {
         anchor.addEventListener('click', function(e) {
