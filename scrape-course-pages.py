@@ -75,7 +75,7 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
         if custom_back_text:
             back_text = custom_back_text
         elif is_index_page:
-            back_text = "🏠 Corsi di Laurea" if language_key == "it" else "🏠 Degree Courses"
+            back_text = "⬅️ Corsi di Laurea" if language_key == "it" else "⬅️ Degree Courses"
         else:
             back_text = "◀️ Indice" if language_key == "it" else "◀️ Homepage"
             
