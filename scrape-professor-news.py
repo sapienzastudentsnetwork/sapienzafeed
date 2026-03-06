@@ -346,22 +346,20 @@ def generate_individual_page(uuid, lang, prof_name, data):
         open_attr = "open" if sec_id == "lecturer-news" else ""
         
         html_content += f'''        <details id="details-{sec_id}" data-common-id="common-{sec_id}" style="display:none;" {open_attr}>
-            <summary>{title}</summary>
+            <summary class="level-h4" id="{sec_id}">{title}</summary>
             <div class="details-body" id="body-{sec_id}"></div>
-        </details>
-'''
+        </details>\n'''
         
     # Build localized section (Insegnamenti / Course catalogue)
     act_id = "lecturer-activities"
     if activities_val:
         act_title = titles.get(act_id) or data['it_titles'].get(act_id, "Insegnamenti" if is_it else "Course catalogue")
-        html_content += f'''        <details id="details-{act_id}">
-            <summary>{act_title}</summary>
+        html_content += f'''        <details id="details-{act_id}" open>
+            <summary class="level-h4" id="{act_id}">{act_title}</summary>
             <div class="details-body" id="body-{act_id}">
 {activities_val}
             </div>
-        </details>
-'''
+        </details>\n'''
 
     html_content += '''    </div>
 
