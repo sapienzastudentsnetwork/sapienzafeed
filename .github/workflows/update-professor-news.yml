@@ -1,0 +1,97 @@
+name: Update Professor News
+
+on:
+  schedule:
+    - cron: '*/5 * * * *' # Runs every 5 minutes
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  update-professor-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Required to compare current changes with the previous commit
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+          pip install requests
+
+      - name: Update professors list
+        run: python scrape-professors.py
+
+      - name: Run news update script
+        run: python scrape-professor-news.py
+
+      - name: Commit changes and notify
+        env:
+          REPO_URL: "https://github.com/${{ github.repository }}/blob/main"
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # We'll store the UUIDs of professors who have actual text changes
+          to_notify=""
+          
+          # Identify which common.html files have been modified or created
+          # Use "|| true" to avoid script failure if grep finds no matches
+          changed_common_files=$(git status --porcelain | grep "lecturers/.*/common.html" | awk '{print $2}' || true)
+
+          for file in $changed_common_files; do
+            # Extract UUID from the directory path (lecturers/UUID/common.html)
+            uuid=$(echo "$file" | cut -d'/' -f2)
+            
+            # Extract visible text from the newly generated HTML file
+            new_text=$(python3 -c "from bs4 import BeautifulSoup; print(BeautifulSoup(open('$file').read(), 'html.parser').get_text(strip=True))")
+            
+            # Check if the file already exists in the latest commit to perform a comparison
+            if git ls-files --error-unmatch "$file" > /dev/null 2>&1; then
+              # Get visible text from the version currently stored in the repository
+              old_text=$(git show HEAD:"$file" | python3 -c "import sys; from bs4 import BeautifulSoup; print(BeautifulSoup(sys.stdin.read(), 'html.parser').get_text(strip=True))")
+            else
+              # If the file is brand new, we consider it a text change to trigger the first notification
+              old_text="NEW_FILE_INITIAL_CONTENT"
+            fi
+
+            # Compare only the text content, ignoring HTML tags, CSS classes or structural changes
+            if [ "$new_text" != "$old_text" ]; then
+              to_notify="$to_notify $uuid"
+            fi
+          done
+
+          # Add all modified files to the commit (including indexes, json, and style-only HTML changes)
+          git add .
+          
+          # Proceed only if there are changes to commit
+          if ! git diff --cached --quiet; then
+            git commit -m "Update professor news, index pages and metadata"
+            git push
+            
+            # Get the new commit hash for the notification links
+            commit_hash=$(git rev-parse HEAD)
+            
+            # Send Telegram notifications only for professors with visible news updates
+            for uuid in $to_notify; do
+              # Retrieve the professor name from professors.json using the UUID as key
+              # Using escaped quotes for jq to handle UUIDs correctly
+              prof_name_raw=$(jq -r ".\"$uuid\".name" professors.json)
+              
+              # Format the name to Title Case for better readability
+              formatted_name=$(echo "$prof_name_raw" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
+              
+              # Define URLs for the notification
+              file_url="sapienzastudents.net/sapienzafeed/lecturers/$uuid/common.html"
+              commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
+              
+              # Execute the notification script
+              python send-professor-news-update-to-telegram.py "$formatted_name" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
+            done
+          fi
