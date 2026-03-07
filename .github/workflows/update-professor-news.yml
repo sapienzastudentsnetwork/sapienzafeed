@@ -23,7 +23,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install requests beautifulsoup4
-          pip install requests
 
       - name: Update professors list
         run: python scrape-professors.py
@@ -42,14 +41,14 @@ jobs:
           to_notify=""
           
           # Identify which common.html files have been modified or created
-          # Use "|| true" to avoid script failure if grep finds no matches
+          # Using "|| true" to prevent the script from exiting if no matches are found
           changed_common_files=$(git status --porcelain | grep "lecturers/.*/common.html" | awk '{print $2}' || true)
 
           for file in $changed_common_files; do
             # Extract UUID from the directory path (lecturers/UUID/common.html)
             uuid=$(echo "$file" | cut -d'/' -f2)
             
-            # Extract visible text from the newly generated HTML file
+            # Extract visible text from the newly generated HTML file to avoid notifying for style-only updates
             new_text=$(python3 -c "from bs4 import BeautifulSoup; print(BeautifulSoup(open('$file').read(), 'html.parser').get_text(strip=True))")
             
             # Check if the file already exists in the latest commit to perform a comparison
@@ -87,8 +86,8 @@ jobs:
               # Format the name to Title Case for better readability
               formatted_name=$(echo "$prof_name_raw" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
               
-              # Define URLs for the notification
-              file_url="sapienzastudents.net/sapienzafeed/lecturers/$uuid/common.html"
+              # Define URLs for the notification - Link points to the English index as requested
+              file_url="sapienzastudents.net/sapienzafeed/lecturers/$uuid/en/index.html"
               commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
               
               # Execute the notification script
