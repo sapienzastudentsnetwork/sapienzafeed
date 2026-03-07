@@ -141,13 +141,29 @@ def make_urls_absolute(soup, base_url):
 def translate_global_links(soup, language_key):
     """
     Translates specific hardcoded external URLs across the entire page DOM 
-    depending on the selected language.
+    depending on the selected language, and rewrites lecturer URLs to local paths.
     """
-    if language_key == "en":
-        for a_tag in soup.find_all("a", href=True):
-            if "regolamento-studenti" in a_tag["href"]:
+    # Compile the regex to capture the language (group 1) and the lecturer ID (group 2)
+    lecturer_pattern = re.compile(r"corsidilaurea\.uniroma1\.it/(en|it)/lecturer/([a-zA-Z0-9]+)")
+
+    for a_tag in soup.find_all("a", href=True):
+        href = a_tag["href"]
+        
+        # 1. Check for lecturer links (independent of the language_key)
+        lecturer_match = lecturer_pattern.search(href)
+        if lecturer_match:
+            lang = lecturer_match.group(1)
+            lecturer_id = lecturer_match.group(2)
+            
+            # Build the new local path starting with a slash and plural "lecturers"
+            a_tag["href"] = f"/lecturers/{lecturer_id}/{lang}/index.html"
+            continue  # Link modified, skip to the next <a> tag
+
+        # 2. Check for global links depending on the selected language
+        if language_key == "en":
+            if "regolamento-studenti" in href:
                 a_tag["href"] = "https://www.uniroma1.it/en/pagina/student-regulations"
-            elif "calendario-dellanno-accademico" in a_tag["href"]:
+            elif "calendario-dellanno-accademico" in href:
                 a_tag["href"] = "https://www.uniroma1.it/en/pagina/academic-calendar"
 
 def extract_course_metadata(soup, language_key):
