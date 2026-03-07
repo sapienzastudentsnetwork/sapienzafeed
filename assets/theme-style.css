@@ -97,11 +97,11 @@ h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
 .header-actions {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Allinea a destra su desktop */
+    align-items: flex-end; /* Aligns to the right on desktop */
     gap: 10px;
 }
 
-/* Rimuovi bordi e margini dalle barre in quanto gestite da header-actions */
+/* Remove borders and margins from bars as they are managed by header-actions */
 .header-actions .controls-bar, 
 .header-actions .navigation-bar {
     margin: 0;

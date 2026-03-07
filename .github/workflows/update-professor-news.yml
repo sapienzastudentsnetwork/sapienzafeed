@@ -86,7 +86,7 @@ jobs:
               # Format the name to Title Case for better readability
               formatted_name=$(echo "$prof_name_raw" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
               
-              # Define URLs for the notification - Link points to the English index as requested
+              # Define URLs for the notification - Link points to the English index
               file_url="sapienzastudents.net/sapienzafeed/lecturers/$uuid/en/index.html"
               commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
               
