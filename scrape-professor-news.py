@@ -65,6 +65,10 @@ def make_urls_absolute(soup, base_url):
             if tag.name == "a":
                 href = tag.get("href", "")
                 if is_external_url(href):
+                    # Open external links in a new tab
+                    tag["target"] = "_blank"
+                    tag["rel"] = "noopener noreferrer"
+                    
                     if not tag.find("img") and tag.get_text(strip=True):
                         if not tag.find("span", class_="external-icon"):
                             for t in tag.find_all(string=re.compile(r"↗")):

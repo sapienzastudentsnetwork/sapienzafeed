@@ -121,6 +121,10 @@ def make_urls_absolute(soup, base_url):
             if tag.name == "a":
                 href = tag.get("href", "")
                 if is_external_url(href):
+                    # Open external links in a new tab
+                    tag["target"] = "_blank"
+                    tag["rel"] = "noopener noreferrer"
+                    
                     if not tag.find("img") and tag.get_text(strip=True):
                         if not tag.find("span", class_="external-icon"):
                             # Strip any hardcoded text arrows to standardize formatting
@@ -390,6 +394,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                     for link_text, link_url in sorted(cat_links):
                         formatted_url = link_url
                         display_text = link_text
+                        target_blank = ""
                         
                         # Add external link icon with wrapper span
                         if is_external_url(link_url):
@@ -397,10 +402,12 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                             display_text = display_text.replace("↗", "").strip()
                             if "external-icon" not in display_text:
                                 display_text += ' <span class="external-icon">↗</span>'
+                            # Open external links in a new tab
+                            target_blank = ' target="_blank" rel="noopener noreferrer"'
                             
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
-                        file.write(f'        <li><a href="{formatted_url}">{display_text}</a></li>\n')
+                        file.write(f'        <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
                     file.write('    </ul>\n')
                 
                 # Render sub-category Timetables right after freq category links
@@ -413,15 +420,18 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                     for link_text, link_url in sorted(timetables_links):
                         formatted_url = link_url
                         display_text = link_text
+                        target_blank = ""
                         
                         if is_external_url(link_url):
                             display_text = display_text.replace("↗", "").strip()
                             if "external-icon" not in display_text:
                                 display_text += ' <span class="external-icon">↗</span>'
+                            # Open external links in a new tab
+                            target_blank = ' target="_blank" rel="noopener noreferrer"'
                                 
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
-                        file.write(f'        <li><a href="{formatted_url}">{display_text}</a></li>\n')
+                        file.write(f'        <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
                     file.write('    </ul>\n')
         
         # Render generic flat links (used for Root and Choose Language selection)
@@ -430,6 +440,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
             for link_text, link_url in sorted(links):
                 formatted_url = link_url
                 display_text = link_text
+                target_blank = ""
                 
                 # Add external link icon with wrapper span
                 if is_external_url(link_url):
@@ -437,10 +448,12 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                     display_text = display_text.replace("↗", "").strip()
                     if "external-icon" not in display_text:
                         display_text += ' <span class="external-icon">↗</span>'
+                    # Open external links in a new tab
+                    target_blank = ' target="_blank" rel="noopener noreferrer"'
                     
                 if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                     formatted_url = link_url.rstrip("/") + "/index.html"
-                file.write(f'        <li><a href="{formatted_url}">{display_text}</a></li>\n')
+                file.write(f'        <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
             file.write('    </ul>\n')
 
         # Appending metadata_html at the bottom ONLY if it wasn't injected into categorized_links
@@ -583,13 +596,18 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             href = a_tag.get("href", "#")
                             # We extract text, clean any unstyled arrows picked up by get_text, and inject our styled html span
                             text = a_tag.get_text(strip=True).replace("↗", "").strip()
+                            target_blank = ""
                                 
                             # Manually attach the external link icon properly if it became external
-                            if is_external_url(href) and "external-icon" not in text:
-                                text += ' <span class="external-icon">↗</span>'
+                            if is_external_url(href):
+                                if "external-icon" not in text:
+                                    text += ' <span class="external-icon">↗</span>'
+                                
+                                # Open external links in a new tab
+                                target_blank = ' target="_blank" rel="noopener noreferrer"'
                                 
                             # Let the CSS handle the appearance of these links inside the list
-                            sidebar_links_html += f"  <li><a href='{href}'>{text}</a></li>\n"
+                            sidebar_links_html += f"  <li><a href='{href}'{target_blank}>{text}</a></li>\n"
                         sidebar_links_html += "</ul>\n"
 
                         attendance_freq_metadata_html = (
