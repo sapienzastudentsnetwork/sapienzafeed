@@ -142,7 +142,7 @@ def make_urls_absolute(soup, base_url):
                                 tag.append(soup.new_string(" "))
                                 tag.append(icon_span)
 
-def translate_global_links(soup, language_key):
+def translate_global_links(soup, language_key, rel_to_root="../../../"):
     """
     Translates specific hardcoded external URLs across the entire page DOM 
     depending on the selected language, and rewrites lecturer URLs to local paths.
@@ -160,7 +160,7 @@ def translate_global_links(soup, language_key):
             lecturer_id = lecturer_match.group(2)
             
             # Build the new local path starting with a slash and plural "lecturers"
-            a_tag["href"] = f"/lecturers/{lecturer_id}/{lang}/index.html"
+            a_tag["href"] = f"{rel_to_root}lecturers/{lecturer_id}/{lang}/index.html"
             continue  # Link modified, skip to the next <a> tag
 
         # 2. Check for global links depending on the selected language
