@@ -1295,6 +1295,8 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                     fallback_title = "Teachers" if language_key == "en" else "Docenti"
                     page_heading = f"{course_prefix}{fallback_title}"
 
+                search_placeholder = "Search teachers by name, email or structure..." if language_key == "en" else "Cerca docenti per nome, email o struttura..."
+
                 flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
@@ -1311,6 +1313,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                 css_path = get_assets_relative_path(language_dir, "teachers-style.css")
                 js_path = get_assets_relative_path(language_dir, "page-logic.js")
                 js_theme_path = get_assets_relative_path(language_dir, "theme-switch.js")
+                js_teachers_search = get_assets_relative_path(language_dir, "teachers-search.js")
 
                 # Update the content formatting (H1 has no anchor)
                 content = """<!DOCTYPE html>
@@ -1322,6 +1325,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
     <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
     <script src="{js_theme_path}"></script>
+    <script src="{js_teachers_search}"></script>
 </head>
 <body>
 <div class="header-dashboard">
@@ -1329,6 +1333,10 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
     <div class="header-actions">
         {top_bars_html}
     </div>
+</div>
+
+<div class="search-container" style="margin: 20px auto; max-width: 800px; padding: 0 20px;">
+    <input type="text" id="search-input" onkeyup="filterTeachers()" placeholder="{search_placeholder}" style="width: 100%; padding: 12px 20px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 8px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #333);">
 </div>
 {content}
 
@@ -1345,7 +1353,9 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                     theme_css_path=theme_css_path,
                     css_path=css_path,
                     js_path=js_path,
-                    js_theme_path=js_theme_path
+                    js_theme_path=js_theme_path,
+                    js_teachers_search=js_teachers_search,
+                    search_placeholder=search_placeholder
                 )
                 
                 output_path = os.path.join(language_dir, "teachers.html")
