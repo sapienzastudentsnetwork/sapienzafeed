@@ -37,7 +37,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          # We'll store the UUIDs of professors who have actual text changes
+          # We'll store the UUIDs of professors who have actual content or link changes
           to_notify=""
           
           # Identify which common.html files have been modified or created
@@ -48,49 +48,51 @@ jobs:
             # Extract UUID from the directory path (lecturers/UUID/common.html)
             uuid=$(echo "$file" | cut -d'/' -f2)
             
-            # Extract visible text from the newly generated HTML file to avoid notifying for style-only updates
-            new_text=$(python3 -c "from bs4 import BeautifulSoup; print(BeautifulSoup(open('$file').read(), 'html.parser').get_text(strip=True))")
+            # Python script to extract a "fingerprint" of the content (text + all hrefs)
+            # This ensures we catch changes in visible text OR in underlying link URLs
+            CHECK_SCRIPT="import sys; from bs4 import BeautifulSoup; \
+              html = sys.stdin.read(); \
+              soup = BeautifulSoup(html, 'html.parser'); \
+              text = soup.get_text(strip=True); \
+              links = [a.get('href') for a in soup.find_all('a', href=True)]; \
+              print(f'{text}|||{links}')"
+
+            new_content_fingerprint=$(cat "$file" | python3 -c "$CHECK_SCRIPT")
             
-            # Check if the file already exists in the latest commit to perform a comparison
+            # Check if the file already exists in the latest commit
             if git ls-files --error-unmatch "$file" > /dev/null 2>&1; then
-              # Get visible text from the version currently stored in the repository
-              old_text=$(git show HEAD:"$file" | python3 -c "import sys; from bs4 import BeautifulSoup; print(BeautifulSoup(sys.stdin.read(), 'html.parser').get_text(strip=True))")
+              old_content_fingerprint=$(git show HEAD:"$file" | python3 -c "$CHECK_SCRIPT")
             else
-              # If the file is brand new, we consider it a text change to trigger the first notification
-              old_text="NEW_FILE_INITIAL_CONTENT"
+              old_content_fingerprint="NEW_FILE"
             fi
 
-            # Compare only the text content, ignoring HTML tags, CSS classes or structural changes
-            if [ "$new_text" != "$old_text" ]; then
+            # Trigger notification if text or any URL in an href has changed
+            if [ "$new_content_fingerprint" != "$old_content_fingerprint" ]; then
               to_notify="$to_notify $uuid"
             fi
           done
 
-          # Add all modified files to the commit (including indexes, json, and style-only HTML changes)
+          # Add all modified files to the commit (keeping the repo updated even for style-only changes)
           git add .
           
-          # Proceed only if there are changes to commit
           if ! git diff --cached --quiet; then
             git commit -m "Update professor news, index pages and metadata"
             git push
             
-            # Get the new commit hash for the notification links
             commit_hash=$(git rev-parse HEAD)
             
-            # Send Telegram notifications only for professors with visible news updates
+            # Send Telegram notifications for actual content updates
             for uuid in $to_notify; do
-              # Retrieve the professor name from professors.json using the UUID as key
-              # Using escaped quotes for jq to handle UUIDs correctly
+              # Retrieve the professor name from professors.json using UUID
               prof_name_raw=$(jq -r ".\"$uuid\".name" professors.json)
               
-              # Format the name to Title Case for better readability
+              # Format the name to Title Case
               formatted_name=$(echo "$prof_name_raw" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
               
-              # Define URLs for the notification - Link points to the English index
+              # Notification link points to the English index page
               file_url="sapienzastudents.net/sapienzafeed/lecturers/$uuid/en/index.html"
               commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
               
-              # Execute the notification script
               python send-professor-news-update-to-telegram.py "$formatted_name" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
             done
           fi
