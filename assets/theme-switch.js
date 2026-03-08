@@ -14,8 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
         bg: document.getElementById('kBg'),
         fg: document.getElementById('kFg'),
         acc: document.getElementById('kAcc'),
-        but: document.getElementById('kBut'),
+        srf: document.getElementById('kSrf'),
         close: document.getElementById('closePanel'),
+        reset: document.getElementById('resetCustomBtn'),
+        exportBtn: document.getElementById('exportThemeBtn'),
+        importInput: document.getElementById('importThemeInput'),
     };
 
     /**
@@ -32,16 +35,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initialize custom theme UI if available on the current page
     if (uiEls.preset && uiEls.close) {
-        
         function updateUI(state) {
-            if (state?.mode === 'preset' && state?.name) {
-                uiEls.preset.value = state.name;
-            } else if (state?.mode === 'custom' && state?.knobs) {
-                uiEls.preset.value = 'custom';
-                uiEls.bg.value = state.knobs.bg;
-                uiEls.fg.value = state.knobs.fg;
-                uiEls.acc.value = state.knobs.acc;
-                uiEls.but.value = state.knobs.but;
+            const isCustom = state?.mode === 'custom';
+            
+            if (uiEls.preset) {
+                uiEls.preset.value = isCustom ? 'custom' : (state?.name || 'auto');
+            }
+
+            const paletteTitle = document.getElementById('paletteTitle');
+            if (paletteTitle) {
+                paletteTitle.textContent = isCustom ? 'Custom Palette' : 'Active Palette';
+            }
+
+            if (uiEls.reset) {
+                uiEls.reset.style.visibility = isCustom ? 'visible' : 'hidden';
+            }
+
+            const colorInputs = document.querySelectorAll('#themePanel .swatch__picker, #themePanel .swatch__hex');
+            colorInputs.forEach(input => {
+                input.disabled = !isCustom;
+                input.style.opacity = isCustom ? '1' : '0.6'; 
+                input.style.cursor = isCustom ? 'pointer' : 'not-allowed';
+            });
+
+            if (isCustom && state?.knobs) {
+                if (uiEls.bg) { uiEls.bg.value = state.knobs.bg; document.getElementById('kBgHex').value = state.knobs.bg; }
+                if (uiEls.fg) { uiEls.fg.value = state.knobs.fg; document.getElementById('kFgHex').value = state.knobs.fg; }
+                if (uiEls.acc) { uiEls.acc.value = state.knobs.acc; document.getElementById('kAccHex').value = state.knobs.acc; }
+                if (uiEls.srf) { uiEls.srf.value = state.knobs.srf; document.getElementById('kSrfHex').value = state.knobs.srf; }
+            } else {
+                setTimeout(() => {
+                    const styles = getComputedStyle(document.documentElement);
+                    
+                    const getVar = (varName, fallback) => {
+                        const val = styles.getPropertyValue(varName).trim();
+                        return val.startsWith('#') ? val : fallback;
+                    };
+
+                    const currentBg = getVar('--bg-color', '#ffffff');
+                    const currentSrf = getVar('--card-bg', '#f8f9fa');
+                    const currentFg = getVar('--text-color', '#333333');
+                    const currentAcc = getVar('--link-color', '#007BFF');
+
+                    if (uiEls.bg) { uiEls.bg.value = currentBg; document.getElementById('kBgHex').value = currentBg; }
+                    if (uiEls.srf) { uiEls.srf.value = currentSrf; document.getElementById('kSrfHex').value = currentSrf; }
+                    if (uiEls.fg) { uiEls.fg.value = currentFg; document.getElementById('kFgHex').value = currentFg; }
+                    if (uiEls.acc) { uiEls.acc.value = currentAcc; document.getElementById('kAccHex').value = currentAcc; }
+                }, 50);
             }
         }
 
@@ -53,24 +93,124 @@ document.addEventListener("DOMContentLoaded", () => {
         if(uiEls.close) uiEls.close.addEventListener('click', () => setPanelOpen(false));
         if(backdrop) backdrop.addEventListener('click', () => setPanelOpen(false));
 
+        if (uiEls.reset) {
+            uiEls.reset.addEventListener('click', () => {
+                const root = document.documentElement;
+                
+                // Backup current active styles
+                const oldThemeAttr = root.getAttribute('data-theme');
+                const oldCssText = root.style.cssText;
+                
+                // Clear inline vars and theme to force browser to compute default 'auto' CSS
+                root.removeAttribute('data-theme');
+                root.style.cssText = '';
+                
+                const styles = getComputedStyle(root);
+                const getVar = (varName, fallback) => {
+                    const val = styles.getPropertyValue(varName).trim();
+                    return val.startsWith('#') ? val : fallback;
+                };
+
+                const autoKnobs = { 
+                    bg: getVar('--bg-color', '#ffffff'), 
+                    srf: getVar('--card-bg', '#f8f9fa'), 
+                    fg: getVar('--text-color', '#333333'), 
+                    acc: getVar('--link-color', '#007BFF') 
+                };
+
+                // Restore previous DOM state 
+                if (oldThemeAttr) {
+                    root.setAttribute('data-theme', oldThemeAttr);
+                }
+                root.style.cssText = oldCssText;
+
+                const newState = { mode: 'custom', knobs: autoKnobs };
+                saveState(newState);
+                applyCurrentState(newState);
+                updateUI(newState);
+            });
+        }
+
+        /* ==========================================================================
+           Import / Export Logic
+           ========================================================================== */
+
+        if (uiEls.exportBtn) {
+            uiEls.exportBtn.addEventListener('click', () => {
+                // Collect current values from the UI
+                const exportData = {
+                    bg: uiEls.bg.value,
+                    fg: uiEls.fg.value,
+                    acc: uiEls.acc.value,
+                    srf: uiEls.srf.value
+                };
+                
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "sapienzafeed_theme.json");
+                document.body.appendChild(downloadAnchorNode); // Required for Firefox
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            });
+        }
+
+        if (uiEls.importInput) {
+            uiEls.importInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedKnobs = JSON.parse(e.target.result);
+                        
+                        // Basic validation to ensure the file contains required color properties
+                        if (importedKnobs.bg && importedKnobs.fg && importedKnobs.acc && importedKnobs.srf) {
+                            const newState = { mode: 'custom', knobs: importedKnobs };
+                            saveState(newState);
+                            applyCurrentState(newState);
+                            updateUI(newState);
+                        } else {
+                            alert("Invalid file format. Missing required color properties.");
+                        }
+                    } catch (err) {
+                        alert("Error reading file. Ensure it is a valid JSON.");
+                    }
+                    // Reset the input to allow loading the same file again if needed
+                    uiEls.importInput.value = ''; 
+                };
+                reader.readAsText(file);
+            });
+        }
+
         // Preset Dropdown Change
         uiEls.preset.addEventListener('change', (e) => {
             const val = e.target.value;
+            const oldState = loadState() || {};
             let newState;
+            
             if (val === 'custom') {
-                // Read current values directly from the DOM to preserve 
-                // existing modifications or default Dark base colors
-                newState = { 
-                    mode: 'custom', 
-                    knobs: {
-                        bg: uiEls.bg.value,
-                        fg: uiEls.fg.value,
-                        acc: uiEls.acc.value,
-                        but: uiEls.but.value
-                    }
-                };
+                if (oldState.knobs) {
+                    newState = { mode: 'custom', knobs: oldState.knobs };
+                } else {
+                    // Read current values directly from the DOM to preserve 
+                    // existing modifications or default base colors
+                    newState = { 
+                        mode: 'custom', 
+                        knobs: {
+                            bg: uiEls.bg.value,
+                            fg: uiEls.fg.value,
+                            acc: uiEls.acc.value,
+                            srf: uiEls.srf.value
+                        }
+                    };
+                }
             } else {
                 newState = { mode: 'preset', name: val };
+                if (oldState.knobs) {
+                    newState.knobs = oldState.knobs;
+                }
             }
             saveState(newState);
             applyCurrentState(newState);
@@ -78,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Input Listeners for Custom Colors
-        const customInputs = [uiEls.bg, uiEls.fg, uiEls.acc, uiEls.but];
+        const customInputs = [uiEls.bg, uiEls.fg, uiEls.acc, uiEls.srf];
         customInputs.forEach(input => {
             if(!input) return;
             input.addEventListener('input', () => {
@@ -89,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         bg: uiEls.bg.value,
                         fg: uiEls.fg.value,
                         acc: uiEls.acc.value,
-                        but: uiEls.but.value
+                        srf: uiEls.srf.value
                     }
                 };
                 saveState(newState);
@@ -102,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ["kBg", "kBgHex"],
             ["kFg", "kFgHex"],
             ["kAcc", "kAccHex"],
-            ["kBut", "kButHex"],
+            ["kSrf", "kSrfHex"],
         ];
 
         const normHex = (v) => {
@@ -187,7 +327,7 @@ window.addEventListener('storage', (event) => {
                     const b = document.getElementById('kBg'); if(b) b.value = newState.knobs.bg;
                     const f = document.getElementById('kFg'); if(f) f.value = newState.knobs.fg;
                     const a = document.getElementById('kAcc'); if(a) a.value = newState.knobs.acc;
-                    const bu = document.getElementById('kBut'); if(bu) bu.value = newState.knobs.but;
+                    const bu = document.getElementById('kSrf'); if(bu) bu.value = newState.knobs.srf;
                 }
             }
         } catch(e) {}

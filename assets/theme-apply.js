@@ -203,10 +203,10 @@ function applyPreset(name) {
 /**
  * Computes the mathematical relationships between user-chosen colors
  * ensuring WCAG accessibility standards are met.
- * @param {Object} knobs - The base colors chosen by the user {bg, fg, acc, but}.
+ * @param {Object} knobs - The base colors chosen by the user {bg, fg, acc, srf}.
  * @returns {Object} A dictionary of CSS variable mappings.
  */
-function computeVarsFromKnobs({ bg, fg, acc, but }) {
+function computeVarsFromKnobs({ bg, fg, acc, srf }) {
     // Decide whether to behave "light-ish" or "dark-ish" based on true visual luminance.
     const isDarkBg = relLuminance(bg) < 0.35;
 
@@ -214,14 +214,14 @@ function computeVarsFromKnobs({ bg, fg, acc, but }) {
     const softBorder = mix(border, bg, 0.35);
     const strongBorder = mix(border, fg, 0.20);
 
-    const cardBgHover = isDarkBg ? adjustLightness(but, +0.04) : adjustLightness(but, +0.06);
+    const cardBgHover = isDarkBg ? adjustLightness(srf, +0.04) : adjustLightness(srf, +0.06);
     const linkHover = isDarkBg ? adjustLightness(acc, +0.06) : adjustLightness(acc, -0.08);
 
     // Subtle pull towards the foreground color to prevent headings from burning eyes,
     // while maintaining strong accent identity
     const heading = mix(acc, fg, 0.20); 
 
-    const tableHeaderBg = mix(but, bg, isDarkBg ? 0.25 : 0.35);
+    const tableHeaderBg = mix(srf, bg, isDarkBg ? 0.25 : 0.35);
     // Programmatically ensure text inside the table header is readable
     const tableHeaderText = bestTextOn(tableHeaderBg, fg);
 
@@ -233,8 +233,8 @@ function computeVarsFromKnobs({ bg, fg, acc, but }) {
         '--heading-color': heading,
         '--link-color': acc,
         '--link-hover-color': linkHover,
-        '--toc-bg': but,
-        '--card-bg': but,
+        '--toc-bg': srf,
+        '--card-bg': srf,
         '--card-bg-hover': cardBgHover,
         '--border-color': border,
         '--toc-border': strongBorder,
@@ -248,7 +248,7 @@ function computeVarsFromKnobs({ bg, fg, acc, but }) {
 
 /**
  * Computes and applies a custom theme generated from user-picked colors.
- * @param {Object} knobs - The base colors chosen by the user {bg, fg, acc, but}.
+ * @param {Object} knobs - The base colors chosen by the user {bg, fg, acc, srf}.
  */
 function applyCustom(knobs) {
     root.setAttribute('data-theme', 'custom');

@@ -674,3 +674,33 @@ a:hover .external-icon {
 .backdrop{
   background: rgba(0,0,0,.32);
 }
+
+.panel-action-btn {
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0;
+    background: var(--card-bg); 
+    border: 1px solid var(--card-border); 
+    color: var(--text-color); 
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    font-size: 0.9em; 
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.panel-action-btn:hover {
+    background: color-mix(in srgb, var(--card-bg) 80%, var(--text-color) 20%);
+}
+
+.panel-action-btn--text {
+    background: transparent;
+    border-color: transparent;
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.panel-action-btn--text:hover {
+    opacity: 1;
+    background: transparent;
+}
