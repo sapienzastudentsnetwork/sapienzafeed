@@ -1,7 +1,9 @@
-/* Define the default themes, both light and dark
- Then set the variables based on the light theme, which will be the default */
+/* ==========================================================================
+   Theme Variables (Token Architecture)
+   ========================================================================== */
+
 :root {
-    /* Light theme defaults */
+    /* Light Theme Base Tokens */
     --light-bg-color: #ffffff;
     --light-text-color: #333333;
     --light-heading-color: #0056b3;
@@ -17,7 +19,8 @@
     --light-card-bg-hover: #ffffff;
     --light-link-hover-color: #004494;
     --light-shadow-color: rgba(0, 0, 0, 0.08);
-    /* Dark theme defaults */
+
+    /* Dark Theme Base Tokens */
     --dark-bg-color: #1a1a1a;
     --dark-text-color: #e0e0e0;
     --dark-heading-color: #4da3ff;
@@ -35,27 +38,34 @@
     --dark-shadow-color: rgba(0, 0, 0, 0.5);
 }
 
-:root[data-theme="auto"] {
-  --bg-color: var(--light-bg-color);
-  --text-color: var(--light-text-color);
-  --heading-color: var(--light-heading-color);
-  --link-color: var(--light-link-color);
-  --toc-bg: var(--light-toc-bg);
-  --toc-border: var(--light-toc-border);
-  --border-color: var(--light-border-color);
-  --details-body-border: var(--light-details-body-border);
-  --table-header-bg: var(--light-table-header-bg);
-  --table-header-text: var(--light-table-header-text);
-  --card-bg: var(--light-card-bg);
-  --card-border: var(--light-card-border);
-  --card-bg-hover: var(--light-card-bg-hover);
-  --link-hover-color: var(--light-link-hover-color);
-  --shadow-color: var(--light-shadow-color);
+/* ==========================================================================
+   Application of Contextual Themes
+   ========================================================================== */
+
+/* 1. Default fallback (Auto mapping to Light) */
+:root[data-theme="auto"],
+:root:not([data-theme]) {
+    --bg-color: var(--light-bg-color);
+    --text-color: var(--light-text-color);
+    --heading-color: var(--light-heading-color);
+    --link-color: var(--light-link-color);
+    --toc-bg: var(--light-toc-bg);
+    --toc-border: var(--light-toc-border);
+    --border-color: var(--light-border-color);
+    --details-body-border: var(--light-details-body-border);
+    --table-header-bg: var(--light-table-header-bg);
+    --table-header-text: var(--light-table-header-text);
+    --card-bg: var(--light-card-bg);
+    --card-border: var(--light-card-border);
+    --card-bg-hover: var(--light-card-bg-hover);
+    --link-hover-color: var(--light-link-hover-color);
+    --shadow-color: var(--light-shadow-color);
 }
 
-/* 1. Apply dark variables if system is dark AND user hasn't forced light */
+/* 2. Auto mapping to Dark based on OS preferences */
 @media (prefers-color-scheme: dark) {
-    :root[data-theme="auto"]{
+    :root[data-theme="auto"],
+    :root:not([data-theme]) {
         --bg-color: var(--dark-bg-color);
         --text-color: var(--dark-text-color);
         --heading-color: var(--dark-heading-color);
@@ -74,7 +84,26 @@
     }
 }
 
-/* 2. Apply dark variables if user explicitly toggled dark mode */
+/* 3. Explicit Light Mode */
+:root[data-theme="light"] {
+    --bg-color: var(--light-bg-color);
+    --text-color: var(--light-text-color);
+    --heading-color: var(--light-heading-color);
+    --link-color: var(--light-link-color);
+    --toc-bg: var(--light-toc-bg);
+    --toc-border: var(--light-toc-border);
+    --border-color: var(--light-border-color);
+    --details-body-border: var(--light-details-body-border);
+    --table-header-bg: var(--light-table-header-bg);
+    --table-header-text: var(--light-table-header-text);
+    --card-bg: var(--light-card-bg);
+    --card-border: var(--light-card-border);
+    --card-bg-hover: var(--light-card-bg-hover);
+    --link-hover-color: var(--light-link-hover-color);
+    --shadow-color: var(--light-shadow-color);
+}
+
+/* 4. Explicit Dark Mode */
 :root[data-theme="dark"] {
     --bg-color: var(--dark-bg-color);
     --text-color: var(--dark-text-color);
@@ -93,26 +122,9 @@
     --shadow-color: var(--dark-shadow-color);
 }
 
-:root[data-theme="light"] {
-  --bg-color: var(--light-bg-color);
-  --text-color: var(--light-text-color);
-  --heading-color: var(--light-heading-color);
-  --link-color: var(--light-link-color);
-  --toc-bg: var(--light-toc-bg);
-  --toc-border: var(--light-toc-border);
-  --border-color: var(--light-border-color);
-  --details-body-border: var(--light-details-body-border);
-  --table-header-bg: var(--light-table-header-bg);
-  --table-header-text: var(--light-table-header-text);
-  --card-bg: var(--light-card-bg);
-  --card-border: var(--light-card-border);
-  --card-bg-hover: var(--light-card-bg-hover);
-  --link-hover-color: var(--light-link-hover-color);
-  --shadow-color: var(--light-shadow-color);
-}
-
+/* 5. Custom Mode (Left empty purposefully, variables injected via JS) */
 :root[data-theme="custom"] {
-  /* JS sets inline --vars on :root; this block can stay empty */
+    /* Managed by theme-apply.js */
 }
 
 body { 
