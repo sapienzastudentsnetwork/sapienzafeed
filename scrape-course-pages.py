@@ -5,6 +5,20 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
+def load_shared_asset(filename):
+    """
+    Reads a shared asset file from the assets directory.
+    """
+    path = os.path.join("assets", filename)
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
+    print(f"Warning: {filename} not found in assets folder.")
+    return ""
+
+# Load the panel HTML once at the start of the script
+THEME_PANEL_HTML = load_shared_asset("theme-panel.html")
+
 def is_external_url(url):
     """
     Checks if a URL points to an external domain.
@@ -65,7 +79,7 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
     dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
     
     theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
-    theme_btn_html = f'<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>'
+    theme_btn_html = f'<button id="themeBtn" class="theme-toggle" aria-controls="themePanel">{theme_btn_text}</button>'
     
     controls_bar_html = f'<div class="controls-bar">{dsa_toggle_html}{flag_html}{theme_btn_html}</div>'
 
@@ -290,7 +304,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
     css_path = get_assets_relative_path(directory, "index-style.css")
     js_page_logic = get_assets_relative_path(directory, "page-logic.js")
-    js_theme_path = get_assets_relative_path(directory, "theme-switch.js")
+    js_theme_apply = get_assets_relative_path(directory, "theme-apply.js")
+    js_theme_switch = get_assets_relative_path(directory, "theme-switch.js")
     js_search_path = get_assets_relative_path(directory, "index-search.js")
 
     back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
@@ -348,9 +363,12 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     <title>{title}</title>
     <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
-    <script src="{js_theme_path}"></script>
+    <script src="{js_theme_apply}"></script>
+    <script src="{js_theme_switch}" defer></script>
 </head>
 <body>
+    {THEME_PANEL_HTML}
+
     <div class="header-dashboard">
         <h1 id="page-title">{title}</h1>
         <div class="header-actions">
@@ -362,7 +380,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 {announcements_html}
 <button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
 <script src="{js_page_logic}"></script>
-""".format(language_key=language_key, title=title, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_path=js_theme_path, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
+""".format(language_key=language_key, title=title, THEME_PANEL_HTML=THEME_PANEL_HTML, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_apply=js_theme_apply, js_theme_switch=js_theme_switch, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -755,8 +773,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         
                         theme_css_path = f"{rel_to_static_root}theme-style.css"
                         css_path = f"{rel_to_static_root}page-style.css"
-                        js_path = f"{rel_to_static_root}page-logic.js"
-                        js_theme_path = f"{rel_to_static_root}theme-switch.js"
+                        js_page_logic = f"{rel_to_static_root}page-logic.js"
+                        js_theme_apply = f"{rel_to_static_root}theme-apply.js"
+                        js_theme_switch = f"{rel_to_static_root}theme-switch.js"
                         
                         flag_html = ""
                         if course_id not in excluded_en_ids:
@@ -789,9 +808,12 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
     <title>{{page_heading}}</title>
     <link rel="stylesheet" href="{{theme_css_path}}">
     <link rel="stylesheet" href="{{css_path}}">
-    <script src="{{js_theme_path}}"></script>
+    <script src="{{js_theme_apply}}"></script>
+    <script src="{{js_theme_switch}}" defer></script>
 </head>
 <body>
+{THEME_PANEL_HTML}
+
 <div class="header-dashboard">
     <h1 id="page-title">{{page_heading}}</h1>
     <div class="header-actions">
@@ -803,11 +825,11 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 {{combined_content}}
 </div>
 <button id="back-to-top" title="{{back_to_top_text}}">▲ {{back_to_top_text}}</button>
-<script src="{{js_path}}"></script>
+<script src="{{js_page_logic}}"></script>
 </body>
 </html>"""
                         # Format strings safely
-                        content_html = content_html.replace("{page_heading}", page_heading).replace("{theme_css_path}", theme_css_path).replace("{css_path}", css_path).replace("{js_theme_path}", js_theme_path).replace("{top_bars_html}", top_bars_html).replace("{toc_html}", toc_html).replace("{combined_content}", combined_content).replace("{back_to_top_text}", back_to_top_text).replace("{js_path}", js_path)
+                        content_html = content_html.replace("{page_heading}", page_heading).replace("{theme_css_path}", theme_css_path).replace("{css_path}", css_path).replace("{js_theme_apply}", js_theme_apply).replace("{js_theme_switch}", js_theme_switch).replace("{top_bars_html}", top_bars_html).replace("{toc_html}", toc_html).replace("{combined_content}", combined_content).replace("{back_to_top_text}", back_to_top_text).replace("{js_page_logic}", js_page_logic)
 
                         with open(output_path, "w", encoding="utf-8") as file:
                             file.write(content_html)
@@ -1068,8 +1090,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     # Asset paths using rel_to_static_root
                     theme_css_path = f"{rel_to_static_root}theme-style.css"
                     css_path = f"{rel_to_static_root}page-style.css"
-                    js_path = f"{rel_to_static_root}page-logic.js"
-                    js_theme_path = f"{rel_to_static_root}theme-switch.js"
+                    js_page_logic = f"{rel_to_static_root}page-logic.js"
+                    js_theme_apply = f"{rel_to_static_root}theme-apply.js"
+                    js_theme_switch = f"{rel_to_static_root}theme-switch.js"
 
                     # Build language toggle with correct subdirectory jumping
                     flag_html = ""
@@ -1107,7 +1130,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
     <title>{page_heading}</title>
     <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
-    <script src="{js_theme_path}"></script>
+    <script src="{js_theme_apply}"></script>
+    <script src="{js_theme_switch}" defer></script>
 </head>
 <body>
 <div class="header-dashboard">
@@ -1121,7 +1145,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 {combined_content}
 </div>
 <button id="back-to-top" title="{back_to_top_text}">▲ {back_to_top_text}</button>
-<script src="{js_path}"></script>
+<script src="{js_page_logic}"></script>
 </body>
 </html>"""
 
@@ -1345,8 +1369,9 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                 # Calculate relative paths
                 theme_css_path = get_assets_relative_path(language_dir, "theme-style.css")
                 css_path = get_assets_relative_path(language_dir, "teachers-style.css")
-                js_path = get_assets_relative_path(language_dir, "page-logic.js")
-                js_theme_path = get_assets_relative_path(language_dir, "theme-switch.js")
+                js_page_logic = get_assets_relative_path(language_dir, "page-logic.js")
+                js_theme_apply = get_assets_relative_path(language_dir, "theme-apply.js")
+                js_theme_switch = get_assets_relative_path(language_dir, "theme-switch.js")
                 js_teachers_search = get_assets_relative_path(language_dir, "teachers-search.js")
 
                 # Update the content formatting (H1 has no anchor)
@@ -1358,7 +1383,8 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
     <title>{title}</title>
     <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
-    <script src="{js_theme_path}"></script>
+    <script src="{js_theme_apply}"></script>
+    <script src="{js_theme_switch}" defer></script>
     <script src="{js_teachers_search}"></script>
 </head>
 <body>
@@ -1375,7 +1401,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
 {content}
 
 <button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
-<script src="{js_path}"></script>
+<script src="{js_page_logic}"></script>
 </body>
 </html>""".format(
                     lang=language_key,
@@ -1386,8 +1412,9 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                     btn_text=back_to_top_text,
                     theme_css_path=theme_css_path,
                     css_path=css_path,
-                    js_path=js_path,
-                    js_theme_path=js_theme_path,
+                    js_page_logic=js_page_logic,
+                    js_theme_apply=js_theme_apply,
+                    js_theme_switch=js_theme_switch,
                     js_teachers_search=js_teachers_search,
                     search_placeholder=search_placeholder
                 )
@@ -1477,8 +1504,9 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                 theme_css_path = f"{rel_to_static_root}theme-style.css"
                 css_path = f"{rel_to_static_root}page-style.css"
                 apply_css_path = f"{rel_to_static_root}apply-style.css"
-                js_path = f"{rel_to_static_root}page-logic.js"
-                js_theme_path = f"{rel_to_static_root}theme-switch.js"
+                js_page_logic = f"{rel_to_static_root}page-logic.js"
+                js_theme_apply = f"{rel_to_static_root}theme-apply.js"
+                js_theme_switch = f"{rel_to_static_root}theme-switch.js"
                 
                 # Language Toggle with correct subdirectory jumping
                 flag_html = ""
@@ -1504,7 +1532,8 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
     <link rel="stylesheet" href="{theme_css_path}">
     <link rel="stylesheet" href="{css_path}">
     <link rel="stylesheet" href="{apply_css_path}">
-    <script src="{js_theme_path}"></script>
+    <script src="{js_theme_apply}"></script>
+    <script src="{js_theme_switch}" defer></script>
 </head>
 <body>
     <div class="header-dashboard">
@@ -1517,7 +1546,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
         {combined_content}
     </div>
     <button id="back-to-top" title="{back_to_top_text}">▲ {back_to_top_text}</button>
-    <script src="{js_path}"></script>
+    <script src="{js_page_logic}"></script>
 </body>
 </html>"""
 

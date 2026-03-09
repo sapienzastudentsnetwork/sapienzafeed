@@ -221,6 +221,9 @@ function computeVarsFromKnobs({ bg, fg, acc, srf }) {
     // while maintaining strong accent identity
     const heading = mix(acc, fg, 0.20); 
 
+    // Ensure links remain accessible on dark backgrounds
+    const safeLink = isDarkBg ? mix(acc, fg, 0.15) : acc;
+
     const tableHeaderBg = mix(srf, bg, isDarkBg ? 0.25 : 0.35);
     // Programmatically ensure text inside the table header is readable
     const tableHeaderText = bestTextOn(tableHeaderBg, fg);
@@ -231,7 +234,7 @@ function computeVarsFromKnobs({ bg, fg, acc, srf }) {
         '--bg-color': bg,
         '--text-color': fg,
         '--heading-color': heading,
-        '--link-color': acc,
+        '--link-color': safeLink,
         '--link-hover-color': linkHover,
         '--toc-bg': srf,
         '--card-bg': srf,

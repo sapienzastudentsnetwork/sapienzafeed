@@ -23,6 +23,20 @@ def load_professors():
     with open(JSON_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
+def load_shared_asset(filename):
+    """
+    Reads a shared asset file from the assets directory.
+    """
+    path = os.path.join("assets", filename)
+    if os.path.exists(path):
+        with open(path, "r", encoding="utf-8") as f:
+            return f.read()
+    print(f"Warning: {filename} not found in assets folder.")
+    return ""
+
+# Load the panel HTML once at the start of the script
+THEME_PANEL_HTML = load_shared_asset("theme-panel.html")
+
 def is_external_url(url):
     """
     Checks if a URL points to an external domain.
@@ -123,7 +137,7 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
     dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
     
     theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
-    theme_btn_html = f'<button class="theme-toggle" onclick="toggleTheme()">{theme_btn_text}</button>'
+    theme_btn_html = f'<button id="themeBtn" class="theme-toggle" aria-controls="themePanel">{theme_btn_text}</button>'
     
     controls_bar_html = f'<div class="controls-bar">{dsa_toggle_html}{flag_html}{theme_btn_html}</div>'
 
@@ -400,10 +414,13 @@ def generate_individual_page(uuid, lang, prof_name, data):
     <title>{prof_name}</title>
     <link rel="stylesheet" href="../../../assets/theme-style.css">
     <link rel="stylesheet" href="../../../assets/page-style.css">
-    <script src="../../../assets/theme-switch.js"></script>
+    <script src="../../../assets/theme-apply.js"></script>
+    <script src="../../../assets/theme-switch.js" defer></script>
     <script src="../../../assets/page-logic.js" defer></script>
 </head>
 <body>
+    {THEME_PANEL_HTML}
+
     <div class="header-dashboard">
         <h1 id="page-title">{prof_name}</h1>
         <div class="header-actions">
@@ -500,10 +517,13 @@ def generate_main_indexes(professors_data):
     <title>{title}</title>
     <link rel="stylesheet" href="../../assets/theme-style.css">
     <link rel="stylesheet" href="../../assets/teachers-style.css">
-    <script src="../../assets/theme-switch.js"></script>
+    <script src="../../assets/theme-apply.js"></script>
+    <script src="../../assets/theme-switch.js" defer></script>
     <script src="../../assets/teachers-search.js"></script>
 </head>
 <body>
+    {THEME_PANEL_HTML}
+
     <div class="header-dashboard">
         <h1 id="page-title">{title}</h1>
         <div class="header-actions">
