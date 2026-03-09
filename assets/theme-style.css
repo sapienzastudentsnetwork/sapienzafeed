@@ -218,17 +218,23 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
+    background-color: var(--card-bg);
+    color: var(--text-color) !important;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
     padding: 10px 15px;
     font-size: 0.9em;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px var(--shadow-color);
     z-index: 1000;
+    transition: all 0.2s ease;
 }
-#back-to-top:hover { background-color: #003d82; }
+
+#back-to-top:hover { 
+    background-color: var(--card-bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
 
 /* Unified button styles (Card Style) */
 .theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label, .back-link-btn, .print-btn { 
