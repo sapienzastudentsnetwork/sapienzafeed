@@ -1134,6 +1134,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
     <script src="{js_theme_switch}" defer></script>
 </head>
 <body>
+{THEME_PANEL_HTML}
+
 <div class="header-dashboard">
     <h1 id="page-title">{page_heading}</h1>
     <div class="header-actions">
@@ -1388,6 +1390,8 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
     <script src="{js_teachers_search}"></script>
 </head>
 <body>
+{THEME_PANEL_HTML}
+
 <div class="header-dashboard">
     <h1 id="page-title">{heading}</h1>
     <div class="header-actions">
@@ -1416,7 +1420,8 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                     js_theme_apply=js_theme_apply,
                     js_theme_switch=js_theme_switch,
                     js_teachers_search=js_teachers_search,
-                    search_placeholder=search_placeholder
+                    search_placeholder=search_placeholder,
+                    THEME_PANEL_HTML=THEME_PANEL_HTML
                 )
                 
                 output_path = os.path.join(language_dir, "teachers.html")
@@ -1536,6 +1541,8 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
     <script src="{js_theme_switch}" defer></script>
 </head>
 <body>
+    {THEME_PANEL_HTML}
+
     <div class="header-dashboard">
         <h1 id="page-title">{page_heading}</h1>
         <div class="header-actions">
