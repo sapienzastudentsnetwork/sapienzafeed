@@ -1,59 +1,130 @@
+/* ==========================================================================
+   Theme Variables (Token Architecture)
+   ========================================================================== */
+
 :root {
-    --bg-color: #ffffff;
-    --text-color: #333333;
-    --heading-color: #0056b3;
-    --link-color: #007BFF;
-    --toc-bg: #f8f9fa;
-    --toc-border: #e9ecef;
-    --border-color: #eee;
-    --details-body-border: #f4f4f4;
-    --table-header-bg: #f0f0f0;
-    --table-header-text: #333333;
-    --card-bg: #f8f9fa;
-    --card-border: #e9ecef;
-    --card-bg-hover: #ffffff;
-    --link-hover-color: #004494;
-    --shadow-color: rgba(0, 0, 0, 0.08);
+    /* Light Theme Base Tokens */
+    --light-bg-color: #ffffff;
+    --light-text-color: #333333;
+    --light-heading-color: #0056b3;
+    --light-link-color: #007BFF;
+    --light-toc-bg: #f8f9fa;
+    --light-toc-border: #e9ecef;
+    --light-border-color: #eee;
+    --light-details-body-border: #f4f4f4;
+    --light-table-header-bg: #f0f0f0;
+    --light-table-header-text: #333333;
+    --light-card-bg: #f8f9fa;
+    --light-card-border: #e9ecef;
+    --light-card-bg-hover: #ffffff;
+    --light-link-hover-color: #004494;
+    --light-shadow-color: rgba(0, 0, 0, 0.08);
+
+    /* Dark Theme Base Tokens */
+    --dark-bg-color: #1a1a1a;
+    --dark-text-color: #e0e0e0;
+    --dark-heading-color: #4da3ff;
+    --dark-link-color: #66b2ff;
+    --dark-toc-bg: #2d2d2d;
+    --dark-toc-border: #444;
+    --dark-border-color: #404040;
+    --dark-details-body-border: #333;
+    --dark-table-header-bg: #333333;
+    --dark-table-header-text: #ffffff;
+    --dark-card-bg: #252526;
+    --dark-card-border: #333333;
+    --dark-card-bg-hover: #2d2d30;
+    --dark-link-hover-color: #79c0ff;
+    --dark-shadow-color: rgba(0, 0, 0, 0.5);
 }
 
-/* 1. Apply dark variables if system is dark AND user hasn't forced light */
+/* ==========================================================================
+   Application of Contextual Themes
+   ========================================================================== */
+
+/* 1. Default fallback (Auto mapping to Light) */
+:root[data-theme="auto"],
+:root:not([data-theme]) {
+    --bg-color: var(--light-bg-color);
+    --text-color: var(--light-text-color);
+    --heading-color: var(--light-heading-color);
+    --link-color: var(--light-link-color);
+    --toc-bg: var(--light-toc-bg);
+    --toc-border: var(--light-toc-border);
+    --border-color: var(--light-border-color);
+    --details-body-border: var(--light-details-body-border);
+    --table-header-bg: var(--light-table-header-bg);
+    --table-header-text: var(--light-table-header-text);
+    --card-bg: var(--light-card-bg);
+    --card-border: var(--light-card-border);
+    --card-bg-hover: var(--light-card-bg-hover);
+    --link-hover-color: var(--light-link-hover-color);
+    --shadow-color: var(--light-shadow-color);
+}
+
+/* 2. Auto mapping to Dark based on OS preferences */
 @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        --bg-color: #1a1a1a;
-        --text-color: #e0e0e0;
-        --heading-color: #4da3ff;
-        --link-color: #66b2ff;
-        --toc-bg: #2d2d2d;
-        --toc-border: #444;
-        --border-color: #404040;
-        --details-body-border: #333;
-        --table-header-bg: #333333;
-        --table-header-text: #ffffff;
-        --card-bg: #252526;
-        --card-border: #333333;
-        --card-bg-hover: #2d2d30;
-        --link-hover-color: #79c0ff;
-        --shadow-color: rgba(0, 0, 0, 0.5);
+    :root[data-theme="auto"],
+    :root:not([data-theme]) {
+        --bg-color: var(--dark-bg-color);
+        --text-color: var(--dark-text-color);
+        --heading-color: var(--dark-heading-color);
+        --link-color: var(--dark-link-color);
+        --toc-bg: var(--dark-toc-bg);
+        --toc-border: var(--dark-toc-border);
+        --border-color: var(--dark-border-color);
+        --details-body-border: var(--dark-details-body-border);
+        --table-header-bg: var(--dark-table-header-bg);
+        --table-header-text: var(--dark-table-header-text);
+        --card-bg: var(--dark-card-bg);
+        --card-border: var(--dark-card-border);
+        --card-bg-hover: var(--dark-card-bg-hover);
+        --link-hover-color: var(--dark-link-hover-color);
+        --shadow-color: var(--dark-shadow-color);
     }
 }
 
-/* 2. Apply dark variables if user explicitly toggled dark mode */
-[data-theme="dark"] {
-    --bg-color: #1a1a1a;
-    --text-color: #e0e0e0;
-    --heading-color: #4da3ff;
-    --link-color: #66b2ff;
-    --toc-bg: #2d2d2d;
-    --toc-border: #444;
-    --border-color: #404040;
-    --details-body-border: #333;
-    --table-header-bg: #333333;
-    --table-header-text: #ffffff;
-    --card-bg: #252526;
-    --card-border: #333333;
-    --card-bg-hover: #2d2d30;
-    --link-hover-color: #79c0ff;
-    --shadow-color: rgba(0, 0, 0, 0.5);
+/* 3. Explicit Light Mode */
+:root[data-theme="light"] {
+    --bg-color: var(--light-bg-color);
+    --text-color: var(--light-text-color);
+    --heading-color: var(--light-heading-color);
+    --link-color: var(--light-link-color);
+    --toc-bg: var(--light-toc-bg);
+    --toc-border: var(--light-toc-border);
+    --border-color: var(--light-border-color);
+    --details-body-border: var(--light-details-body-border);
+    --table-header-bg: var(--light-table-header-bg);
+    --table-header-text: var(--light-table-header-text);
+    --card-bg: var(--light-card-bg);
+    --card-border: var(--light-card-border);
+    --card-bg-hover: var(--light-card-bg-hover);
+    --link-hover-color: var(--light-link-hover-color);
+    --shadow-color: var(--light-shadow-color);
+}
+
+/* 4. Explicit Dark Mode */
+:root[data-theme="dark"] {
+    --bg-color: var(--dark-bg-color);
+    --text-color: var(--dark-text-color);
+    --heading-color: var(--dark-heading-color);
+    --link-color: var(--dark-link-color);
+    --toc-bg: var(--dark-toc-bg);
+    --toc-border: var(--dark-toc-border);
+    --border-color: var(--dark-border-color);
+    --details-body-border: var(--dark-details-body-border);
+    --table-header-bg: var(--dark-table-header-bg);
+    --table-header-text: var(--dark-table-header-text);
+    --card-bg: var(--dark-card-bg);
+    --card-border: var(--dark-card-border);
+    --card-bg-hover: var(--dark-card-bg-hover);
+    --link-hover-color: var(--dark-link-hover-color);
+    --shadow-color: var(--dark-shadow-color);
+}
+
+/* 5. Custom Mode (Left empty purposefully, variables injected via JS) */
+:root[data-theme="custom"] {
+    /* Managed by theme-apply.js */
 }
 
 body { 
@@ -113,7 +184,14 @@ h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
     justify-content: flex-end;
 }
 
-a { color: var(--link-color); }
+a { 
+    color: var(--link-color); 
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: var(--heading-color);
+}
 
 /* Hover anchors for direct linking */
 .heading-anchor {
@@ -357,4 +435,279 @@ html.dyslexic, html.dyslexic * {
 a:hover .external-icon {
     opacity: 0.8;
     text-decoration: none !important;
+}
+
+.panel{
+  position: fixed;
+  top: 0; right: 0;
+  height: 100dvh;
+  width: min(360px, 90vw);
+  transform: translateX(100%);
+  transition: transform 180ms ease;
+  background: var(--card-bg);
+  border-left: 1px solid var(--border-color);
+  z-index: 1000;
+}
+.panel.is-open{ transform: translateX(0); }
+
+.backdrop{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 999;
+}
+
+/* =========================================
+   Theme side panel (ONLY #themePanel layout polish)
+   Depends on your theme tokens: --card-bg, --card-border, --text-color, --shadow-color, --link-color, --border-color
+   ========================================= */
+
+#themePanel.panel{
+  /* keep your slide-in mechanics from .panel */
+  width: min(380px, 92vw);
+  max-width: 380px;
+
+  /* override base .panel visuals */
+  padding: 0;
+  border-left: 1px solid var(--border-color);
+  border-radius: 14px 0 0 14px;
+  overflow: hidden;
+
+  /* depth that works in light + dark */
+  box-shadow: 0 18px 60px rgba(0,0,0,.25);
+}
+
+/* If you want glassy feel without breaking light theme */
+@supports (backdrop-filter: blur(10px)) {
+  #themePanel.panel{
+    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+  }
+}
+
+#themePanel .panel__header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#themePanel .panel__title{
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: .2px;
+  color: var(--text-color);
+  opacity: .92;
+}
+
+#themePanel .panel__close{
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 22px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  cursor: pointer;
+  opacity: .85;
+  transition: background .15s ease, border-color .15s ease, opacity .15s ease, transform .15s ease;
+}
+#themePanel .panel__close:hover{
+  background: color-mix(in srgb, var(--card-bg) 65%, var(--text-color) 6%);
+  border-color: var(--card-border);
+  opacity: 1;
+  transform: translateY(-1px);
+}
+#themePanel .panel__close:active{
+  transform: translateY(0);
+}
+
+#themePanel .panel__content{
+  padding: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+#themePanel .panel__section{
+  display: grid;
+  gap: 10px;
+}
+
+#themePanel .field{
+  display: grid;
+  gap: 8px;
+}
+#themePanel .field__label{
+  font-size: 12px;
+  opacity: .75;
+  color: var(--text-color);
+}
+
+#themePanel .select{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--card-bg) 92%, var(--text-color) 4%);
+  color: var(--text-color);
+  outline: none;
+  box-shadow: 0 1px 0 var(--shadow-color);
+}
+#themePanel .select:focus{
+  border-color: color-mix(in srgb, var(--link-color) 65%, var(--card-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--link-color) 22%, transparent);
+}
+
+#themePanel .panel__sectionHead{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+#themePanel .panel__sectionTitle{
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: .2px;
+  opacity: .9;
+  color: var(--text-color);
+}
+#themePanel .panel__hint{
+  margin: 0;
+  font-size: 11px;
+  opacity: .6;
+  color: var(--text-color);
+}
+
+#themePanel .swatches{
+  display: grid;
+  gap: 10px;
+}
+
+#themePanel .swatch{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--card-bg) 96%, var(--text-color) 2%);
+  box-shadow: 0 1px 0 var(--shadow-color);
+}
+
+#themePanel .swatch__name{
+  font-size: 12px;
+  opacity: .9;
+  color: var(--text-color);
+}
+
+#themePanel .swatch__controls{
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#themePanel .swatch__picker{
+  width: 38px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  cursor: pointer;
+
+  /* FIX: make the *control* look dark regardless of theme (reliable) */
+  background: #111 !important;
+  border-color: rgba(255,255,255,.22) !important;
+
+  /* Attempt to force UA dark chrome (not consistently honored) */
+  color-scheme: dark !important;
+
+  /*
+    Reliable cross-engine trick:
+    invert the native control chrome so it appears dark even on light themes,
+    then cancel the invert on the swatch itself below so the picked color stays correct.
+  */
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* make native color input look clean */
+#themePanel .swatch__picker::-webkit-color-swatch-wrapper{ padding: 0; }
+#themePanel .swatch__picker::-webkit-color-swatch{
+  border: 0;
+  border-radius: 9px;
+
+  /* cancel the parent filter for the displayed color */
+  filter: invert(1) hue-rotate(180deg);
+}
+#themePanel .swatch__picker::-moz-color-swatch{
+  border: 0;
+  border-radius: 9px;
+
+  /* cancel the parent filter for the displayed color */
+  filter: invert(1) hue-rotate(180deg);
+}
+
+#themePanel .swatch__hex{
+  width: 118px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--card-bg) 88%, #000 10%);
+  color: var(--text-color);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  outline: none;
+}
+#themePanel .swatch__hex:focus{
+  border-color: color-mix(in srgb, var(--link-color) 65%, var(--card-border));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--link-color) 22%, transparent);
+}
+
+#themePanel .swatch__hex.is-bad{
+  border-color: rgba(255,80,80,.75);
+  box-shadow: 0 0 0 3px rgba(255,80,80,.18);
+}
+
+/* optional: nicer selection + placeholder feel */
+#themePanel input::selection{
+  background: color-mix(in srgb, var(--link-color) 30%, transparent);
+}
+
+/* Keep your existing backdrop; optionally slightly softer */
+.backdrop{
+  background: rgba(0,0,0,.32);
+}
+
+.panel-action-btn {
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0;
+    background: var(--card-bg); 
+    border: 1px solid var(--card-border); 
+    color: var(--text-color); 
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    font-size: 0.9em; 
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.panel-action-btn:hover {
+    background: color-mix(in srgb, var(--card-bg) 80%, var(--text-color) 20%);
+}
+
+.panel-action-btn--text {
+    background: transparent;
+    border-color: transparent;
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.panel-action-btn--text:hover {
+    opacity: 1;
+    background: transparent;
 }
