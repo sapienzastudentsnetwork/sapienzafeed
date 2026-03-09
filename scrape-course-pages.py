@@ -481,27 +481,30 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         if not categorized_links and metadata_html:
             file.write(f"\n{metadata_html}\n")
 
-        # Inietta lo script di traduzione se ci troviamo nella pagina root (scelta del corso)
-        translation_script = ""
-        if title in ["Corsi di Laurea", "Degree Courses"]:
-            translation_script = """
+        # Inject the translation script and let JS determine if it is on the root index page
+        translation_script = """
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const userLang = navigator.language || navigator.userLanguage;
-        const isItalian = userLang.toLowerCase().startsWith('it');
-        
-        document.documentElement.lang = isItalian ? 'it' : 'en';
-
+    (function() {
         const pageTitle = document.getElementById('page-title');
-        if (pageTitle) {
+        if (!pageTitle) return;
+        
+        const titleText = pageTitle.textContent.trim();
+        
+        // Trigger translation only if the title matches the courses selection page
+        if (titleText === 'Corsi di Laurea' || titleText === 'Degree Courses') {
+            const userLang = navigator.language || navigator.userLanguage;
+            const isItalian = userLang.toLowerCase().startsWith('it');
+            
+            document.documentElement.lang = isItalian ? 'it' : 'en';
             pageTitle.textContent = isItalian ? 'Corsi di Laurea' : 'Degree Courses';
-        }
 
-        const themeBtn = document.getElementById('themeBtn');
-        if (themeBtn) {
-            themeBtn.innerHTML = isItalian ? '🌓 Tema' : '🌓 Theme';
+            // Target the theme button by ID or fallback class
+            const themeBtn = document.getElementById('themeBtn') || document.querySelector('.theme-toggle');
+            if (themeBtn) {
+                themeBtn.innerHTML = isItalian ? '🌓 Tema' : '🌓 Theme';
+            }
         }
-    });
+    })();
 </script>"""
             
         # Include external JavaScript for real-time link filtering functionality only if search is enabled
