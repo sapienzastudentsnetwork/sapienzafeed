@@ -497,7 +497,10 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
             pageTitle.textContent = isItalian ? 'Corsi di Laurea' : 'Degree Courses';
         }
 
-        
+        const themeBtn = document.getElementById('themeBtn');
+        if (themeBtn) {
+            themeBtn.innerHTML = isItalian ? '🌓 Tema' : '🌓 Theme';
+        }
     });
 </script>"""
             
