@@ -10,88 +10,9 @@
     <script src="assets/theme-switch.js" defer></script>
 </head>
 <body>
+    <div id="theme-panel-container"></div>
 
-<aside id="themePanel" class="panel" aria-hidden="true">
-    <header class="panel__header">
-        <h3 class="panel__title">Theme</h3>
-        <button id="closePanel" class="panel__close" type="button" aria-label="Close theme panel">
-            ×
-        </button>
-    </header>
-
-    <div class="panel__content">
-        <section class="panel__section">
-            <label class="field">
-                <span class="field__label">Preset</span>
-                <select id="themePreset" class="select">
-                    <option value="auto">Auto</option>
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                    <option value="custom">Custom</option>
-                </select>
-            </label>
-        </section>
-
-        <section class="panel__section">
-            <div class="panel__sectionHead" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h4 id="paletteTitle" class="panel__sectionTitle">Active Palette</h4>
-                    <p class="panel__hint" style="margin: 0;">Pick or type a hex code.</p>
-                </div>
-                <div class="theme-actions" style="margin-top: 15px; display: flex; gap: 8px; align-items: center;">
-                    <button id="resetCustomBtn" type="button" class="panel-action-btn panel-action-btn--text">Reset</button> 
-                    
-                    <button id="exportThemeBtn" type="button" class="panel-action-btn">Export</button>
-                    
-                    <label for="importThemeInput" class="panel-action-btn">Import</label>
-                    <input id="importThemeInput" type="file" accept=".json" style="display: none;">
-                </div>
-            </div>
-
-            <div class="swatches">
-                <div class="swatch" title="The main background color of the entire page.">
-                    <span class="swatch__name">Background</span>
-                    <div class="swatch__controls">
-                        <input id="kBg" type="color" value="#1a1a1a" class="swatch__picker" />
-                        <input id="kBgHex" type="text" inputmode="text" spellcheck="false"
-                            class="swatch__hex" value="#1a1a1a" aria-label="Background hex" />
-                    </div>
-                </div>
-
-                <div class="swatch" title="The background color for cards, tables, side panels, and buttons.">
-                    <span class="swatch__name">Secondary BG</span>
-                    <div class="swatch__controls">
-                        <input id="kSrf" type="color" value="#252526" class="swatch__picker" />
-                        <input id="kSrfHex" type="text" inputmode="text" spellcheck="false"
-                            class="swatch__hex" value="#252526" aria-label="Secondary BG hex" />
-                    </div>
-                </div>
-
-                <div class="swatch" title="The primary color used for paragraph text and basic reading.">
-                    <span class="swatch__name">Text</span>
-                    <div class="swatch__controls">
-                        <input id="kFg" type="color" value="#e0e0e0" class="swatch__picker" />
-                        <input id="kFgHex" type="text" inputmode="text" spellcheck="false"
-                            class="swatch__hex" value="#e0e0e0" aria-label="Text hex" />
-                    </div>
-                </div>
-
-                <div class="swatch" title="The color used to highlight links, headings, and interactive elements.">
-                    <span class="swatch__name">Accent</span>
-                    <div class="swatch__controls">
-                        <input id="kAcc" type="color" value="#4da3ff" class="swatch__picker" />
-                        <input id="kAccHex" type="text" inputmode="text" spellcheck="false"
-                            class="swatch__hex" value="#4da3ff" aria-label="Accent hex" />
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-</aside>
-
-<div id="panelBackdrop" class="backdrop" hidden></div>
-
-<div class="header-dashboard">
+    <div class="header-dashboard">
         <h1 id="page-title">sapienzafeed</h1>
         <div class="header-actions">
             <div class="controls-bar">
@@ -106,9 +27,56 @@
     </div>
 
     <ul class="simple-list">
-        <li><a href="corsidilaurea/index.html">Degree Courses</a></li>
-        <li><a href="lecturers/en/index.html">Lecturers</a></li>
+        <li><a href="corsidilaurea/index.html" id="link-courses">Degree Courses</a></li>
+        <li><a href="lecturers/en/index.html" id="link-lecturers">Lecturers</a></li>
     </ul>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Detect user's browser language
+            const userLang = navigator.language || navigator.userLanguage;
+            const isItalian = userLang.toLowerCase().startsWith('it');
+            
+            // Localize main page UI elements if Italian is detected
+            if (isItalian) {
+                document.documentElement.lang = 'it';
+                
+                const themeBtn = document.getElementById('themeBtn');
+                if (themeBtn) themeBtn.innerHTML = '🌓 Tema';
+                
+                const linkCourses = document.getElementById('link-courses');
+                if (linkCourses) linkCourses.textContent = 'Corsi di Laurea';
+
+                const linkLecturers = document.getElementById('link-lecturers');
+                if (linkLecturers) {
+                    linkLecturers.textContent = 'Docenti';
+                    linkLecturers.href = 'lecturers/it/index.html';
+                }
+            }
+
+            // Determine which panel file to fetch based on language
+            const panelFile = isItalian ? 'assets/theme-panel-it.html' : 'assets/theme-panel-en.html';
+
+            // Fetch and inject the appropriate theme panel
+            fetch(panelFile)
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to load theme panel resource.");
+                    return response.text();
+                })
+                .then(html => {
+                    // Inject the HTML into the container
+                    document.getElementById('theme-panel-container').innerHTML = html;
+                    
+                    // Manually initialize the panel UI logic if the script is ready
+                    if (typeof window.initThemePanel === 'function') {
+                        window.initThemePanel();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading the theme panel:', error);
+                });
+        });
+    </script>
 
 </body>
 </html>

@@ -1,20 +1,24 @@
 'use strict';
 
 /* ==========================================================================
-   Theme Panel UI Initialization
+   Theme Panel UI Initialization (Global Function)
    ========================================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
+window.initThemePanel = function() {
     const btn = document.getElementById('themeBtn');
     const panel = document.getElementById('themePanel');
     const backdrop = document.getElementById('panelBackdrop');
 
+    // Prevent double initialization if called multiple times
+    if (panel && panel.dataset.initialized) return;
+    if (panel) panel.dataset.initialized = "true";
+
     const uiEls = {
         preset: document.getElementById('themePreset'),
         bg: document.getElementById('kBg'),
+        srf: document.getElementById('kSrf'),
         fg: document.getElementById('kFg'),
         acc: document.getElementById('kAcc'),
-        srf: document.getElementById('kSrf'),
         close: document.getElementById('closePanel'),
         reset: document.getElementById('resetCustomBtn'),
         exportBtn: document.getElementById('exportThemeBtn'),
@@ -44,7 +48,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const paletteTitle = document.getElementById('paletteTitle');
             if (paletteTitle) {
-                paletteTitle.textContent = isCustom ? 'Custom Palette' : 'Active Palette';
+                const path = window.location.pathname.toLowerCase();
+                let isItalian = false;
+
+                // Force language based on URL path, fallback to browser language
+                if (path.includes('/it/')) {
+                    isItalian = true;
+                } else if (path.includes('/en/')) {
+                    isItalian = false;
+                } else {
+                    const userLang = navigator.language || navigator.userLanguage;
+                    isItalian = userLang.toLowerCase().startsWith('it');
+                }
+                
+                const textCustom = isItalian ? 'Palette personalizzata' : 'Custom Palette';
+                const textActive = isItalian ? 'Palette attiva' : 'Active Palette';
+                
+                paletteTitle.textContent = isCustom ? textCustom : textActive;
             }
 
             if (uiEls.reset) {
@@ -140,9 +160,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Collect current values from the UI
                 const exportData = {
                     bg: uiEls.bg.value,
+                    srf: uiEls.srf.value,
                     fg: uiEls.fg.value,
-                    acc: uiEls.acc.value,
-                    srf: uiEls.srf.value
+                    acc: uiEls.acc.value
                 };
                 
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
@@ -200,9 +220,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         mode: 'custom', 
                         knobs: {
                             bg: uiEls.bg.value,
+                            srf: uiEls.srf.value,
                             fg: uiEls.fg.value,
-                            acc: uiEls.acc.value,
-                            srf: uiEls.srf.value
+                            acc: uiEls.acc.value
                         }
                     };
                 }
@@ -227,9 +247,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     mode: 'custom',
                     knobs: {
                         bg: uiEls.bg.value,
+                        srf: uiEls.srf.value,
                         fg: uiEls.fg.value,
-                        acc: uiEls.acc.value,
-                        srf: uiEls.srf.value
+                        acc: uiEls.acc.value
                     }
                 };
                 saveState(newState);
@@ -283,11 +303,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
     }
+};
 
-    /* ==========================================================================
-       OpenDyslexic Font Feature
-       ========================================================================== */
-       
+/* ==========================================================================
+   DOM Content Loaded Event
+   ========================================================================== */
+
+document.addEventListener("DOMContentLoaded", () => {    
+    // 1. OpenDyslexic Font Feature
     const fontElement = document.getElementById('font-dsa-toggle');
     if (fontElement) {
         const isFontDSA = localStorage.getItem("isFontDSA");
@@ -305,6 +328,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.removeItem("isFontDSA");
             }
         });
+    }
+
+    // 2. Initialize Theme Panel if natively present in HTML 
+    // (This triggers on other pages where the panel is hardcoded)
+    if (document.getElementById('themePanel')) {
+        window.initThemePanel();
     }
 });
 

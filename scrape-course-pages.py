@@ -17,7 +17,8 @@ def load_shared_asset(filename):
     return ""
 
 # Load the panel HTML once at the start of the script
-THEME_PANEL_HTML = load_shared_asset("theme-panel.html")
+THEME_PANEL_HTML_EN = load_shared_asset("theme-panel-en.html")
+THEME_PANEL_HTML_IT = load_shared_asset("theme-panel-it.html")
 
 def is_external_url(url):
     """
@@ -308,6 +309,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     js_theme_switch = get_assets_relative_path(directory, "theme-switch.js")
     js_search_path = get_assets_relative_path(directory, "index-search.js")
 
+    localized_theme_panel = THEME_PANEL_HTML_IT if language_key == "it" else THEME_PANEL_HTML_EN
+
     back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
 
     # Generate top bars using utility function
@@ -380,7 +383,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 {announcements_html}
 <button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
 <script src="{js_page_logic}"></script>
-""".format(language_key=language_key, title=title, THEME_PANEL_HTML=THEME_PANEL_HTML, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_apply=js_theme_apply, js_theme_switch=js_theme_switch, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
+""".format(language_key=language_key, title=title, THEME_PANEL_HTML=localized_theme_panel, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_apply=js_theme_apply, js_theme_switch=js_theme_switch, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -477,15 +480,37 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         # Appending metadata_html at the bottom ONLY if it wasn't injected into categorized_links
         if not categorized_links and metadata_html:
             file.write(f"\n{metadata_html}\n")
+
+        # Inietta lo script di traduzione se ci troviamo nella pagina root (scelta del corso)
+        translation_script = ""
+        if title in ["Corsi di Laurea", "Degree Courses"]:
+            translation_script = """
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const userLang = navigator.language || navigator.userLanguage;
+        const isItalian = userLang.toLowerCase().startsWith('it');
+        
+        document.documentElement.lang = isItalian ? 'it' : 'en';
+
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) {
+            pageTitle.textContent = isItalian ? 'Corsi di Laurea' : 'Degree Courses';
+        }
+
+        
+    });
+</script>"""
             
         # Include external JavaScript for real-time link filtering functionality only if search is enabled
         if show_search:
             file.write(f"""
 <script src="{js_search_path}"></script>
+{translation_script}
 </body>
 </html>""")
         else:
             file.write(f"""
+{translation_script}
 </body>
 </html>""")
 
@@ -776,6 +801,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         js_page_logic = f"{rel_to_static_root}page-logic.js"
                         js_theme_apply = f"{rel_to_static_root}theme-apply.js"
                         js_theme_switch = f"{rel_to_static_root}theme-switch.js"
+
+                        localized_theme_panel = THEME_PANEL_HTML_IT if language_key == "it" else THEME_PANEL_HTML_EN
                         
                         flag_html = ""
                         if course_id not in excluded_en_ids:
@@ -812,7 +839,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
     <script src="{{js_theme_switch}}" defer></script>
 </head>
 <body>
-{THEME_PANEL_HTML}
+{localized_theme_panel}
 
 <div class="header-dashboard">
     <h1 id="page-title">{{page_heading}}</h1>
@@ -1094,6 +1121,8 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     js_theme_apply = f"{rel_to_static_root}theme-apply.js"
                     js_theme_switch = f"{rel_to_static_root}theme-switch.js"
 
+                    localized_theme_panel = THEME_PANEL_HTML_IT if language_key == "it" else THEME_PANEL_HTML_EN
+
                     # Build language toggle with correct subdirectory jumping
                     flag_html = ""
                     if course_id not in excluded_en_ids:
@@ -1134,7 +1163,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
     <script src="{js_theme_switch}" defer></script>
 </head>
 <body>
-{THEME_PANEL_HTML}
+{localized_theme_panel}
 
 <div class="header-dashboard">
     <h1 id="page-title">{page_heading}</h1>
@@ -1357,6 +1386,8 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
 
                 search_placeholder = "Search teachers by name, email or structure..." if language_key == "en" else "Cerca docenti per nome, email o struttura..."
 
+                localized_theme_panel = THEME_PANEL_HTML_IT if language_key == "it" else THEME_PANEL_HTML_EN
+
                 flag_html = ""
                 if course_id not in excluded_en_ids:
                     other_lang = "en" if language_key == "it" else "it"
@@ -1421,7 +1452,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                     js_theme_switch=js_theme_switch,
                     js_teachers_search=js_teachers_search,
                     search_placeholder=search_placeholder,
-                    THEME_PANEL_HTML=THEME_PANEL_HTML
+                    THEME_PANEL_HTML=localized_theme_panel
                 )
                 
                 output_path = os.path.join(language_dir, "teachers.html")
@@ -1512,6 +1543,8 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                 js_page_logic = f"{rel_to_static_root}page-logic.js"
                 js_theme_apply = f"{rel_to_static_root}theme-apply.js"
                 js_theme_switch = f"{rel_to_static_root}theme-switch.js"
+
+                localized_theme_panel = THEME_PANEL_HTML_IT if language_key == "it" else THEME_PANEL_HTML_EN
                 
                 # Language Toggle with correct subdirectory jumping
                 flag_html = ""
@@ -1541,7 +1574,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
     <script src="{js_theme_switch}" defer></script>
 </head>
 <body>
-    {THEME_PANEL_HTML}
+    {localized_theme_panel}
 
     <div class="header-dashboard">
         <h1 id="page-title">{page_heading}</h1>

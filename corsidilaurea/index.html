@@ -111,5 +111,21 @@
         <li><a href="33504/it/index.html">Informatica - a distanza</a></li>
     </ul>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const userLang = navigator.language || navigator.userLanguage;
+        const isItalian = userLang.toLowerCase().startsWith('it');
+        
+        document.documentElement.lang = isItalian ? 'it' : 'en';
+
+        const pageTitle = document.getElementById('page-title');
+        if (pageTitle) {
+            pageTitle.textContent = isItalian ? 'Corsi di Laurea' : 'Degree Courses';
+        }
+
+        
+    });
+</script>
 </body>
 </html>

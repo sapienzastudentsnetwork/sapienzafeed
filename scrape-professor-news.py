@@ -35,7 +35,8 @@ def load_shared_asset(filename):
     return ""
 
 # Load the panel HTML once at the start of the script
-THEME_PANEL_HTML = load_shared_asset("theme-panel.html")
+THEME_PANEL_HTML_EN = load_shared_asset("theme-panel-en.html")
+THEME_PANEL_HTML_IT = load_shared_asset("theme-panel-it.html")
 
 def is_external_url(url):
     """
@@ -387,6 +388,8 @@ def generate_individual_page(uuid, lang, prof_name, data):
     titles = data['it_titles'] if is_it else data['en_titles']
     original_url = f"https://corsidilaurea.uniroma1.it/{lang}/lecturer/{uuid}"
     back_url = f"../../{lang}/index.html"
+
+    localized_theme_panel = THEME_PANEL_HTML_IT if is_it else THEME_PANEL_HTML_EN
     
     other_lang = "en" if is_it else "it"
     flag = "🇮🇹 Lingua" if is_it else "🇬🇧 Language"
@@ -418,7 +421,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
     <script src="../../../assets/theme-switch.js" defer></script>
 </head>
 <body>
-    {THEME_PANEL_HTML}
+    {localized_theme_panel}
 
     <div class="header-dashboard">
         <h1 id="page-title">{prof_name}</h1>
@@ -504,6 +507,8 @@ def generate_main_indexes(professors_data):
         title = "Lecturers" if lang == "en" else "Docenti"
         search_placeholder = "Search lecturers by name, email or structure..." if lang == "en" else "Cerca docenti per nome, email o struttura..."
         back_url = "../../index.html"
+
+        localized_theme_panel = THEME_PANEL_HTML_IT if lang == "it" else THEME_PANEL_HTML_EN
         
         other_lang = "en" if lang == "it" else "it"
         flag = "🇮🇹 Lingua" if lang == "it" else "🇬🇧 Language"
@@ -527,7 +532,7 @@ def generate_main_indexes(professors_data):
     <script src="../../assets/teachers-search.js"></script>
 </head>
 <body>
-    {THEME_PANEL_HTML}
+    {localized_theme_panel}
 
     <div class="header-dashboard">
         <h1 id="page-title">{title}</h1>
