@@ -8,21 +8,3 @@ h1 { color: #333; }
 .docente-info { flex-grow: 1; }
 .full-name { font-weight: bold; font-size: 1.2em; margin-bottom: 5px; }
 .email, .structure { font-size: 0.9em; color: #555; margin-top: 3px; }
-
-/* Back to top button */
-#back-to-top {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    font-size: 0.9em;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    z-index: 1000;
-}
-#back-to-top:hover { background-color: #003d82; }

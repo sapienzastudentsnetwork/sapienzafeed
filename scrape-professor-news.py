@@ -416,7 +416,6 @@ def generate_individual_page(uuid, lang, prof_name, data):
     <link rel="stylesheet" href="../../../assets/page-style.css">
     <script src="../../../assets/theme-apply.js"></script>
     <script src="../../../assets/theme-switch.js" defer></script>
-    <script src="../../../assets/page-logic.js" defer></script>
 </head>
 <body>
     {THEME_PANEL_HTML}
@@ -440,6 +439,9 @@ def generate_individual_page(uuid, lang, prof_name, data):
     </div>
     
     <div class="sections-content">
+
+    <button id="back-to-top" title="{btt_text}">▲ {btt_text}</button>
+    <script src="../../../assets/page-logic.js"></script>
 '''
 
     # Build shared/common sections hooks
@@ -508,6 +510,9 @@ def generate_main_indexes(professors_data):
         flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
 
         top_bars_html = generate_top_bars_html(lang, flag_html=flag_html, original_url=None, back_url=back_url, is_index_page=True)
+
+        btn_text = "Torna sù" if lang == "it" else "Back to top"
+
         
         html = f'''<!DOCTYPE html>
 <html lang="{lang}">
@@ -536,6 +541,9 @@ def generate_main_indexes(professors_data):
     </div>
     
     <div class="teachers-container">
+
+    <button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
+    <script src="../../assets/page-logic.js"></script>
 '''
         
         sorted_professors = sorted(professors_data.items(), key=lambda item: item[1]['name'])
