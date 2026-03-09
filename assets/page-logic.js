@@ -119,3 +119,54 @@ window.addEventListener('afterprint', () => {
         d.removeAttribute('data-print-opened');
     });
 });
+
+/* =========================================
+   DYNAMIC NAVBAR WRAPPING LOGIC
+   ========================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+    const navbar = document.querySelector('.top-navbar');
+    const title = document.querySelector('.brand-title');
+    const controls = document.querySelector('.controls-bar');
+
+    if (navbar && title && controls) {
+        let wrapBreakpoint = 0; // Stores the width where the layout breaks
+
+        const checkWrap = () => {
+            const isCurrentlyWrapped = navbar.classList.contains('is-wrapped');
+
+            if (!isCurrentlyWrapped) {
+                // 1. Temporarily force top alignment to accurately check offsets
+                const oldAlign = navbar.style.alignItems;
+                navbar.style.alignItems = 'flex-start';
+                
+                // 2. If controls are pushed below the title, they have wrapped
+                const needsWrap = controls.offsetTop > title.offsetTop;
+                
+                // 3. Restore alignment
+                navbar.style.alignItems = oldAlign;
+
+                if (needsWrap) {
+                    // Record the exact container width where the wrapping occurred
+                    wrapBreakpoint = navbar.clientWidth;
+                    navbar.classList.add('is-wrapped');
+                }
+            } else {
+                // If it's already wrapped, only unwrap it if the container 
+                // is safely wider than the breakpoint where it originally broke.
+                // We add a 5px buffer to completely prevent edge-case flickering.
+                if (navbar.clientWidth > wrapBreakpoint + 5) {
+                    navbar.classList.remove('is-wrapped');
+                    wrapBreakpoint = 0; // Reset the breakpoint
+                }
+            }
+        };
+
+        // Run the initial check
+        checkWrap();
+
+        // Use ResizeObserver to recalculate whenever the window or navbar changes size
+        const resizeObserver = new ResizeObserver(checkWrap);
+        resizeObserver.observe(navbar);
+    }
+});

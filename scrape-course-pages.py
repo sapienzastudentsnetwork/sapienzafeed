@@ -69,22 +69,11 @@ def add_heading_anchors(soup, content_block):
             h_tag.append(" ")
             h_tag.append(anchor)
 
-def generate_top_bars_html(language_key, flag_html="", original_url=None, back_url=None, is_index_page=False, custom_back_text=None):
+def generate_top_navbar_html(title, language_key, flag_html="", original_url=None, back_url=None, is_index_page=False, custom_back_text=None):
     """
-    Generates the standard HTML for the two top bars.
-    Bar 1: Controls (Language, Font, Theme).
-    Bar 2: Navigation (Source, Back, Print).
+    Generates the unified top navbar HTML containing the page title on the left 
+    and all navigation/control buttons on the right.
     """
-    # Bar 1: Controls (Font, Language, Theme)
-    dsa_text = "OpenDyslexic"
-    dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
-    
-    theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
-    theme_btn_html = f'<button id="themeBtn" class="theme-toggle" aria-controls="themePanel">{theme_btn_text}</button>'
-    
-    controls_bar_html = f'<div class="controls-bar">{dsa_toggle_html}{flag_html}{theme_btn_html}</div>'
-
-    # Bar 2: Navigation (Back, Print, Source)
     back_btn_html = ""
     if back_url:
         if custom_back_text:
@@ -106,11 +95,25 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
         original_btn_text = "🌐 Fonte" if language_key == "it" else "🌐 Source"
         original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
 
-    nav_bar_html = ""
-    if back_btn_html or print_btn_html or original_btn_html:
-        nav_bar_html = f'<div class="navigation-bar">{back_btn_html}{print_btn_html}{original_btn_html}</div>'
+    dsa_text = "OpenDyslexic"
+    dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
+    
+    theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
+    theme_btn_html = f'<button id="themeBtn" class="theme-toggle" aria-controls="themePanel">{theme_btn_text}</button>'
 
-    return f'{controls_bar_html}\n{nav_bar_html}'
+    # Uniamo tutti i bottoni ordinatamente a destra (Back, DSA, Lingua, Tema, Stampa, Fonte)
+    return f'''
+    <header class="top-navbar">
+        <h1 id="page-title" class="brand-title">{title}</h1>
+        <div class="controls-bar">
+            {back_btn_html}
+            {original_btn_html}
+            {dsa_toggle_html}
+            {flag_html}
+            {theme_btn_html}
+            {print_btn_html}
+        </div>
+    </header>'''
 
 def make_urls_absolute(soup, base_url):
     """
@@ -314,7 +317,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
 
     # Generate top bars using utility function
-    top_bars_html = generate_top_bars_html(language_key, flag_html, original_url, back_url, is_index_page=True, custom_back_text=custom_back_text)
+    top_navbar_html = generate_top_navbar_html(title, language_key, flag_html, original_url, back_url, is_index_page=True, custom_back_text=custom_back_text)
 
     # Generate search bar HTML
     search_html = ""
@@ -372,18 +375,13 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 <body>
     {THEME_PANEL_HTML}
 
-    <div class="header-dashboard">
-        <h1 id="page-title">{title}</h1>
-        <div class="header-actions">
-            {top_bars_html}
-        </div>
-    </div>
+    {top_navbar_html}
 {search_html}
 {toc_html}
 {announcements_html}
 <button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
 <script src="{js_page_logic}"></script>
-""".format(language_key=language_key, title=title, THEME_PANEL_HTML=localized_theme_panel, top_bars_html=top_bars_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_apply=js_theme_apply, js_theme_switch=js_theme_switch, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
+""".format(language_key=language_key, title=title, THEME_PANEL_HTML=localized_theme_panel, top_navbar_html=top_navbar_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_apply=js_theme_apply, js_theme_switch=js_theme_switch, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -828,7 +826,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             toc_html += '</ul>\n</div>\n'
                             
                         back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
-                        top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
+                        top_navbar_html = generate_top_navbar_html(page_heading, language_key, flag_html, url, back_link)
                         
                         page_heading = data["page_heading"]
                         combined_content = data["combined_content"]
@@ -847,12 +845,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 <body>
 {localized_theme_panel}
 
-<div class="header-dashboard">
-    <h1 id="page-title">{{page_heading}}</h1>
-    <div class="header-actions">
-        {{top_bars_html}}
-    </div>
-</div>
+{{top_navbar_html}}
 {{toc_html}}
 <div class="content-wrapper">
 {{combined_content}}
@@ -862,7 +855,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 </body>
 </html>"""
                         # Format strings safely
-                        content_html = content_html.replace("{page_heading}", page_heading).replace("{theme_css_path}", theme_css_path).replace("{css_path}", css_path).replace("{js_theme_apply}", js_theme_apply).replace("{js_theme_switch}", js_theme_switch).replace("{top_bars_html}", top_bars_html).replace("{toc_html}", toc_html).replace("{combined_content}", combined_content).replace("{back_to_top_text}", back_to_top_text).replace("{js_page_logic}", js_page_logic)
+                        content_html = content_html.replace("{page_heading}", page_heading).replace("{theme_css_path}", theme_css_path).replace("{css_path}", css_path).replace("{js_theme_apply}", js_theme_apply).replace("{js_theme_switch}", js_theme_switch).replace("{top_navbar_html}", top_navbar_html).replace("{toc_html}", toc_html).replace("{combined_content}", combined_content).replace("{back_to_top_text}", back_to_top_text).replace("{js_page_logic}", js_page_logic)
 
                         with open(output_path, "w", encoding="utf-8") as file:
                             file.write(content_html)
@@ -1154,7 +1147,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                     
                     # Generate top bars using utility function
-                    top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
+                    top_navbar_html = generate_top_navbar_html(page_heading, language_key, flag_html, url, back_link)
 
                     # Final HTML construction (H1 has no anchor)
                     content = f"""<!DOCTYPE html>
@@ -1171,12 +1164,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 <body>
 {localized_theme_panel}
 
-<div class="header-dashboard">
-    <h1 id="page-title">{page_heading}</h1>
-    <div class="header-actions">
-        {top_bars_html}
-    </div>
-</div>
+{top_navbar_html}
 {toc_html}
 <div class="content-wrapper">
 {combined_content}
@@ -1403,7 +1391,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
                 # Generate top bars using utility function
-                top_bars_html = generate_top_bars_html(language_key, flag_html, url, "index.html")
+                top_navbar_html = generate_top_navbar_html(page_heading, language_key, flag_html, url, "index.html")
 
                 # Calculate relative paths
                 theme_css_path = get_assets_relative_path(language_dir, "theme-style.css")
@@ -1429,12 +1417,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
 <body>
 {THEME_PANEL_HTML}
 
-<div class="header-dashboard">
-    <h1 id="page-title">{heading}</h1>
-    <div class="header-actions">
-        {top_bars_html}
-    </div>
-</div>
+{top_navbar_html}
 
 <div class="search-container" style="margin: 20px auto; max-width: 800px; padding: 0 20px;">
     <input type="text" id="search-input" onkeyup="filterTeachers()" placeholder="{search_placeholder}" style="width: 100%; padding: 12px 20px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 8px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #333);">
@@ -1448,7 +1431,7 @@ def fetch_and_save_teachers(languages, ids, excluded_en_ids, course_acronyms, ou
                     lang=language_key,
                     title=page_heading,
                     heading=page_heading,
-                    top_bars_html=top_bars_html,
+                    top_navbar_html=top_navbar_html,
                     content=teachers_container.prettify() if teachers_container else "",
                     btn_text=back_to_top_text,
                     theme_css_path=theme_css_path,
@@ -1564,7 +1547,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
                 back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
                 
                 # Generate top bars using utility function
-                top_bars_html = generate_top_bars_html(language_key, flag_html, url, back_link)
+                top_navbar_html = generate_top_navbar_html(page_heading, language_key, flag_html, url, back_link)
 
                 # Final HTML construction (H1 has no anchor)
                 html_content = f"""<!DOCTYPE html>
@@ -1582,12 +1565,7 @@ def fetch_and_save_apply(languages, ids, excluded_en_ids, course_names, course_a
 <body>
     {localized_theme_panel}
 
-    <div class="header-dashboard">
-        <h1 id="page-title">{page_heading}</h1>
-        <div class="header-actions">
-            {top_bars_html}
-        </div>
-    </div>
+    {top_navbar_html}
     <div class="content-wrapper">
         {combined_content}
     </div>

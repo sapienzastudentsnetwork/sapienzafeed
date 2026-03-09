@@ -127,22 +127,11 @@ def add_heading_anchors(soup, content_block):
             h_tag.append(" ")
             h_tag.append(anchor)
 
-def generate_top_bars_html(language_key, flag_html="", original_url=None, back_url=None, is_index_page=False):
+def generate_top_navbar_html(title, language_key, flag_html="", original_url=None, back_url=None, is_index_page=False, custom_back_text=None):
     """
-    Generates the standard HTML for the two top bars exactly like the course pages script.
-    Bar 1: Controls (Language, Font, Theme).
-    Bar 2: Navigation (Source, Back, Print).
+    Generates the unified top navbar HTML containing the page title on the left 
+    and all navigation/control buttons on the right.
     """
-    # Bar 1: Controls (Font, Language, Theme)
-    dsa_text = "OpenDyslexic"
-    dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
-    
-    theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
-    theme_btn_html = f'<button id="themeBtn" class="theme-toggle" aria-controls="themePanel">{theme_btn_text}</button>'
-    
-    controls_bar_html = f'<div class="controls-bar">{dsa_toggle_html}{flag_html}{theme_btn_html}</div>'
-
-    # Bar 2: Navigation (Back, Print, Source)
     back_btn_html = ""
     if back_url:
         if is_index_page:
@@ -162,11 +151,25 @@ def generate_top_bars_html(language_key, flag_html="", original_url=None, back_u
         original_btn_text = "🌐 Fonte" if language_key == "it" else "🌐 Source"
         original_btn_html = f'<a href="{original_url}" class="original-link-btn" target="_blank" rel="noopener noreferrer">{original_btn_text}</a>'
 
-    nav_bar_html = ""
-    if back_btn_html or print_btn_html or original_btn_html:
-        nav_bar_html = f'<div class="navigation-bar">{back_btn_html}{print_btn_html}{original_btn_html}</div>'
+    dsa_text = "OpenDyslexic"
+    dsa_toggle_html = f'<label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> {dsa_text}</label>'
+    
+    theme_btn_text = "🌓 Tema" if language_key == "it" else "🌓 Theme"
+    theme_btn_html = f'<button id="themeBtn" class="theme-toggle" aria-controls="themePanel">{theme_btn_text}</button>'
 
-    return f'{controls_bar_html}\n{nav_bar_html}'
+    # Uniamo tutti i bottoni ordinatamente a destra (Back, DSA, Lingua, Tema, Stampa, Fonte)
+    return f'''
+    <header class="top-navbar">
+        <h1 id="page-title" class="brand-title">{title}</h1>
+        <div class="controls-bar">
+            {back_btn_html}
+            {original_btn_html}
+            {dsa_toggle_html}
+            {flag_html}
+            {theme_btn_html}
+            {print_btn_html}
+        </div>
+    </header>'''
 
 def scrape_professor_data(uuid):
     """
@@ -395,7 +398,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
     flag = "🇮🇹 Lingua" if is_it else "🇬🇧 Language"
     flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
     
-    top_bars_html = generate_top_bars_html(lang, flag_html=flag_html, original_url=original_url, back_url=back_url, is_index_page=False)
+    top_navbar_html = generate_top_navbar_html(prof_name, lang, flag_html=flag_html, original_url=original_url, back_url=back_url, is_index_page=False)
     
     # Generate mailto link for email
     email_html = f'<a href="mailto:{data["email"]}">{data["email"]}</a>' if data["email"] else "N/A"
@@ -423,12 +426,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
 <body>
     {localized_theme_panel}
 
-    <div class="header-dashboard">
-        <h1 id="page-title">{prof_name}</h1>
-        <div class="header-actions">
-            {top_bars_html}
-        </div>
-    </div>
+    {top_navbar_html}
     
     <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
         <div class="docente-picture">
@@ -514,7 +512,7 @@ def generate_main_indexes(professors_data):
         flag = "🇮🇹 Lingua" if lang == "it" else "🇬🇧 Language"
         flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
 
-        top_bars_html = generate_top_bars_html(lang, flag_html=flag_html, original_url=None, back_url=back_url, is_index_page=True)
+        top_navbar_html = generate_top_navbar_html(title, lang, flag_html=flag_html, original_url=None, back_url=back_url, is_index_page=True)
 
         btn_text = "Torna sù" if lang == "it" else "Back to top"
 
@@ -534,12 +532,7 @@ def generate_main_indexes(professors_data):
 <body>
     {localized_theme_panel}
 
-    <div class="header-dashboard">
-        <h1 id="page-title">{title}</h1>
-        <div class="header-actions">
-            {top_bars_html}
-        </div>
-    </div>
+    {top_navbar_html}
     
     <div class="search-container" style="margin: 20px auto; max-width: 800px; padding: 0 20px;">
         <input type="text" id="search-input" onkeyup="filterTeachers()" placeholder="{search_placeholder}" style="width: 100%; padding: 12px 20px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 8px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #333);">

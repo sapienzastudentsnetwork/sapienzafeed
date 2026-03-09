@@ -122,10 +122,14 @@
     --shadow-color: var(--dark-shadow-color);
 }
 
-/* 5. Custom Mode (Left empty purposefully, variables injected via JS) */
+/* 5. Custom Mode (Variables injected via JS) */
 :root[data-theme="custom"] {
     /* Managed by theme-apply.js */
 }
+
+/* ==========================================================================
+   Global Elements
+   ========================================================================== */
 
 body { 
     background-color: var(--bg-color); 
@@ -133,55 +137,8 @@ body {
     transition: background 0.3s, color 0.3s; 
 }
 
-.table-responsive table thead th {
-    background-color: var(--table-header-bg) !important;
-    color: var(--table-header-text) !important;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
-
-/* Dashboard Header Layout */
-.header-dashboard {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-top: 10px;
-    margin-bottom: 30px;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.header-dashboard h1, .header-dashboard h1#page-title {
-    margin: 0; 
-    border: none;
-    flex: 1 1 min-content;
-    text-align: left;
-    font-size: 2.2em;
-}
-
-.header-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* Aligns to the right on desktop */
-    gap: 10px;
-}
-
-/* Remove borders and margins from bars as they are managed by header-actions */
-.header-actions .controls-bar, 
-.header-actions .navigation-bar {
-    margin: 0;
-    padding: 0;
-    border: none;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+h1, h2, h3, h4, h5, h6 { 
+    color: var(--heading-color) !important; 
 }
 
 a, a:visited { 
@@ -206,13 +163,145 @@ a:hover {
     cursor: pointer;
     user-select: none;
 }
+
 h2:hover .heading-anchor, h3:hover .heading-anchor, 
 h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
     opacity: 1;
 }
-.heading-anchor:hover { color: var(--link-color) !important; }
 
-/* Back to top button */
+.heading-anchor:hover { 
+    color: var(--link-color) !important; 
+}
+
+/* External link icon (↗) */
+.external-icon {
+    font-size: 0.7em;
+    opacity: 0.55;
+    margin-left: 4px;
+    display: inline-block;
+    vertical-align: baseline;
+    text-decoration: none !important;
+    transition: opacity 0.2s;
+}
+
+a:hover .external-icon {
+    opacity: 0.8;
+    text-decoration: none !important;
+}
+
+/* ==========================================================================
+   Top Navigation Bar (Header) - UNIFIED
+   ========================================================================== */
+
+.top-navbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Title on the left, buttons on the right */
+    align-items: center;
+    gap: 15px;
+    padding: 0px 0 25px 0;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.brand-title {
+    margin: 0 !important;
+    font-size: 2.2em !important;
+    color: var(--heading-color) !important;
+    flex: 0 1 auto; /* Changed from "1 1 auto" so it doesn't absorb all free space */
+    border-bottom: none !important;
+    text-align: left;
+    line-height: 1.1;
+}
+
+.controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end; /* Align buttons to the right by default */
+    gap: 10px;
+}
+
+/* Unified button styles (Card Style) for everything inside the controls bar */
+.theme-toggle, 
+.original-link-btn, 
+.lang-btn, 
+.font-toggle-label, 
+.back-link-btn, 
+.print-btn,
+.controls-bar > a, 
+.controls-bar > button, 
+.controls-bar > label {
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: pointer; 
+    background: var(--card-bg); 
+    color: var(--text-color) !important; 
+    border: 1px solid var(--card-border); 
+    padding: 8px 16px; 
+    border-radius: 8px; 
+    font-size: 0.9em; 
+    transition: all 0.2s ease; 
+    text-decoration: none; 
+    white-space: nowrap; 
+    margin: 0;
+    box-shadow: 0 2px 4px var(--shadow-color); 
+}
+
+.theme-toggle:hover, 
+.original-link-btn:hover, 
+.lang-btn:hover, 
+.font-toggle-label:hover, 
+.back-link-btn:hover, 
+.print-btn:hover,
+.controls-bar > a:hover, 
+.controls-bar > button:hover, 
+.controls-bar > label:hover {
+    background: var(--card-bg-hover); 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px var(--shadow-color);
+    text-decoration: none; 
+}
+
+.font-toggle-label { gap: 8px; }
+.font-toggle-label input[type="checkbox"] { margin: 0; cursor: pointer; }
+
+.top-navbar.is-wrapped {
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.top-navbar.is-wrapped .brand-title {
+    text-align: center;
+}
+
+.top-navbar.is-wrapped .controls-bar {
+    justify-content: center;
+}
+
+/* Optional: if you still want to shrink buttons when they wrap */
+.top-navbar.is-wrapped .theme-toggle, 
+.top-navbar.is-wrapped .original-link-btn, 
+.top-navbar.is-wrapped .font-toggle-label, 
+.top-navbar.is-wrapped .lang-btn, 
+.top-navbar.is-wrapped .back-link-btn, 
+.top-navbar.is-wrapped .print-btn,
+.top-navbar.is-wrapped .controls-bar > a, 
+.top-navbar.is-wrapped .controls-bar > button, 
+.top-navbar.is-wrapped .controls-bar > label { 
+    font-size: 0.8em; 
+    padding: 6px 12px;
+}
+
+/* ==========================================================================
+   Layout & Navigation (Back to Top)
+   ========================================================================== */
+
 #back-to-top {
     display: none;
     position: fixed;
@@ -236,35 +325,10 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
     box-shadow: 0 4px 8px var(--shadow-color);
 }
 
-/* Unified button styles (Card Style) */
-.theme-toggle, .original-link-btn, .lang-btn, .font-toggle-label, .back-link-btn, .print-btn { 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
-    box-sizing: border-box;
-    cursor: pointer; 
-    background: var(--card-bg); 
-    color: var(--text-color) !important; 
-    border: 1px solid var(--card-border); 
-    padding: 8px 16px; 
-    border-radius: 8px; 
-    font-size: 0.9em; 
-    transition: all 0.2s ease; 
-    text-decoration: none; 
-    white-space: nowrap; 
-    margin: 0;
-    box-shadow: 0 2px 4px var(--shadow-color); 
-}
+/* ==========================================================================
+   Typography & Accessibility (OpenDyslexic)
+   ========================================================================== */
 
-/* Dynamic hover effect: button "lifts" up */
-.theme-toggle:hover, .original-link-btn:hover, .lang-btn:hover, .font-toggle-label:hover, .back-link-btn:hover, .print-btn:hover { 
-    background: var(--card-bg-hover); 
-    transform: translateY(-2px); 
-    box-shadow: 0 4px 8px var(--shadow-color);
-    text-decoration: none; 
-}
-
-/* OpenDyslexic Font Configuration */
 @font-face {
     font-family: 'OpenDyslexic';
     src: url('opendyslexic/OpenDyslexic-Regular.woff2') format('woff2');
@@ -290,24 +354,24 @@ h4:hover .heading-anchor, h5:hover .heading-anchor, h6:hover .heading-anchor {
     font-style: italic;
 }
 
-/* Apply OpenDyslexic to all elements when html has .dyslexic class */
 html.dyslexic, html.dyslexic * {
     font-family: 'OpenDyslexic' !important;
     font-size-adjust: 0.45;
 }
 
-/* Additional Styling for the DSA checkbox label */
-.font-toggle-label { 
-    gap: 8px; 
-    user-select: none;
-}
-.font-toggle-label input[type="checkbox"] {
-    margin: 0; 
+/* ==========================================================================
+   Components: Tables & Table of Contents
+   ========================================================================== */
+
+.table-responsive table thead th {
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
 }
 
-/* =========================================
-   TABLE OF CONTENTS
-   ========================================= */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
 .toc { 
     background: var(--card-bg); 
     padding: 15px; 
@@ -328,43 +392,42 @@ html.dyslexic, html.dyslexic * {
 .toc li { margin-bottom: 8px; line-height: 1.3; }
 .toc a { color: var(--link-color); }
 
-/* Mobile adjustments */
-@media (max-width: 800px) {
-    .header-dashboard {
-        flex-direction: column;
-        align-items: center;
-    }
-    .header-dashboard h1, .header-dashboard h1#page-title {
-        text-align: center;
-    }
-    .header-actions {
-        align-items: center;
-    }
-    .header-actions .controls-bar, 
-    .header-actions .navigation-bar {
-        justify-content: center;
-    }
-    .theme-toggle, .original-link-btn, .font-toggle-label, .lang-btn, .back-link-btn, .print-btn { 
-        font-size: 0.8em; 
-        padding: 6px 12px;
-    }
+/* Document Link Styling */
+.document-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    margin: 4px 0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    color: var(--link-color);
 }
 
-/* =========================================
-   PRINT OPTIMIZATION
-   ========================================= */
-@media print {
-    @page {
-        margin: 1.5cm; 
+.document-icon::before { content: "📄"; font-size: 1.1em; }
+.document-icon.pdf::before { content: "📕"; }
+.document-icon.xls::before, .document-icon.xlsx::before { content: "📗"; }
+.document-icon.doc::before, .document-icon.docx::before { content: "📘"; }
 
-        /* Standard CSS rules to hide margin content (limited browser support) */
-        @top-left { content: none; }
-        @top-center { content: none; }
-        @top-right { content: none; }
-        @bottom-left { content: none; }
-        @bottom-center { content: none; }
-        @bottom-right { content: none; }
-    }
+.document-icon:hover {
+    background-color: var(--card-bg-hover);
+    border-color: var(--link-color);
+    color: var(--link-hover-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+/* ==========================================================================
+   Print Optimization
+   ========================================================================== */
+
+@media print {
+    @page { margin: 1.5cm; }
     
     body {
         padding: 0 !important; 
@@ -373,21 +436,15 @@ html.dyslexic, html.dyslexic * {
     }
 
     /* Hide menus, buttons, ToC, and sidebar */
-    .header-actions, .controls-bar, .navigation-bar, .toc, #back-to-top { 
+    .top-navbar, .controls-bar, .toc, #back-to-top { 
         display: none !important; 
     }
     
-    /* Force light colors to save ink */
-    html, .content-wrapper, .header-dashboard { 
-        background: white !important; 
-    }
+    html, .content-wrapper { background: white !important; }
     
-    /* Explicitly force ALL text and headings to black (overrides specific theme rules) */
-    /* Target regular headings and specialized summary headings to ensure absolute black color */
-    *, 
-    h1, h2, h3, h4, h5, h6, 
+    *, h1, h2, h3, h4, h5, h6, 
     summary.level-h2, summary.level-h3, summary.level-h4, summary.level-h5, summary.level-h6, summary.level-default,
-    #page-title, .header-dashboard h1#page-title, a { 
+    #page-title, a { 
         color: #000000 !important; 
         border-color: #000000 !important;
         background-color: transparent !important; 
@@ -395,299 +452,249 @@ html.dyslexic, html.dyslexic * {
         text-shadow: none !important; 
     }
 
-    /* Clean up link appearance for reading */
-    a {
-        text-decoration: none !important;
-    }
+    a { text-decoration: none !important; }
     
-    /* Optimize page breaks to prevent elements (including lists and rows) from splitting awkwardly */
-    details, .docente-card, .accordion-card, li, tr { 
-        page-break-inside: avoid; 
-        break-inside: avoid; 
-    }
-    h1, h2, h3, h4, h5, h6 { 
-        page-break-after: avoid; 
-        break-after: avoid; 
-    }
-    img { 
-        max-width: 100% !important; 
-        page-break-inside: avoid; 
-        break-inside: avoid; 
-    }
+    details, .docente-card, .accordion-card, li, tr { break-inside: avoid; }
+    h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+    img { max-width: 100% !important; break-inside: avoid; }
     
-    /* Additional style to make expanded blocks clear in print */
-    details { 
-        border-bottom: 1px solid #ddd; 
-        margin-bottom: 15px; 
-        padding-bottom: 10px; 
-    }
-    summary { 
-        font-weight: bold; 
-        font-size: 1.1em; 
-        border-bottom: 1px solid #eee; 
-        padding-bottom: 5px; 
-        margin-bottom: 10px; 
-    }
+    details { border-bottom: 1px solid #ddd; margin-bottom: 15px; padding-bottom: 10px; }
+    summary { font-weight: bold; font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; }
 }
 
-/* External link icon (↗) */
-.external-icon {
-    font-size: 0.7em;
-    opacity: 0.55;
-    margin-left: 4px;
-    display: inline-block;
-    vertical-align: baseline;
-    text-decoration: none !important;
-    transition: opacity 0.2s;
-}
-a:hover .external-icon {
-    opacity: 0.8;
-    text-decoration: none !important;
-}
+/* ==========================================================================
+   Side Panel Mechanics & Theme Panel
+   ========================================================================== */
 
-.panel{
-  position: fixed;
-  top: 0; right: 0;
-  height: 100dvh;
-  width: min(360px, 90vw);
-  transform: translateX(100%);
-  transition: transform 180ms ease;
-  background: var(--card-bg);
-  border-left: 1px solid var(--border-color);
-  z-index: 1000;
-}
-.panel.is-open{ transform: translateX(0); }
-
-.backdrop{
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.35);
-  z-index: 999;
+.panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100dvh;
+    width: min(360px, 90vw);
+    transform: translateX(100%);
+    transition: transform 180ms ease;
+    background: var(--card-bg);
+    border-left: 1px solid var(--border-color);
+    z-index: 1000;
 }
 
-/* =========================================
-   Theme side panel (ONLY #themePanel layout polish)
-   Depends on your theme tokens: --card-bg, --card-border, --text-color, --shadow-color, --link-color, --border-color
-   ========================================= */
-
-#themePanel.panel{
-  /* keep your slide-in mechanics from .panel */
-  width: min(380px, 92vw);
-  max-width: 380px;
-
-  /* override base .panel visuals */
-  padding: 0;
-  border-left: 1px solid var(--border-color);
-  border-radius: 14px 0 0 14px;
-  overflow: hidden;
-
-  /* depth that works in light + dark */
-  box-shadow: 0 18px 60px rgba(0,0,0,.25);
+.panel.is-open {
+    transform: translateX(0);
 }
 
-/* If you want glassy feel without breaking light theme */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.32); /* Soft backdrop */
+    z-index: 999;
+}
+
+/* Theme Panel Overrides */
+#themePanel.panel {
+    width: min(380px, 92vw);
+    max-width: 380px;
+    padding: 0;
+    border-left: 1px solid var(--border-color);
+    border-radius: 14px 0 0 14px;
+    overflow: hidden;
+    box-shadow: 0 18px 60px rgba(0,0,0,.25);
+}
+
+/* Glassy effect where supported */
 @supports (backdrop-filter: blur(10px)) {
-  #themePanel.panel{
-    background: color-mix(in srgb, var(--card-bg) 88%, transparent);
-    backdrop-filter: blur(10px);
-  }
+    #themePanel.panel {
+        background: color-mix(in srgb, var(--card-bg) 88%, transparent);
+        backdrop-filter: blur(10px);
+    }
 }
 
-#themePanel .panel__header{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 14px 12px;
-  border-bottom: 1px solid var(--border-color);
+#themePanel .panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 14px 12px;
+    border-bottom: 1px solid var(--border-color);
 }
 
-#themePanel .panel__title{
-  margin: 0;
-  font-size: 13px;
-  letter-spacing: .2px;
-  color: var(--text-color);
-  opacity: .92;
+#themePanel .panel__title {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: .2px;
+    color: var(--text-color);
+    opacity: .92;
 }
 
-#themePanel .panel__close{
-  appearance: none;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-color);
-  font-size: 22px;
-  line-height: 1;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  cursor: pointer;
-  opacity: .85;
-  transition: background .15s ease, border-color .15s ease, opacity .15s ease, transform .15s ease;
-}
-#themePanel .panel__close:hover{
-  background: color-mix(in srgb, var(--card-bg) 65%, var(--text-color) 6%);
-  border-color: var(--card-border);
-  opacity: 1;
-  transform: translateY(-1px);
-}
-#themePanel .panel__close:active{
-  transform: translateY(0);
+#themePanel .panel__close {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 22px;
+    line-height: 1;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: .85;
+    transition: background .15s ease, border-color .15s ease, opacity .15s ease, transform .15s ease;
 }
 
-#themePanel .panel__content{
-  padding: 14px;
-  display: grid;
-  gap: 14px;
+#themePanel .panel__close:hover {
+    background: color-mix(in srgb, var(--card-bg) 65%, var(--text-color) 6%);
+    border-color: var(--card-border);
+    opacity: 1;
+    transform: translateY(-1px);
 }
 
-#themePanel .panel__section{
-  display: grid;
-  gap: 10px;
+#themePanel .panel__close:active {
+    transform: translateY(0);
 }
 
-#themePanel .field{
-  display: grid;
-  gap: 8px;
-}
-#themePanel .field__label{
-  font-size: 12px;
-  opacity: .75;
-  color: var(--text-color);
+#themePanel .panel__content {
+    padding: 14px;
+    display: grid;
+    gap: 14px;
 }
 
-#themePanel .select{
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
-  background: color-mix(in srgb, var(--card-bg) 92%, var(--text-color) 4%);
-  color: var(--text-color);
-  outline: none;
-  box-shadow: 0 1px 0 var(--shadow-color);
-}
-#themePanel .select:focus{
-  border-color: color-mix(in srgb, var(--link-color) 65%, var(--card-border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--link-color) 22%, transparent);
+#themePanel .panel__section {
+    display: grid;
+    gap: 10px;
 }
 
-#themePanel .panel__sectionHead{
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-#themePanel .panel__sectionTitle{
-  margin: 0;
-  font-size: 12px;
-  letter-spacing: .2px;
-  opacity: .9;
-  color: var(--text-color);
-}
-#themePanel .panel__hint{
-  margin: 0;
-  font-size: 11px;
-  opacity: .6;
-  color: var(--text-color);
+#themePanel .field {
+    display: grid;
+    gap: 8px;
 }
 
-#themePanel .swatches{
-  display: grid;
-  gap: 10px;
+#themePanel .field__label {
+    font-size: 12px;
+    opacity: .75;
+    color: var(--text-color);
 }
 
-#themePanel .swatch{
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--card-border);
-  background: color-mix(in srgb, var(--card-bg) 96%, var(--text-color) 2%);
-  box-shadow: 0 1px 0 var(--shadow-color);
+#themePanel .select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    background: color-mix(in srgb, var(--card-bg) 92%, var(--text-color) 4%);
+    color: var(--text-color);
+    outline: none;
+    box-shadow: 0 1px 0 var(--shadow-color);
 }
 
-#themePanel .swatch__name{
-  font-size: 12px;
-  opacity: .9;
-  color: var(--text-color);
+#themePanel .select:focus {
+    border-color: color-mix(in srgb, var(--link-color) 65%, var(--card-border));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--link-color) 22%, transparent);
 }
 
-#themePanel .swatch__controls{
-  display: grid;
-  grid-auto-flow: column;
-  align-items: center;
-  gap: 10px;
+#themePanel .panel__sectionHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
 }
 
-#themePanel .swatch__picker{
-  width: 38px;
-  height: 34px;
-  padding: 0;
-  border: 1px solid var(--card-border);
-  border-radius: 10px;
-  cursor: pointer;
-
-  /* FIX: make the *control* look dark regardless of theme (reliable) */
-  background: #111 !important;
-  border-color: rgba(255,255,255,.22) !important;
-
-  /* Attempt to force UA dark chrome (not consistently honored) */
-  color-scheme: dark !important;
-
-  /*
-    Reliable cross-engine trick:
-    invert the native control chrome so it appears dark even on light themes,
-    then cancel the invert on the swatch itself below so the picked color stays correct.
-  */
-  filter: invert(1) hue-rotate(180deg);
+#themePanel .panel__sectionTitle {
+    margin: 0;
+    font-size: 12px;
+    letter-spacing: .2px;
+    opacity: .9;
+    color: var(--text-color);
 }
 
-/* make native color input look clean */
-#themePanel .swatch__picker::-webkit-color-swatch-wrapper{ padding: 0; }
-#themePanel .swatch__picker::-webkit-color-swatch{
-  border: 0;
-  border-radius: 9px;
-
-  /* cancel the parent filter for the displayed color */
-  filter: invert(1) hue-rotate(180deg);
-}
-#themePanel .swatch__picker::-moz-color-swatch{
-  border: 0;
-  border-radius: 9px;
-
-  /* cancel the parent filter for the displayed color */
-  filter: invert(1) hue-rotate(180deg);
+#themePanel .panel__hint {
+    margin: 0;
+    font-size: 11px;
+    opacity: .6;
+    color: var(--text-color);
 }
 
-#themePanel .swatch__hex{
-  width: 118px;
-  padding: 9px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--card-border);
-  background: color-mix(in srgb, var(--card-bg) 88%, #000 10%);
-  color: var(--text-color);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 12px;
-  outline: none;
-}
-#themePanel .swatch__hex:focus{
-  border-color: color-mix(in srgb, var(--link-color) 65%, var(--card-border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--link-color) 22%, transparent);
+#themePanel .swatches {
+    display: grid;
+    gap: 10px;
 }
 
-#themePanel .swatch__hex.is-bad{
-  border-color: rgba(255,80,80,.75);
-  box-shadow: 0 0 0 3px rgba(255,80,80,.18);
+#themePanel .swatch {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    background: color-mix(in srgb, var(--card-bg) 96%, var(--text-color) 2%);
+    box-shadow: 0 1px 0 var(--shadow-color);
 }
 
-/* optional: nicer selection + placeholder feel */
-#themePanel input::selection{
-  background: color-mix(in srgb, var(--link-color) 30%, transparent);
+#themePanel .swatch__name {
+    font-size: 12px;
+    opacity: .9;
+    color: var(--text-color);
 }
 
-/* Keep your existing backdrop; optionally slightly softer */
-.backdrop{
-  background: rgba(0,0,0,.32);
+#themePanel .swatch__controls {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#themePanel .swatch__picker {
+    width: 38px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    cursor: pointer;
+    background: #111 !important;
+    border-color: rgba(255,255,255,.22) !important;
+    color-scheme: dark !important;
+    filter: invert(1) hue-rotate(180deg);
+}
+
+#themePanel .swatch__picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+#themePanel .swatch__picker::-webkit-color-swatch {
+    border: 0;
+    border-radius: 9px;
+    filter: invert(1) hue-rotate(180deg);
+}
+
+#themePanel .swatch__picker::-moz-color-swatch {
+    border: 0;
+    border-radius: 9px;
+    filter: invert(1) hue-rotate(180deg);
+}
+
+#themePanel .swatch__hex {
+    width: 118px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--card-border);
+    background: color-mix(in srgb, var(--card-bg) 88%, #000 10%);
+    color: var(--text-color);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    outline: none;
+}
+
+#themePanel .swatch__hex:focus {
+    border-color: color-mix(in srgb, var(--link-color) 65%, var(--card-border));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--link-color) 22%, transparent);
+}
+
+#themePanel .swatch__hex.is-bad {
+    border-color: rgba(255,80,80,.75);
+    box-shadow: 0 0 0 3px rgba(255,80,80,.18);
+}
+
+#themePanel input::selection {
+    background: color-mix(in srgb, var(--link-color) 30%, transparent);
 }
 
 .panel-action-btn {
@@ -718,40 +725,4 @@ a:hover .external-icon {
 .panel-action-btn--text:hover {
     opacity: 1;
     background: transparent;
-}
-
-/* Document Link Styling */
-.document-icon {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 10px;
-    margin: 4px 0;
-    background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9em;
-    transition: all 0.2s ease;
-    color: var(--link-color);
-}
-
-/* Icon Indicators using Emojis */
-.document-icon::before {
-    content: "📄"; /* Default icon */
-    font-size: 1.1em;
-}
-
-.document-icon.pdf::before { content: "📕"; }
-.document-icon.xls::before, .document-icon.xlsx::before { content: "📗"; }
-.document-icon.doc::before, .document-icon.docx::before { content: "📘"; }
-
-/* Hover Effects */
-.document-icon:hover {
-    background-color: var(--card-bg-hover);
-    border-color: var(--link-color);
-    color: var(--link-hover-color);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px var(--shadow-color);
 }
