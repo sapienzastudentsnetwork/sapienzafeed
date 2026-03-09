@@ -713,3 +713,39 @@ a:hover .external-icon {
     opacity: 1;
     background: transparent;
 }
+
+/* Document Link Styling */
+.document-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    margin: 4px 0;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    color: var(--link-color);
+}
+
+/* Icon Indicators using Emojis */
+.document-icon::before {
+    content: "📄"; /* Default icon */
+    font-size: 1.1em;
+}
+
+.document-icon.pdf::before { content: "📕"; }
+.document-icon.xls::before, .document-icon.xlsx::before { content: "📗"; }
+.document-icon.doc::before, .document-icon.docx::before { content: "📘"; }
+
+/* Hover Effects */
+.document-icon:hover {
+    background-color: var(--card-bg-hover);
+    border-color: var(--link-color);
+    color: var(--link-hover-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
