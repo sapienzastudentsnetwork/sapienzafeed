@@ -35,9 +35,6 @@ h5, summary.level-h5, h6, summary.level-h6 { color: #333; font-size: 1.05em; fon
 
 summary.level-default { color: #0056b3; font-size: 1.2em; font-weight: bold; margin-top: 25px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
-a { text-decoration: none; color: #007BFF; }
-a:hover { text-decoration: underline; }
-
 /* Proper indentation for lists */
 ul, ol { padding-left: 40px; margin-bottom: 15px; }
 

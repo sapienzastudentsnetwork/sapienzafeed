@@ -184,13 +184,15 @@ h1, h2, h3, h4, h5, h6 { color: var(--heading-color) !important; }
     justify-content: flex-end;
 }
 
-a { 
-    color: var(--link-color); 
+a, a:visited { 
+    color: var(--link-color);
+    text-decoration: none; 
     transition: color 0.2s ease-in-out;
 }
 
 a:hover {
-    color: var(--heading-color);
+    color: var(--link-hover-color);
+    text-decoration: underline;
 }
 
 /* Hover anchors for direct linking */
