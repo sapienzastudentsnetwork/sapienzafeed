@@ -1,3 +1,29 @@
+/* =========================================
+   DYNAMIC NAVBAR ADJUSTMENT (STACK & CENTER)
+   ========================================= */
+function adjustNavbarLayout() {
+    const navbar = document.querySelector('.top-navbar');
+    const title = document.querySelector('.brand-title');
+    const controls = document.querySelector('.controls-bar');
+    
+    if (!navbar || !title || !controls) return;
+
+    // Remove stacked class to measure natural width first
+    navbar.classList.remove('is-stacked');
+    
+    // Check if the combined width of title and buttons exceeds the navbar container
+    // We add a 40px buffer to account for gaps and padding
+    const availableWidth = navbar.offsetWidth;
+    const itemsWidth = title.offsetWidth + controls.offsetWidth + 40;
+
+    if (itemsWidth > availableWidth) {
+        navbar.classList.add('is-stacked');
+    }
+}
+
+// Global Resize Listener
+window.addEventListener('resize', adjustNavbarLayout);
+
 window.addEventListener('scroll', function() {
     var btn = document.getElementById('back-to-top');
     if (btn) {
@@ -10,6 +36,9 @@ window.addEventListener('scroll', function() {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Initial check for navbar layout
+    adjustNavbarLayout();
+
     // Handle click on back to top buttons
     var btn = document.getElementById('back-to-top');
     if (btn) {
@@ -119,3 +148,4 @@ window.addEventListener('afterprint', () => {
         d.removeAttribute('data-print-opened');
     });
 });
+

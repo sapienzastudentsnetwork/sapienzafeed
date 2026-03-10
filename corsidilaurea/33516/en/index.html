@@ -90,13 +90,18 @@
 
 <div id="panelBackdrop" class="backdrop" hidden></div>
 
-    <div class="header-dashboard">
-        <h1 id="page-title">Cybersecurity</h1>
-        <div class="header-actions">
-            <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button id="themeBtn" class="theme-toggle" aria-controls="themePanel">🌓 Theme</button></div>
-<div class="navigation-bar"><a href="../../index.html" class="back-link-btn">⬅️ Degree Courses</a><a href="https://corsidilaurea.uniroma1.it/en/course/33516" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+    
+    <header class="top-navbar ">
+        <h1 id="page-title" class="brand-title">Cybersecurity</h1>
+        <div class="controls-bar">
+            <a href="../../index.html" class="back-link-btn">⬅️ Degree Courses</a>
+            <a href="https://corsidilaurea.uniroma1.it/en/course/33516" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a>
+            <label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label>
+            <a href="../it/index.html" class="lang-btn" title="Switch language">🇬🇧 Language</a>
+            <button id="themeBtn" class="theme-toggle" aria-controls="themePanel">🌓 Theme</button>
+            
         </div>
-    </div>
+    </header>
 
     <div class="search-container" style="margin-top: 20px; margin-bottom: 20px;">
         <input type="text" id="search-input" placeholder="Search..." onkeyup="filterLinks()" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 5px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #000);">
