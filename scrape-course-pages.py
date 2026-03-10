@@ -991,6 +991,28 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                                         
                                     # Create native HTML5 details tags
                                     details_tag = soup.new_tag("details")
+
+                                    # Catch the auto-generated ID assigned to the <h4> by the TOC loop
+                                    h4_tag = heading_div.find(["h2", "h3", "h4", "h5", "h6"])
+                                    old_id = h4_tag["id"] if h4_tag and h4_tag.has_attr("id") else None
+                                    
+                                    # Extract ID from the original <a> tag href
+                                    a_tag = heading_div.find("a")
+                                    if a_tag and a_tag.has_attr("href"):
+                                        href_val = a_tag["href"]
+                                        # Strip the leading '#' to get a clean ID (e.g., "announcement-5920")
+                                        if href_val.startswith("#"):
+                                            real_id = href_val[1:]
+                                            details_tag['id'] = real_id
+
+                                            # Fix the TOC misalignment by updating the old entry
+                                            if old_id:
+                                                for idx, item in enumerate(toc_items):
+                                                    if item[2] == old_id:
+                                                        # Replace the old auto-generated ID with our real_id
+                                                        toc_items[idx] = (item[0], item[1], real_id)
+                                                        break
+
                                     summary_tag = soup.new_tag("summary")
                                     summary_tag['class'] = 'level-h4'
                                     
