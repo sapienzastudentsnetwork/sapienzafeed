@@ -839,10 +839,11 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             toc_html += '</ul>\n</div>\n'
                             
                         back_to_top_text = "Torna sù" if language_key == "it" else "Back to top"
-                        top_navbar_html = generate_top_navbar_html(page_heading, language_key, flag_html, url, back_link)
                         
                         page_heading = data["page_heading"]
                         combined_content = data["combined_content"]
+
+                        top_navbar_html = generate_top_navbar_html(page_heading, language_key, flag_html, url, back_link)
                         
                         content_html = f"""<!DOCTYPE html>
 <html lang="{language_key}">
