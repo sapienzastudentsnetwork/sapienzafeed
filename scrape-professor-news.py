@@ -441,7 +441,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
     
     <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
         <div class="docente-picture">
-            <img src="{data['picture']}" alt="" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+            <img src="{data['picture']}" alt="" style="width: 120px; height: 120px; object-fit: cover;">
         </div>
         <div class="docente-info">
             <p style="margin: 5px 0;"><strong>Email:</strong> {email_html}</p>
