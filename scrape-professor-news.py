@@ -127,6 +127,57 @@ def add_heading_anchors(soup, content_block):
             h_tag.append(" ")
             h_tag.append(anchor)
 
+def optimize_activities_table(soup, content_div):
+    """
+    Optimizes the 'Course catalogue' table by merging columns:
+    - Teaching Code -> merged into Teaching (as suffix in brackets)
+    - Semester -> merged into Year (format: "3° - 1°")
+    - Course Code -> merged into Course (as suffix in brackets)
+    """
+    if not content_div:
+        return
+    
+    for table in content_div.find_all('table'):
+        headers = table.find_all('th')
+        # Ensure the table has the expected number of columns (8)
+        if len(headers) >= 8:
+            # 1. Update Headers
+            # Year becomes "Year - Semester"
+            headers[2].string = f"{headers[2].get_text(strip=True)} - {headers[3].get_text(strip=True)}"
+            
+            # Remove redundant headers: Code (0), Semester (3), and Course Code (6)
+            # We decompose from highest index to lowest to avoid index shifting issues
+            headers[6].decompose()
+            headers[3].decompose()
+            headers[0].decompose()
+            
+            # 2. Update Rows
+            for row in table.find_all('tr'):
+                cells = row.find_all('td')
+                if len(cells) >= 8:
+                    # Merge Teaching Code (0) into Teaching (1)
+                    # We move children to preserve the <a> link tag
+                    cells[1].append(" (")
+                    for child in list(cells[0].contents):
+                        cells[1].append(child)
+                    cells[1].append(")")
+                    
+                    # Merge Semester (3) into Year (2)
+                    year_val = cells[2].get_text(strip=True)
+                    sem_val = cells[3].get_text(strip=True)
+                    cells[2].string = f"{year_val} - {sem_val}"
+                    
+                    # Merge Course Code (6) into Course (5)
+                    cells[5].append(" (")
+                    for child in list(cells[6].contents):
+                        cells[5].append(child)
+                    cells[5].append(")")
+                    
+                    # Remove the now redundant cells
+                    cells[6].decompose()
+                    cells[3].decompose()
+                    cells[0].decompose()
+
 def generate_top_navbar_html(title, language_key, flag_html="", original_url=None, back_url=None, is_index_page=False, custom_back_text=None):
     """
     Generates the unified top navbar HTML containing the page title on the left 
@@ -331,6 +382,10 @@ def scrape_professor_data(uuid):
 
             clean_trailing_empty(content_div)
 
+            # Apply table optimization for activities
+            if sec_id == 'lecturer-activities':
+                optimize_activities_table(it_soup, content_div)
+
             content_html = "".join(str(child) for child in content_div.children)
                 
             if sec_id == 'lecturer-activities':
@@ -362,6 +417,10 @@ def scrape_professor_data(uuid):
                 
                 if sec_id == 'lecturer-activities':
                     clean_trailing_empty(content_div)
+
+                    # Apply table optimization for activities
+                    optimize_activities_table(it_soup, content_div)
+
                     content_html = "".join(str(child) for child in content_div.children)
                     data['en_activities'] = content_html
                     
@@ -559,7 +618,7 @@ def generate_main_indexes(professors_data):
         structure_label = "Struttura" if lang == "it" else "Structure"
         
         for uuid, info in sorted_professors:
-            if uuid == NULL_UUID:
+            if uuid == NULL_UUID or 'metadata' not in info:
                 continue
                 
             prof_name = info['name']
