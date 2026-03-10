@@ -471,7 +471,7 @@ def generate_individual_page(uuid, lang, prof_name, data):
     localized_theme_panel = THEME_PANEL_HTML_IT if is_it else THEME_PANEL_HTML_EN
     
     other_lang = "en" if is_it else "it"
-    flag = "🇮🇹 Lingua" if is_it else "🇬🇧 Language"
+    flag = "🇮🇹 Lingua" if is_it else "🇬🇧 Lang"
     flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
     
     top_navbar_html = generate_top_navbar_html(prof_name, lang, flag_html=flag_html, original_url=original_url, back_url=back_url, is_index_page=False)
@@ -585,7 +585,7 @@ def generate_main_indexes(professors_data):
         localized_theme_panel = THEME_PANEL_HTML_IT if lang == "it" else THEME_PANEL_HTML_EN
         
         other_lang = "en" if lang == "it" else "it"
-        flag = "🇮🇹 Lingua" if lang == "it" else "🇬🇧 Language"
+        flag = "🇮🇹 Lingua" if lang == "it" else "🇬🇧 Lang"
         flag_html = f'<a href="../{other_lang}/index.html" class="lang-btn" title="Switch language">{flag}</a>'
 
         top_navbar_html = generate_top_navbar_html(title, lang, flag_html=flag_html, original_url=None, back_url=back_url, is_index_page=True)
