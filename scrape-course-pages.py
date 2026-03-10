@@ -976,7 +976,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             toc_items.append((header_level, raw_text, h_id))
 
                         # Wrapping logic
-                        if should_wrap:
+                        if should_wrap or language_page == "announcements":
                             # 1. Specific handling for the announcements page (Bootstrap Panels)
                             if language_page == "announcements":
                                 for panel in process_block.find_all("div", class_="panel"):
