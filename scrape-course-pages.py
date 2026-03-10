@@ -977,59 +977,93 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
                         # Wrapping logic
                         if should_wrap:
-                            # Wrap accordion-items
-                            for acc_item in process_block.find_all("div", class_="accordion-item"):
-                                content_div = acc_item.find("div", class_="accordion-content")
-                                title_div = acc_item.find("div", class_="accordion-title")
-                                
-                                a_tag = title_div.find("a") if title_div else None
-                                has_content = content_div and len(content_div.get_text(strip=True)) > 0
-                                is_direct_link = a_tag and a_tag.has_attr("href") and not a_tag["href"].startswith("#") and a_tag["href"].strip() != ""
-                                
-                                # FIX: Do not wrap into empty details if it's a direct link with no content
-                                # and do not enforce inline styling
-                                if is_direct_link and not has_content:
-                                    link_div = soup.new_tag("div", attrs={"class": "accordion-title", "style": "margin-bottom: 15px;"})
-                                    link_div.append(a_tag)
-                                    acc_item.insert_after(link_div)
-                                    acc_item.decompose()
-                                    continue
-
-                                if content_div:
-                                    # Wrap all accordion items to maintain visual consistency
-                                    if True:
-                                        details_tag = soup.new_tag("details")
-                                        summary_tag = soup.new_tag("summary")
-                                        level_class = "level-default"
+                            # 1. Specific handling for the announcements page (Bootstrap Panels)
+                            if language_page == "announcements":
+                                for panel in process_block.find_all("div", class_="panel"):
+                                    heading_div = panel.find("div", class_="panel-heading")
+                                    collapse_div = panel.find("div", class_="panel-collapse")
+                                    
+                                    # The panel-body can sometimes be direct, sometimes inside panel-collapse
+                                    body_div = collapse_div.find("div", class_="panel-body") if collapse_div else panel.find("div", class_="panel-body")
+                                    
+                                    if not heading_div or not body_div:
+                                        continue
                                         
-                                        if title_div:
-                                            h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
-                                            if h_tag:
-                                                level_class = f"level-{h_tag.name}"
-                                                # Transfer ID to summary so anchor links scroll to it correctly
-                                                if h_tag.has_attr('id'):
-                                                    summary_tag['id'] = h_tag['id']
-                                            elif title_div.has_attr('id'):
-                                                summary_tag['id'] = title_div['id']
-
-                                            # If there is a link inside the summary, keep it functional
-                                            a_tag_inside = title_div.find("a")
-                                            if a_tag_inside and a_tag_inside.has_attr("href") and not a_tag_inside["href"].startswith("#"):
-                                                summary_tag.append(a_tag_inside)
-                                            else:
-                                                summary_tag.string = title_div.get_text(separator=" ", strip=True)
-                                            
-                                            title_div.decompose()
-                                        else:
-                                            summary_tag.string = "Dettagli" if language_key == "it" else "Details"
+                                    # Create native HTML5 details tags
+                                    details_tag = soup.new_tag("details")
+                                    summary_tag = soup.new_tag("summary")
+                                    summary_tag['class'] = 'level-h4'
+                                    
+                                    # Extract the announcement title and insert it into the summary
+                                    title_text = heading_div.get_text(strip=True)
+                                    summary_tag.string = title_text
+                                    details_tag.append(summary_tag)
+                                    
+                                    # Recreate the inner container to preserve styles
+                                    new_body_div = soup.new_tag("div", attrs={"class": "details-body"})
+                                    
+                                    # Move all original HTML content (paragraphs, links, attachments) into the new div
+                                    for child in list(body_div.children):
+                                        new_body_div.append(child)
                                         
-                                        summary_tag['class'] = level_class
-                                        details_tag.append(summary_tag)
-                                        body_div = soup.new_tag("div", attrs={"class": "details-body"})
-                                        for child in list(content_div.children): body_div.append(child)
-                                        details_tag.append(body_div)
-                                        acc_item.insert_after(details_tag)
+                                    details_tag.append(new_body_div)
+                                    
+                                    # Replace the old site structure with the new interactive details tag
+                                    panel.replace_with(details_tag)
+                            else:
+                                # Wrap accordion-items
+                                for acc_item in process_block.find_all("div", class_="accordion-item"):
+                                    content_div = acc_item.find("div", class_="accordion-content")
+                                    title_div = acc_item.find("div", class_="accordion-title")
+                                    
+                                    a_tag = title_div.find("a") if title_div else None
+                                    has_content = content_div and len(content_div.get_text(strip=True)) > 0
+                                    is_direct_link = a_tag and a_tag.has_attr("href") and not a_tag["href"].startswith("#") and a_tag["href"].strip() != ""
+                                    
+                                    # FIX: Do not wrap into empty details if it's a direct link with no content
+                                    # and do not enforce inline styling
+                                    if is_direct_link and not has_content:
+                                        link_div = soup.new_tag("div", attrs={"class": "accordion-title", "style": "margin-bottom: 15px;"})
+                                        link_div.append(a_tag)
+                                        acc_item.insert_after(link_div)
                                         acc_item.decompose()
+                                        continue
+
+                                    if content_div:
+                                        # Wrap all accordion items to maintain visual consistency
+                                        if True:
+                                            details_tag = soup.new_tag("details")
+                                            summary_tag = soup.new_tag("summary")
+                                            level_class = "level-default"
+                                            
+                                            if title_div:
+                                                h_tag = title_div.find(['h2', 'h3', 'h4', 'h5', 'h6'])
+                                                if h_tag:
+                                                    level_class = f"level-{h_tag.name}"
+                                                    # Transfer ID to summary so anchor links scroll to it correctly
+                                                    if h_tag.has_attr('id'):
+                                                        summary_tag['id'] = h_tag['id']
+                                                elif title_div.has_attr('id'):
+                                                    summary_tag['id'] = title_div['id']
+
+                                                # If there is a link inside the summary, keep it functional
+                                                a_tag_inside = title_div.find("a")
+                                                if a_tag_inside and a_tag_inside.has_attr("href") and not a_tag_inside["href"].startswith("#"):
+                                                    summary_tag.append(a_tag_inside)
+                                                else:
+                                                    summary_tag.string = title_div.get_text(separator=" ", strip=True)
+                                                
+                                                title_div.decompose()
+                                            else:
+                                                summary_tag.string = "Dettagli" if language_key == "it" else "Details"
+                                            
+                                            summary_tag['class'] = level_class
+                                            details_tag.append(summary_tag)
+                                            body_div = soup.new_tag("div", attrs={"class": "details-body"})
+                                            for child in list(content_div.children): body_div.append(child)
+                                            details_tag.append(body_div)
+                                            acc_item.insert_after(details_tag)
+                                            acc_item.decompose()
 
                             # Wrap other large divs
                             for child_elem in list(process_block.children):
