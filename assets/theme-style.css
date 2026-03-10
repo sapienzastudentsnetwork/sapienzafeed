@@ -726,8 +726,6 @@ summary[class*="level-"],
     word-break: break-word;
     white-space: normal !important;
     min-width: 0;
-    -webkit-hyphens: auto;
-    hyphens: auto;
 }
 
 /* 2. Forces line breaks for very long links (URLs) */
