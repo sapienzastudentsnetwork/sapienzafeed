@@ -166,7 +166,7 @@ def generate_top_navbar_html(title, language_key, flag_html="", original_url=Non
     # Server-side Layout Prediction
     # Estimate total width based on character count
     # to prevent FOUC (Flash of Unstyled Content)
-    stack_class = "is-stacked" if (total_text_length > 60) else ""
+    stack_class = "is-stacked" if (total_text_length > 55) else ""
 
     return f'''
     <header class="top-navbar {stack_class}">
