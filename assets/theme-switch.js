@@ -317,6 +317,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isFontDSA) {
             fontElement.checked = true;
             document.documentElement.classList.add('dyslexic');
+            
+            // Wait for the browser to finish rendering the new font widths
+            // before calculating the navbar layout on page load.
+            if (typeof adjustNavbarLayout === 'function') {
+                setTimeout(() => {
+                    adjustNavbarLayout();
+                }, 100); 
+            }
         }
 
         fontElement.addEventListener('change', function() {
@@ -326,6 +334,11 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 document.documentElement.classList.remove('dyslexic');
                 localStorage.removeItem("isFontDSA");
+            }
+            
+            // Recalculate navbar layout as font width changes may trigger overflow
+            if (typeof adjustNavbarLayout === 'function') {
+                adjustNavbarLayout();
             }
         });
     }
