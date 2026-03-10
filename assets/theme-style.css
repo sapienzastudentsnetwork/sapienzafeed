@@ -712,3 +712,26 @@ html.dyslexic, html.dyslexic * {
     opacity: 1;
     background: transparent;
 }
+
+/* ==========================================================================
+   Fix Long Text
+   ========================================================================== */
+
+/* 1. Forces line breaks for long headings, titles, and summaries */
+h1, h2, h3, h4, h5, h6, 
+summary[class*="level-"], 
+.brand-title {
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal !important;
+    min-width: 0;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+/* 2. Forces line breaks for very long links (URLs) */
+a {
+    overflow-wrap: anywhere;
+    word-break: break-word; 
+}
