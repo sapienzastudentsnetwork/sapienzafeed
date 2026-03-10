@@ -349,6 +349,22 @@ html.dyslexic, html.dyslexic * {
    Components: Tables & Table of Contents
    ========================================================================== */
 
+/* Prevent expanding the entire page width */
+.table-responsive, .details-body {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+    /* This ensures the container stays within its parent's bounds */
+    display: block; 
+}
+
+.table-responsive table {
+    margin-bottom: 0;
+    /* Force a minimum width to ensure scrolling happens on mobile */
+    min-width: 600px; 
+}
+
 .table-responsive table thead th {
     background-color: var(--table-header-bg) !important;
     color: var(--table-header-text) !important;
