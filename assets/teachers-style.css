@@ -4,7 +4,7 @@ html { scroll-behavior: smooth; }
 h1 { color: #333; }
 .docente-card { border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 .docente-card .content { display: flex; align-items: center; gap: 20px; }
-.docente-picture img { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; }
+.docente-picture img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
 .docente-info { flex-grow: 1; }
 .full-name { font-weight: bold; font-size: 1.2em; margin-bottom: 5px; }
 .email, .structure { font-size: 0.9em; color: #555; margin-top: 3px; }
