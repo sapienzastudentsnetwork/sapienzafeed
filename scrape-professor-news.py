@@ -133,6 +133,7 @@ def optimize_activities_table(soup, content_div):
     - Teaching Code -> merged into Teaching (as suffix in brackets)
     - Semester -> merged into Year (format: "3° - 1°")
     - Course Code -> merged into Course (as suffix in brackets)
+    - Language -> renamed to 'Lang' for English version
     """
     if not content_div:
         return
@@ -144,6 +145,11 @@ def optimize_activities_table(soup, content_div):
             # 1. Update Headers
             # Year becomes "Year - Semester"
             headers[2].string = f"{headers[2].get_text(strip=True)} - {headers[3].get_text(strip=True)}"
+
+            # Rename Language to Lang if it's the English version
+            header_lang_text = headers[4].get_text(strip=True).lower()
+            if "language" in header_lang_text:
+                headers[4].string = "Lang"
             
             # Remove redundant headers: Code (0), Semester (3), and Course Code (6)
             # We decompose from highest index to lowest to avoid index shifting issues
