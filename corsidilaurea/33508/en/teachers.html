@@ -91,18 +91,13 @@
 
 <div id="panelBackdrop" class="backdrop" hidden></div>
 
-
-    <header class="top-navbar">
-        <h1 id="page-title" class="brand-title">[CS] Teachers</h1>
-        <div class="controls-bar">
-            <a href="index.html" class="back-link-btn">◀️ Homepage</a>
-            <a href="https://corsidilaurea.uniroma1.it/en/course/33508/teachers" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a>
-            <label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label>
-            <a href="../it/teachers.html" class="lang-btn" title="Switch language">🇬🇧 Language</a>
-            <button id="themeBtn" class="theme-toggle" aria-controls="themePanel">🌓 Theme</button>
-            <button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button>
-        </div>
-    </header>
+<div class="header-dashboard">
+    <h1 id="page-title">[CS] Teachers</h1>
+    <div class="header-actions">
+        <div class="controls-bar"><label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label><a href="../it/teachers.html" class="lang-btn" title="Switch language">🇬🇧 Language</a><button id="themeBtn" class="theme-toggle" aria-controls="themePanel">🌓 Theme</button></div>
+<div class="navigation-bar"><a href="index.html" class="back-link-btn">◀️ Homepage</a><button class="print-btn" onclick="window.print()">🖨️ Save as PDF</button><a href="https://corsidilaurea.uniroma1.it/en/course/33508/teachers" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Source</a></div>
+    </div>
+</div>
 
 <div class="search-container" style="margin: 20px auto; max-width: 800px; padding: 0 20px;">
     <input type="text" id="search-input" onkeyup="filterTeachers()" placeholder="Search teachers by name, email or structure..." style="width: 100%; padding: 12px 20px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 8px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #333);">
