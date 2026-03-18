@@ -107,19 +107,19 @@
     "categories_dict": {
         "it": {
             "freq": "Frequentare",
-            "guides": "Guide e Procedure",
+            "guides": "Guide e procedure",
             "info": "Informazioni sul corso",
-            "opp": "Servizi e Opportunità",
+            "opp": "Servizi e opportunità",
             "pres": "Presentazione del corso",
             "ext": "Link esterni"
         },
         "en": {
             "freq": "Attendance",
-            "guides": "Guides and Procedures",
-            "info": "Course Information",
-            "opp": "Services and Opportunities",
+            "guides": "Guides and procedures",
+            "info": "Course information",
+            "opp": "Services and opportunities",
             "pres": "Course presentation",
-            "ext": "External Links"
+            "ext": "External links"
         }
     },
     "pages": [
