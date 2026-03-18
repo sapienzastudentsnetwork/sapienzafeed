@@ -214,7 +214,7 @@ def extract_course_metadata(soup, language_key):
     target_ul = soup.find('ul', class_='corso-info')
             
     if target_ul:
-        metadata_html += "<ul class='course-metadata-list'>\n"
+        metadata_html += "<ul class='subcategory-list'>\n"
         for li in target_ul.find_all('li', recursive=False):
             metadata_html += f"  <li>{li.decode_contents()}</li>\n"
         metadata_html += "</ul>\n"
@@ -237,7 +237,7 @@ def extract_course_metadata(soup, language_key):
     if metadata_html:
         summary_text = "Dettagli" if language_key == "it" else "Details"
         collapsible_block = (
-            "<details class='course-metadata-details'>\n"
+            "<details class='subcategory-details'>\n"
             f"  <summary>{summary_text}</summary>\n"
             f"  <div class='details-body'>\n{metadata_html}  </div>\n"
             "</details>\n"
@@ -403,43 +403,51 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 has_metadata = (category == info_category_name and metadata_html)
                 has_freq_metadata = (category == freq_category_name and freq_metadata_html)
                 has_timetables = (category == freq_category_name and timetables_links)
-                
+
                 if not cat_links and not has_metadata and not has_freq_metadata and not has_timetables:
-                    continue 
-                
-                # Apply the same ID generated for the TOC    
+                    continue
+
+                # Apply the same ID generated for the TOC
                 cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
                 if not cat_id: cat_id = f"header-{abs(hash(category))}"
-                    
-                file.write(f'    <h2 id="{cat_id}" class="category-title">{category}</h2>\n')
-                
-                # Render metadata at the top of the info category
-                if category == info_category_name and metadata_html:
-                    file.write(f'{metadata_html}\n')
 
-                # Render freq metadata at the top of the freq category
-                if category == freq_category_name and freq_metadata_html:
-                    file.write(f'{freq_metadata_html}\n')
+                file.write(f'    <h2 id="{cat_id}" class="category-title">{category}</h2>\n')
+
+                # Inject metadata into the list of links so it gets sorted alphabetically
+                if has_metadata:
+                    sort_key = "Dettagli" if language_key == "it" else "Details"
+                    cat_links.append((sort_key, metadata_html))
+
+                if has_freq_metadata:
+                    freq_sort_key = "Orari" if language_key == "it" else "Timetables"
+                    cat_links.append((freq_sort_key, freq_metadata_html))
 
                 if cat_links:
                     file.write('    <ul class="category-list">\n')
+
+                    # Sort and iterate: 'Dettagli' will now automatically find its alphabetical place
                     for link_text, link_url in sorted(cat_links):
+                        if link_url.startswith("<details"):
+                            file.write(f'        <li class="details-list-item">\n{link_url}        </li>\n')
+                            continue
+
                         formatted_url = link_url
                         display_text = link_text
                         target_blank = ""
-                        
+
                         # Add external link icon with wrapper span
                         if is_external_url(link_url):
-                            # Ensure we don't end up with unstyled or duplicated arrows 
+                            # Ensure we don't end up with unstyled or duplicated arrows
                             display_text = display_text.replace("↗", "").strip()
                             if "external-icon" not in display_text:
                                 display_text += ' <span class="external-icon">↗</span>'
                             # Open external links in a new tab
                             target_blank = ' target="_blank" rel="noopener noreferrer"'
-                            
+
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
                         file.write(f'        <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
+
                     file.write('    </ul>\n')
                 
                 # Render sub-category Timetables right after freq category links
@@ -651,7 +659,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         summary_text = "Come fare per" if language_key == "it" else "How to"
                         
                         # Parse sidebar links and generate a list relying on existing CSS classes
-                        sidebar_links_html = "<ul class='course-metadata-list'>\n"
+                        sidebar_links_html = "<ul class='subcategory-list'>\n"
                         for a_tag in sidebar.find_all("a"):
                             href = a_tag.get("href", "#")
                             # We extract text, clean any unstyled arrows picked up by get_text, and inject our styled html span
@@ -670,12 +678,15 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                             sidebar_links_html += f"  <li><a href='{href}'{target_blank}>{text}</a></li>\n"
                         sidebar_links_html += "</ul>\n"
 
-                        attendance_freq_metadata_html = (
-                            "<details class='course-metadata-details' style='margin-bottom: 20px;'>\n"
-                            f"  <summary>{summary_text}</summary>\n"
-                            f"  <div class='details-body'>\n{sidebar_links_html}  </div>\n"
-                            "</details>\n"
+                        # Create the details block and append it directly to the custom links list
+                        # so it gets sorted automatically with the other links.
+                        attendance_details_html = (
+                        "<details class='subcategory-details'>\n"
+                        f"  <summary>{summary_text}</summary>\n"
+                        f"  <div class='details-body'>\n{sidebar_links_html}  </div>\n"
+                        "</details>\n"
                         )
+                        attendance_custom_links.append((summary_text, attendance_details_html, "guides"))
                         sidebar.decompose()
 
                     # Target text sections (anchors) inside accordions by their explicit ID
@@ -683,7 +694,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         "apprenticeship": "guides",   # Apprenticeship
                         "excellence": "opp",        # Path of excellence
                         "job-orientation": "opp",   # Job Orientation
-                        "graduation": "freq",       # Graduate
+                        "graduation": "guides",       # Graduate
                         "ofa": "guides"               # Ofa: methods of fulfilling additional training obligations
                     }
 
@@ -1295,13 +1306,14 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     cats["guides"]: [],
                     cats["opp"]: [],
                     cats["info"]: [],
+                    cats["pres"]: [],
                     cats["ext"]: []
                 }
                 
                 # Append YouTube link if extracted
                 if youtube_video_url:
                     yt_text = "Video presentazione (#IoScelgoSapienza)" if language_key == "it" else "Video presentation (#IoScelgoSapienza)"
-                    categorized_links[cats["info"]].append((yt_text, youtube_video_url))
+                    categorized_links[cats["pres"]].append((yt_text, youtube_video_url))
 
                 # Hardcode the link to the Educational pathway / Study plan
                 study_plan_text = "Percorso formativo" if language_key == "it" else "Educational pathway"

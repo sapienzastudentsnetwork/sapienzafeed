@@ -90,14 +90,14 @@
         }
     },
     "file_to_cat": {
-        "presentation.html": "info",
-        "objectives.html": "info",
-        "professional-opportunities.html": "info",
-        "choice-orientation.html": "info",
-        "quality.html": "info",
+        "presentation.html": "pres",
+        "objectives.html": "pres",
+        "professional-opportunities.html": "pres",
+        "choice-orientation.html": "pres",
+        "quality.html": "pres",
         "international-experiences.html": "opp",
         "attendance/instructions.html": "guides",
-        "organization.html": "freq",
+        "organization.html": "info",
         "apply.html": "guides",
         "teachers.html": "freq",
         "contacts.html": "info",
@@ -110,6 +110,7 @@
             "guides": "Guide",
             "info": "Informazioni sul corso",
             "opp": "Servizi e Opportunità",
+            "pres": "Presentazione del corso",
             "ext": "Link esterni"
         },
         "en": {
@@ -117,6 +118,7 @@
             "guides": "Guides",
             "info": "Course Information",
             "opp": "Services and Opportunities",
+            "pres": "Course presentation",
             "ext": "External Links"
         }
     },

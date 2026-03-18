@@ -46,7 +46,7 @@ function filterLinks() {
         flexibleFilter = filter.slice(0, -1);
     }
     
-    var lists = document.querySelectorAll('.category-list, .simple-list, .course-metadata-list');
+    var lists = document.querySelectorAll('.category-list, .simple-list, .subcategory-list');
     
     lists.forEach(function(ul) {
         var isCategoryMatch = false;

@@ -1,97 +1,101 @@
 body { font-family: Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 20px; }
-h1 { 
-    color: var(--heading-color, #333); 
+h1 {
+    color: var(--heading-color, #333);
     text-align: center; /* Center the page title */
 }
 a { text-decoration: none; color: var(--link-color, #007BFF); }
 a:hover { text-decoration: underline; }
 
 /* List and category styles */
-h2.category-title { 
-    color: var(--heading-color, #0056b3); 
-    margin-top: 30px; 
-    margin-bottom: 15px; 
-    font-size: 1.4em; 
+h2.category-title {
+    color: var(--heading-color, #0056b3);
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.4em;
 }
 
 /* Modern card grid */
-ul.category-list, ul.simple-list { 
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    list-style: none !important;
-    padding-left: 0 !important;
-    margin-top: 15px;
-    margin-bottom: 40px;
-}
+ul.category-list, ul.simple-list {
+     display: flex;
+     flex-direction: column;
+     list-style: none !important;
+     padding-left: 0 !important;
+     margin-top: 15px;
+     margin-bottom: 40px;
+     background-color: var(--card-bg, #f8f9fa);
+     border: 1px solid var(--card-border, #e9ecef);
+     border-radius: 12px;
+     overflow: hidden;
+     box-shadow: 0 2px 8px var(--shadow-color, rgba(0,0,0,0.05));
+ }
 
-ul.category-list li, ul.simple-list li { 
+ul.category-list > li, ul.simple-list > li {
     margin: 0;
     padding: 0;
+    border-bottom: 1px solid var(--card-border, #e9ecef);
 }
 
-/* Styling links as modern interactive cards */
-ul.category-list li a, ul.simple-list li a {
+ul.category-list > li:last-child, ul.simple-list > li:last-child {
+    border-bottom: none;
+}
+
+ul.category-list > li > a, ul.simple-list > li > a {
     display: flex;
     align-items: center;
-    padding: 16px 20px;
-    background-color: var(--card-bg, #f8f9fa);
-    border: 1px solid var(--card-border, #e9ecef);
-    border-radius: 12px;
+    padding: 14px 20px;
+    background-color: transparent;
     color: var(--link-color);
     text-decoration: none;
     font-weight: 500;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    height: 100%;
+    transition: background-color 0.2s ease, color 0.2s ease;
     line-height: 1.4;
     box-sizing: border-box;
 }
 
-/* Custom indicator before the link text */
-ul.category-list li a::before, ul.simple-list li a::before {
+/* Rightward arrow indicator */
+ul.category-list > li > a::after, ul.simple-list > li > a::after {
     content: "›";
-    font-size: 1.6em;
-    margin-right: 15px;
-    color: var(--link-color);
-    transition: transform 0.2s ease;
+    font-size: 1.8em;
+    color: var(--text-color);
+    opacity: 0.4;
+    transition: transform 0.2s ease, color 0.2s ease, opacity 0.2s ease;
     padding-bottom: 4px;
+    margin-left: auto; /* Pushes only the arrow to the far right */
+    padding-left: 15px;
 }
 
-/* Hover effects for cards */
-ul.category-list li a:hover, ul.simple-list li a:hover {
+/* Hover state */
+ul.category-list > li > a:hover, ul.simple-list > li > a:hover {
     background-color: var(--card-bg-hover, #ffffff);
-    border-color: var(--link-color);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px var(--shadow-color, rgba(0,0,0,0.1));
     color: var(--link-hover-color, #004494);
     text-decoration: none;
 }
 
-ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
-    transform: translateX(5px);
+ul.category-list > li > a:hover::after, ul.simple-list > li > a:hover::after {
+    transform: translateX(4px);
     color: var(--link-hover-color, #004494);
+    opacity: 0.8;
 }
 
 /* Collapsible Course Metadata (styled similarly to modern cards) */
-.course-metadata-details {
-    margin-top: 30px; 
-    margin-bottom: 20px;
-    padding: 16px 20px; /* Match standard card padding */
+.subcategory-details {
+    margin-top: 10px;
+    margin-bottom: 25px;
+    padding: 14px 20px; /* Match app-like list padding */
     border: 1px solid var(--card-border, #e9ecef); /* Match card border */
     border-radius: 12px; /* Match card radius */
     background-color: var(--card-bg, #f8f9fa); /* Match card background */
-    font-size: 0.9em; 
+    font-size: 0.9em;
+    box-shadow: 0 2px 8px var(--shadow-color, rgba(0,0,0,0.05));
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 /* Match hover effect of other cards */
-.course-metadata-details:hover {
+.subcategory-details:hover {
     background-color: var(--card-bg-hover, #ffffff);
-    border-color: var(--link-color);
-    box-shadow: 0 8px 20px var(--shadow-color, rgba(0,0,0,0.1));
 }
 
-.course-metadata-details summary {
+.subcategory-details summary {
     font-weight: 500;
     color: var(--link-color); /* Matches clickable links */
     font-size: 1.1em;
@@ -100,40 +104,85 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
     list-style: none; /* Hide default arrow */
     display: flex;
     align-items: center;
-    justify-content: center; /* Center the text horizontally */
     transition: color 0.2s ease;
 }
 
-.course-metadata-details:hover summary {
-    color: var(--link-hover-color);
+.subcategory-details:hover summary {
+    background-color: var(--card-bg-hover, #ffffff);
+    color: var(--link-hover-color, #004494);
+    text-decoration: none;
 }
 
-.course-metadata-details summary::-webkit-details-marker {
+.subcategory-details summary::-webkit-details-marker {
     display: none;
 }
 
 /* Interactive custom arrow on the right, pointing down by default */
-.course-metadata-details summary::after {
+.subcategory-details summary::after {
     content: "›";
-    font-size: 1.6em;
-    margin-left: 10px; /* Add space to the left of the arrow */
-    color: inherit;
-    transform: rotate(90deg); /* Point downwards initially */
-    transition: transform 0.2s ease;
+    font-size: 1.8em;
+    margin-left: auto; /* Pushes the arrow to the far right edge */
+    color: var(--text-color);
+    opacity: 0.4;
+    transition: transform 0.2s ease, color 0.2s ease, opacity 0.2s ease;
     padding-bottom: 4px;
-    display: inline-block; 
+    display: inline-block;
 }
 
 /* Rotate arrow when opened to point upwards */
-.course-metadata-details[open] summary::after {
-    transform: rotate(-90deg);
+.subcategory-details[open] summary::after {
+    transform: rotate(90deg);
+    opacity: 0.8;
+    color: var(--link-hover-color);
 }
 
-.course-metadata-details[open] summary {
+.subcategory-details[open] summary {
     margin-bottom: 16px;
 }
 
-.course-metadata-list {
+.subcategory-details:not([open]):hover summary::after,
+.details-list-item:hover .subcategory-details:not([open]) summary::after {
+    transform: translateX(4px);
+    color: var(--link-hover-color, #004494);
+    opacity: 0.8;
+}
+
+.subcategory-details[open]:hover summary::after,
+.details-list-item:hover .subcategory-details[open] summary::after {
+    /* TranslateX su un elemento ruotato di 90 gradi si traduce in un movimento verso il basso */
+    transform: rotate(90deg) translateX(4px);
+    color: var(--link-hover-color, #004494);
+    opacity: 0.8;
+}
+
+/* Hover state */
+.details-list-item:hover {
+    background-color: var(--card-bg-hover, #ffffff);
+    color: var(--link-hover-color, #004494);
+    text-decoration: none;
+}
+
+/* Removes background and shadow when .subcategory-details is inside an <li> */
+li .subcategory-details {
+    align-items: center;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 20px;
+}
+
+/* Prevents the background from appearing on hover */
+li .subcategory-details:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Removes the hover background from the internal summary element as well */
+li .subcategory-details:hover summary {
+    background-color: transparent !important;
+}
+
+.subcategory-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -142,7 +191,7 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
     gap: 12px;
 }
 
-.course-metadata-list li {
+.subcategory-list li {
     background: var(--bg-color, #ffffff);
     padding: 12px;
     border-radius: 8px; /* Slightly smaller radius for nested items */
@@ -152,13 +201,13 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
     flex-direction: column;
 }
 
-.course-metadata-list li span {
+.subcategory-list li span {
     font-weight: bold;
     color: var(--heading-color, #0056b3);
     margin-top: 4px;
 }
 
-.course-metadata-video {
+.subcategory-video {
     margin-top: 15px;
     position: relative;
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
@@ -167,7 +216,7 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
     border-radius: 8px;
 }
 
-.course-metadata-video iframe {
+.subcategory-video iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -180,31 +229,31 @@ ul.category-list li a:hover::before, ul.simple-list li a:hover::before {
    Arrow on the FAR RIGHT, pointing down, rotates up.
    ==================================================== */
 
-summary.announcement-summary { 
-    color: var(--text-color) !important; 
-    font-size: 1.15em; 
-    font-weight: normal; 
-    margin-top: 25px; 
-    margin-bottom: 10px; 
+summary.announcement-summary {
+    color: var(--text-color) !important;
+    font-size: 1.15em;
+    font-weight: normal;
+    margin-top: 25px;
+    margin-bottom: 10px;
 }
 
 details[open] summary.announcement-details { border-bottom-color: #0056b3; }
 
-.announcement-details-body { 
-    padding-left: 15px; 
-    border-left: 3px solid #f4f4f4; 
+.announcement-details-body {
+    padding-left: 15px;
+    border-left: 3px solid #f4f4f4;
     margin-top: 10px;
 }
 
-summary[class="announcement-summary"] { 
-    display: flex; 
+summary[class="announcement-summary"] {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 15px;
-    margin-left: -15px; 
+    margin-left: -15px;
     margin-right: -15px;
     border-radius: 8px;
-    transition: background-color 0.2s ease, color 0.2s ease; 
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Custom downward arrow pushed to the far right */
@@ -225,8 +274,8 @@ details[open] > summary[class="announcement-summary"]::after {
 }
 
 /* Visual feedback on hover */
-summary[class="announcement-summary"]:hover { 
-    color: #003d82; 
+summary[class="announcement-summary"]:hover {
+    color: #003d82;
     background-color: rgba(0, 123, 255, 0.08);
 }
 
@@ -243,23 +292,23 @@ summary[class="announcement-summary"]:hover {
 .all-announcements-link a {
     display: inline-flex;
     align-items: center;
-    background: var(--card-bg); 
+    background: var(--card-bg);
     color: var(--text-color) !important; /* Matches the blue color of the navigation cards */
-    border: 1px solid var(--card-border); 
-    padding: 8px 20px; 
-    border-radius: 8px; 
+    border: 1px solid var(--card-border);
+    padding: 8px 20px;
+    border-radius: 8px;
     font-size: 0.95em;
     font-weight: 500;
-    transition: all 0.2s ease; 
-    text-decoration: none; 
+    transition: all 0.2s ease;
+    text-decoration: none;
     box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 /* Hover effect: slight lift and shadow increase */
 .all-announcements-link a:hover {
-    background: var(--card-bg-hover); 
+    background: var(--card-bg-hover);
     border-color: var(--link-color);
-    transform: translateY(-2px); 
+    transform: translateY(-2px);
     box-shadow: 0 4px 8px var(--shadow-color);
     color: var(--link-hover-color) !important;
 }
