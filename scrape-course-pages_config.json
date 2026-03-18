@@ -107,7 +107,7 @@
     "categories_dict": {
         "it": {
             "freq": "Frequentare",
-            "guides": "Guide",
+            "guides": "Guide e Procedure",
             "info": "Informazioni sul corso",
             "opp": "Servizi e Opportunità",
             "pres": "Presentazione del corso",
@@ -115,7 +115,7 @@
         },
         "en": {
             "freq": "Attendance",
-            "guides": "Guides",
+            "guides": "Guides and Procedures",
             "info": "Course Information",
             "opp": "Services and Opportunities",
             "pres": "Course presentation",

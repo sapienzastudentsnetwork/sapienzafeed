@@ -624,7 +624,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         "apprenticeship": "guides",   # Apprenticeship
                         "excellence": "opp",        # Path of excellence
                         "job-orientation": "opp",   # Job Orientation
-                        "graduation": "freq",       # Graduate
+                        "graduation": "guides",       # Graduate
                         "ofa": "guides"               # Ofa: methods of fulfilling additional training obligations
                     }
 
@@ -1238,7 +1238,6 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
 
                 # Define structural categories and include the new 'guides' category
                 cats = categories_dict.get(language_key, categories_dict.get("en", {})).copy()
-                cats["guides"] = "Guide" if language_key == "it" else "Guides"
 
                 # Pre-initialize categorized map to maintain section order
                 categorized_links = {

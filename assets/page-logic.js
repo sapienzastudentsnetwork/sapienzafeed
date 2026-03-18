@@ -89,6 +89,35 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 /* =========================================
+   EXCLUSIVE ACCORDION FOR CATEGORY DETAILS
+   ========================================= */
+document.addEventListener("DOMContentLoaded", function() {
+    // Select all details elements with the class 'category-details'
+    const categoryDetails = document.querySelectorAll('details.category-details');
+    // Reference the search input
+    const searchInput = document.getElementById('search-input');
+
+    categoryDetails.forEach(details => {
+        details.addEventListener('toggle', function() {
+            // EXCEPTION: If the user is actively searching, do not close other details.
+            // This allows the search script to expand multiple matching categories.
+            if (searchInput && searchInput.value.trim() !== '') {
+                return;
+            }
+
+            // Normal behavior: if the current details element is opening, close the others
+            if (this.open) {
+                categoryDetails.forEach(otherDetails => {
+                    if (otherDetails !== this && otherDetails.open) {
+                        otherDetails.removeAttribute('open');
+                    }
+                });
+            }
+        });
+    });
+});
+
+/* =========================================
    AUTO-EXPAND COLLAPSIBLES ON HASH NAVIGATION
    ========================================= */
 function expandTargetDetails() {
