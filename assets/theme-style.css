@@ -6,8 +6,9 @@
     /* Light Theme Base Tokens */
     --light-bg-color: #ffffff;
     --light-text-color: #333333;
-    --light-heading-color: #0056b3;
+    --light-heading-color: #132441;
     --light-link-color: #007BFF;
+    --light-link-hover-color: #004494;
     --light-toc-bg: #f8f9fa;
     --light-toc-border: #e9ecef;
     --light-border-color: #eee;
@@ -17,14 +18,14 @@
     --light-card-bg: #f8f9fa;
     --light-card-border: #e9ecef;
     --light-card-bg-hover: #ffffff;
-    --light-link-hover-color: #004494;
     --light-shadow-color: rgba(0, 0, 0, 0.08);
 
     /* Dark Theme Base Tokens */
     --dark-bg-color: #1a1a1a;
     --dark-text-color: #e0e0e0;
-    --dark-heading-color: #4da3ff;
+    --dark-heading-color: #ffffff;
     --dark-link-color: #66b2ff;
+    --dark-link-hover-color: #79c0ff;
     --dark-toc-bg: #2d2d2d;
     --dark-toc-border: #444;
     --dark-border-color: #404040;
@@ -34,8 +35,92 @@
     --dark-card-bg: #252526;
     --dark-card-border: #333333;
     --dark-card-bg-hover: #2d2d30;
-    --dark-link-hover-color: #79c0ff;
     --dark-shadow-color: rgba(0, 0, 0, 0.5);
+
+    /* Catppuccin Mocha Rosewater Theme Base Tokens */
+    --rosewater-bg-color: #1e1e2e;           /* Base */
+    --rosewater-text-color: #cdd6f4;         /* Text */
+    --rosewater-heading-color: #f5e0dc;      /* Rosewater */
+    --rosewater-link-color: #89b4fa;         /* Blue */
+    --rosewater-link-hover-color: #89dceb;   /* Sky */
+    --rosewater-toc-bg: #181825;             /* Mantle */
+    --rosewater-toc-border: #313244;         /* Surface 0 */
+    --rosewater-border-color: #45475a;       /* Surface 1 */
+    --rosewater-details-body-border: #313244;/* Surface 0 */
+    --rosewater-table-header-bg: #313244;    /* Surface 0 */
+    --rosewater-table-header-text: #f5e0dc;  /* Rosewater */
+    --rosewater-card-bg: #313244;            /* Surface 0 */
+    --rosewater-card-border: #45475a;        /* Surface 1 */
+    --rosewater-card-bg-hover: #45475a;      /* Surface 1 */
+    --rosewater-shadow-color: rgba(17, 17, 27, 0.6); /* Crust */
+
+    /* Catppuccin Mocha Mauve Theme Base Tokens */
+    --mauve-bg-color: #1e1e2e;           /* Base */
+    --mauve-text-color: #cdd6f4;         /* Text */
+    --mauve-heading-color: #cba6f7;      /* Mauve */
+    --mauve-link-color: #cba6f7;         /* Mauve */
+    --mauve-link-hover-color: #b4befe;   /* Lavender */
+    --mauve-toc-bg: #181825;             /* Mantle */
+    --mauve-toc-border: #313244;         /* Surface 0 */
+    --mauve-border-color: #45475a;       /* Surface 1 */
+    --mauve-details-body-border: #313244;/* Surface 0 */
+    --mauve-table-header-bg: #313244;    /* Surface 0 */
+    --mauve-table-header-text: #cba6f7;  /* Mauve */
+    --mauve-card-bg: #313244;            /* Surface 0 */
+    --mauve-card-border: #45475a;        /* Surface 1 */
+    --mauve-card-bg-hover: #45475a;      /* Surface 1 */
+    --mauve-shadow-color: rgba(17, 17, 27, 0.6); /* Crust */
+
+    /* Catppuccin Mocha Red Theme Base Tokens */
+    --red-bg-color: #1e1e2e;           /* Base */
+    --red-text-color: #cdd6f4;         /* Text */
+    --red-heading-color: #f38ba8;      /* Red */
+    --red-link-color: #f38ba8;         /* Red */
+    --red-link-hover-color: #eba0ac;   /* Maroon */
+    --red-toc-bg: #181825;             /* Mantle */
+    --red-toc-border: #313244;         /* Surface 0 */
+    --red-border-color: #45475a;       /* Surface 1 */
+    --red-details-body-border: #313244;/* Surface 0 */
+    --red-table-header-bg: #313244;    /* Surface 0 */
+    --red-table-header-text: #f38ba8;  /* Red */
+    --red-card-bg: #313244;            /* Surface 0 */
+    --red-card-border: #45475a;        /* Surface 1 */
+    --red-card-bg-hover: #45475a;      /* Surface 1 */
+    --red-shadow-color: rgba(17, 17, 27, 0.6); /* Crust */
+
+    /* Catppuccin Mocha Green Theme Base Tokens */
+    --green-bg-color: #1e1e2e;           /* Base */
+    --green-text-color: #cdd6f4;         /* Text */
+    --green-heading-color: #a6e3a1;      /* Green */
+    --green-link-color: #a6e3a1;         /* Green */
+    --green-link-hover-color: #94e2d5;   /* Teal */
+    --green-toc-bg: #181825;             /* Mantle */
+    --green-toc-border: #313244;         /* Surface 0 */
+    --green-border-color: #45475a;       /* Surface 1 */
+    --green-details-body-border: #313244;/* Surface 0 */
+    --green-table-header-bg: #313244;    /* Surface 0 */
+    --green-table-header-text: #a6e3a1;  /* Green */
+    --green-card-bg: #313244;            /* Surface 0 */
+    --green-card-border: #45475a;        /* Surface 1 */
+    --green-card-bg-hover: #45475a;      /* Surface 1 */
+    --green-shadow-color: rgba(17, 17, 27, 0.6); /* Crust */
+
+    /* Catppuccin Mocha Blue Theme Base Tokens */
+    --blue-bg-color: #1e1e2e;           /* Base */
+    --blue-text-color: #cdd6f4;         /* Text */
+    --blue-heading-color: #89b4fa;      /* Blue */
+    --blue-link-color: #89b4fa;         /* Blue */
+    --blue-link-hover-color: #89dceb;   /* Sky */
+    --blue-toc-bg: #181825;             /* Mantle */
+    --blue-toc-border: #313244;         /* Surface 0 */
+    --blue-border-color: #45475a;       /* Surface 1 */
+    --blue-details-body-border: #313244;/* Surface 0 */
+    --blue-table-header-bg: #313244;    /* Surface 0 */
+    --blue-table-header-text: #89b4fa;  /* Blue */
+    --blue-card-bg: #313244;            /* Surface 0 */
+    --blue-card-border: #45475a;        /* Surface 1 */
+    --blue-card-bg-hover: #45475a;      /* Surface 1 */
+    --blue-shadow-color: rgba(17, 17, 27, 0.6); /* Crust */
 }
 
 /* ==========================================================================
@@ -84,7 +169,8 @@
     }
 }
 
-/* 3. Explicit Light Mode */
+/* 3. Explicit Light & Dark Mode */
+
 :root[data-theme="light"] {
     --bg-color: var(--light-bg-color);
     --text-color: var(--light-text-color);
@@ -103,7 +189,6 @@
     --shadow-color: var(--light-shadow-color);
 }
 
-/* 4. Explicit Dark Mode */
 :root[data-theme="dark"] {
     --bg-color: var(--dark-bg-color);
     --text-color: var(--dark-text-color);
@@ -120,6 +205,103 @@
     --card-bg-hover: var(--dark-card-bg-hover);
     --link-hover-color: var(--dark-link-hover-color);
     --shadow-color: var(--dark-shadow-color);
+}
+
+/* 4. Explicit Catppuccin Mocha */
+
+/* 4.1. Rosewater Variant */
+:root[data-theme="rosewater"] {
+    --bg-color: var(--rosewater-bg-color);
+    --text-color: var(--rosewater-text-color);
+    --heading-color: var(--rosewater-heading-color);
+    --link-color: var(--rosewater-link-color);
+    --link-hover-color: var(--rosewater-link-hover-color);
+    --toc-bg: var(--rosewater-toc-bg);
+    --toc-border: var(--rosewater-toc-border);
+    --border-color: var(--rosewater-border-color);
+    --details-body-border: var(--rosewater-details-body-border);
+    --table-header-bg: var(--rosewater-table-header-bg);
+    --table-header-text: var(--rosewater-table-header-text);
+    --card-bg: var(--rosewater-card-bg);
+    --card-border: var(--rosewater-card-border);
+    --card-bg-hover: var(--rosewater-card-bg-hover);
+    --shadow-color: var(--rosewater-shadow-color);
+}
+
+/* 4.2. Mauve Variant */
+:root[data-theme="mauve"] {
+    --bg-color: var(--mauve-bg-color);
+    --text-color: var(--mauve-text-color);
+    --heading-color: var(--mauve-heading-color);
+    --link-color: var(--mauve-link-color);
+    --link-hover-color: var(--mauve-link-hover-color);
+    --toc-bg: var(--mauve-toc-bg);
+    --toc-border: var(--mauve-toc-border);
+    --border-color: var(--mauve-border-color);
+    --details-body-border: var(--mauve-details-body-border);
+    --table-header-bg: var(--mauve-table-header-bg);
+    --table-header-text: var(--mauve-table-header-text);
+    --card-bg: var(--mauve-card-bg);
+    --card-border: var(--mauve-card-border);
+    --card-bg-hover: var(--mauve-card-bg-hover);
+    --shadow-color: var(--mauve-shadow-color);
+}
+
+/* 4.3. Red Variant */
+:root[data-theme="red"] {
+    --bg-color: var(--red-bg-color);
+    --text-color: var(--red-text-color);
+    --heading-color: var(--red-heading-color);
+    --link-color: var(--red-link-color);
+    --link-hover-color: var(--red-link-hover-color);
+    --toc-bg: var(--red-toc-bg);
+    --toc-border: var(--red-toc-border);
+    --border-color: var(--red-border-color);
+    --details-body-border: var(--red-details-body-border);
+    --table-header-bg: var(--red-table-header-bg);
+    --table-header-text: var(--red-table-header-text);
+    --card-bg: var(--red-card-bg);
+    --card-border: var(--red-card-border);
+    --card-bg-hover: var(--red-card-bg-hover);
+    --shadow-color: var(--red-shadow-color);
+}
+
+/* 4.4. Green Variant */
+:root[data-theme="green"] {
+    --bg-color: var(--green-bg-color);
+    --text-color: var(--green-text-color);
+    --heading-color: var(--green-heading-color);
+    --link-color: var(--green-link-color);
+    --link-hover-color: var(--green-link-hover-color);
+    --toc-bg: var(--green-toc-bg);
+    --toc-border: var(--green-toc-border);
+    --border-color: var(--green-border-color);
+    --details-body-border: var(--green-details-body-border);
+    --table-header-bg: var(--green-table-header-bg);
+    --table-header-text: var(--green-table-header-text);
+    --card-bg: var(--green-card-bg);
+    --card-border: var(--green-card-border);
+    --card-bg-hover: var(--green-card-bg-hover);
+    --shadow-color: var(--green-shadow-color);
+}
+
+/* 4.5. Blue Variant */
+:root[data-theme="blue"] {
+    --bg-color: var(--blue-bg-color);
+    --text-color: var(--blue-text-color);
+    --heading-color: var(--blue-heading-color);
+    --link-color: var(--blue-link-color);
+    --link-hover-color: var(--blue-link-hover-color);
+    --toc-bg: var(--blue-toc-bg);
+    --toc-border: var(--blue-toc-border);
+    --border-color: var(--blue-border-color);
+    --details-body-border: var(--blue-details-body-border);
+    --table-header-bg: var(--blue-table-header-bg);
+    --table-header-text: var(--blue-table-header-text);
+    --card-bg: var(--blue-card-bg);
+    --card-border: var(--blue-card-border);
+    --card-bg-hover: var(--blue-card-bg-hover);
+    --shadow-color: var(--blue-shadow-color);
 }
 
 /* 5. Custom Mode (Variables injected via JS) */

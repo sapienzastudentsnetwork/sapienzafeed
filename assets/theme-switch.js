@@ -15,6 +15,8 @@ window.initThemePanel = function() {
 
     const uiEls = {
         preset: document.getElementById('themePreset'),
+        variantField: document.getElementById('variantField'),
+        variant: document.getElementById('themeVariant'),
         bg: document.getElementById('kBg'),
         srf: document.getElementById('kSrf'),
         fg: document.getElementById('kFg'),
@@ -41,9 +43,23 @@ window.initThemePanel = function() {
     if (uiEls.preset && uiEls.close) {
         function updateUI(state) {
             const isCustom = state?.mode === 'custom';
-            
+            const darkVariants = ['dark', 'rosewater', 'mauve', 'red', 'green', 'blue'];
+
             if (uiEls.preset) {
-                uiEls.preset.value = isCustom ? 'custom' : (state?.name || 'auto');
+                if (isCustom) {
+                    uiEls.preset.value = 'custom';
+                    if (uiEls.variantField) uiEls.variantField.style.display = 'none';
+                } else {
+                    const presetName = state?.name || 'auto';
+                    if (darkVariants.includes(presetName)) {
+                        uiEls.preset.value = 'dark';
+                        if (uiEls.variantField) uiEls.variantField.style.display = 'grid';
+                        if (uiEls.variant) uiEls.variant.value = presetName;
+                    } else {
+                        uiEls.preset.value = presetName;
+                        if (uiEls.variantField) uiEls.variantField.style.display = 'none';
+                    }
+                }
             }
 
             const paletteTitle = document.getElementById('paletteTitle');
@@ -209,15 +225,14 @@ window.initThemePanel = function() {
             const val = e.target.value;
             const oldState = loadState() || {};
             let newState;
-            
+
             if (val === 'custom') {
+                if (uiEls.variantField) uiEls.variantField.style.display = 'none';
                 if (oldState.knobs) {
                     newState = { mode: 'custom', knobs: oldState.knobs };
                 } else {
-                    // Read current values directly from the DOM to preserve 
-                    // existing modifications or default base colors
-                    newState = { 
-                        mode: 'custom', 
+                    newState = {
+                        mode: 'custom',
                         knobs: {
                             bg: uiEls.bg.value,
                             srf: uiEls.srf.value,
@@ -226,16 +241,35 @@ window.initThemePanel = function() {
                         }
                     };
                 }
+            } else if (val === 'dark') {
+                if (uiEls.variantField) uiEls.variantField.style.display = 'grid';
+                newState = { mode: 'preset', name: uiEls.variant ? uiEls.variant.value : 'dark' };
+                if (oldState.knobs) newState.knobs = oldState.knobs;
             } else {
+                if (uiEls.variantField) uiEls.variantField.style.display = 'none';
                 newState = { mode: 'preset', name: val };
-                if (oldState.knobs) {
-                    newState.knobs = oldState.knobs;
-                }
+                if (oldState.knobs) newState.knobs = oldState.knobs;
             }
             saveState(newState);
             applyCurrentState(newState);
             updateUI(newState);
         });
+
+        // Variant Dropdown Change
+        if (uiEls.variant) {
+            uiEls.variant.addEventListener('change', (e) => {
+                const val = e.target.value;
+                const oldState = loadState() || {};
+                const newState = { mode: 'preset', name: val };
+                if (oldState.knobs) {
+                    newState.knobs = oldState.knobs;
+                }
+
+                saveState(newState);
+                applyCurrentState(newState);
+                updateUI(newState);
+            });
+        }
 
         // Input Listeners for Custom Colors
         const customInputs = [uiEls.bg, uiEls.fg, uiEls.acc, uiEls.srf];
@@ -359,13 +393,25 @@ window.addEventListener('storage', (event) => {
         try {
             const newState = JSON.parse(event.newValue);
             applyCurrentState(newState);
-            
+
             const presetSel = document.getElementById('themePreset');
+            const variantField = document.getElementById('variantField');
+            const variantSel = document.getElementById('themeVariant');
+            const darkVariants = ['dark', 'rosewater', 'mauve', 'red', 'green', 'blue'];
+
             if(presetSel) {
                 if (newState.mode === 'preset') {
-                    presetSel.value = newState.name;
+                    if (darkVariants.includes(newState.name)) {
+                        presetSel.value = 'dark';
+                        if (variantField) variantField.style.display = 'grid';
+                        if (variantSel) variantSel.value = newState.name;
+                    } else {
+                        presetSel.value = newState.name;
+                        if (variantField) variantField.style.display = 'none';
+                    }
                 } else if (newState.mode === 'custom' && newState.knobs) {
                     presetSel.value = 'custom';
+                    if (variantField) variantField.style.display = 'none';
                     const b = document.getElementById('kBg'); if(b) b.value = newState.knobs.bg;
                     const f = document.getElementById('kFg'); if(f) f.value = newState.knobs.fg;
                     const a = document.getElementById('kAcc'); if(a) a.value = newState.knobs.acc;
@@ -373,7 +419,7 @@ window.addEventListener('storage', (event) => {
                 }
             }
         } catch(e) {}
-    } 
+    }
     else if (event.key === 'isFontDSA') {
         const isDSA = !!event.newValue;
         document.documentElement.classList.toggle('dyslexic', isDSA);
