@@ -199,7 +199,10 @@ def translate_global_links(soup, language_key, rel_to_root="../../../"):
             if "regolamento-studenti" in href:
                 a_tag["href"] = "https://www.uniroma1.it/en/pagina/student-regulations"
             elif "calendario-dellanno-accademico" in href:
+                a_tag.string = "Academic calendar"
                 a_tag["href"] = "https://www.uniroma1.it/en/pagina/academic-calendar"
+        elif "calendario-dellanno-accademico" in href:
+            a_tag.string = "Calendario dell'anno accademico"
 
 def extract_course_metadata(soup, language_key):
     """
@@ -1280,9 +1283,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 # Use {course_id} so the URL adapts dynamically to the current course
                 study_plan_url = f"https://corsidilaurea.uniroma1.it/{language_key}/course/{course_id}/study-plan"
                 categorized_links[cats["info"]].append((study_plan_text, study_plan_url))
-                
+
                 # Hardcode the link to Faculty academic calendar in "freq"
-                faculty_calendar_text = "Calendario didattico" if language_key == "it" else "Academic calendar"
+                faculty_calendar_text = "Calendario didattico" if language_key == "it" else "Programme calendar"
                 faculty_calendar_url = "https://i3s.web.uniroma1.it/it/calendario-didattico" if language_key == "it" else "https://i3s.web.uniroma1.it/en/programme-calendar"
                 categorized_links[cats["freq"]].append((faculty_calendar_text, faculty_calendar_url))
 
