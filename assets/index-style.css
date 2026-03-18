@@ -168,7 +168,15 @@ li .subcategory-details {
     background-color: transparent !important;
     box-shadow: none !important;
     border: none !important;
-    padding: 0 20px;
+    margin: 0;
+    padding: 14px 20px;
+}
+
+/* Force the summary to behave exactly like the <a> tags in the list */
+li .subcategory-details summary {
+    margin: 0;
+    line-height: 1.4;   /* EXACT match with ul.category-list > li > a */
+    box-sizing: border-box;
 }
 
 /* Prevents the background from appearing on hover */
