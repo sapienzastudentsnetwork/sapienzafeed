@@ -315,7 +315,7 @@ def get_assets_relative_path(directory, filename):
     depth = len(parts)
     return ("../" * depth) + "assets/" + filename if depth > 0 else filename
 
-def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", timetables_links=None, timetables_title=None, show_search=True, custom_back_text=None, announcements_html=""):
+def generate_index_html(directory, links=None, title="", back_url="../index.html", metadata_html="", original_url=None, language_key="en", categorized_links=None, flag_html="", info_category_name=None, freq_category_name=None, freq_metadata_html="", show_search=True, custom_back_text=None, announcements_html=""):
     """Generates an index.html file with a list of links (optionally grouped by category) and metadata."""
     index_path = os.path.join(directory, "index.html")
     theme_css_path = get_assets_relative_path(directory, "theme-style.css")
@@ -370,9 +370,8 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 # Skip empty categories unless it is the info category with metadata, freq category with metadata, or freq with timetables
                 has_metadata = (category == info_category_name and metadata_html)
                 has_freq_metadata = (category == freq_category_name and freq_metadata_html)
-                has_timetables = (category == freq_category_name and timetables_links)
 
-                if not cat_links and not has_metadata and not has_freq_metadata and not has_timetables:
+                if not cat_links and not has_metadata and not has_freq_metadata:
                     continue
 
                 cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
@@ -419,30 +418,6 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                             formatted_url = link_url.rstrip("/") + "/index.html"
                         file.write(f'            <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
 
-                    file.write('        </ul>\n')
-
-                # Render sub-category Timetables right after freq category links
-                if category == freq_category_name and timetables_links:
-                    if timetables_title:
-                        sub_id = re.sub(r'[^a-z0-9]+', '-', timetables_title.lower()).strip('-')
-                        if not sub_id: sub_id = f"header-{abs(hash(timetables_title))}"
-                        file.write(f'        <h3 id="{sub_id}" class="subcategory-title">{timetables_title}</h3>\n')
-                    file.write('        <ul class="category-list">\n')
-                    for link_text, link_url in sorted(timetables_links):
-                        formatted_url = link_url
-                        display_text = link_text
-                        target_blank = ""
-
-                        if is_external_url(link_url):
-                            display_text = display_text.replace("↗", "").strip()
-                            if "external-icon" not in display_text:
-                                display_text += ' <span class="external-icon">↗</span>'
-                            # Open external links in a new tab
-                            target_blank = ' target="_blank" rel="noopener noreferrer"'
-
-                        if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
-                            formatted_url = link_url.rstrip("/") + "/index.html"
-                        file.write(f'            <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
                     file.write('        </ul>\n')
 
                 # Close the details element
@@ -668,7 +643,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                         "apprenticeship": "guides",   # Apprenticeship
                         "excellence": "opp",        # Path of excellence
                         "job-orientation": "opp",   # Job Orientation
-                        "graduation": "guides",       # Graduate
+                        "graduation": "freq",       # Graduate
                         "ofa": "guides"               # Ofa: methods of fulfilling additional training obligations
                     }
 
@@ -1248,25 +1223,35 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             # CUSTOM TIMETABLE SEPARATE LINKS GENERATION
             # Define language-specific title
             tt_title = "Orari delle Lezioni" if language_key == "it" else "Timetables"
-            timetables_custom_links = []
-            
-            # 1. corsidilaurea (scraped link)
-            if scraped_timetable_link and course_id != "33504":
-                timetables_custom_links.append(("corsidilaurea.uniroma1.it", scraped_timetable_link))
-                
-            # 2. Education Office / Segreteria Didattica
+            timetables_custom_links_html = "<ul class='subcategory-list'>\n"
+            target_blank = ' target="_blank" rel="noopener noreferrer"'
+            external_icon_text = ' <span class="external-icon">↗</span>'
+
+            # 1. Education Office / Segreteria Didattica
             ed_office_link = timetables_education_office_links.get(course_id, {})
             if ed_office_link:
-                #office_suffix = "Segreteria Didattica" if language_key == "it" else "Education Affairs Office"
-                office_suffix = "docs.google.com"
-                timetables_custom_links.append((office_suffix, ed_office_link))
-                
+                timetables_custom_links_html += f"  <li><a href='{ed_office_link}'{target_blank}>docs.google.com{external_icon_text}</a></li>\n"
+
+            # 2. corsidilaurea (scraped link)
+            if scraped_timetable_link and course_id != "33504":
+                timetables_custom_links_html += f"  <li><a href='{scraped_timetable_link}'{target_blank}>corsidilaurea.uniroma1.it{external_icon_text}</a></li>\n"
+
             # 3. sapienzastudents.net
             sap_students_link = timetables_sapienza_students_links.get(course_id, {})
             if sap_students_link:
-                timetables_custom_links.append(("sapienzastudents.net", sap_students_link))
+                timetables_custom_links_html += f"  <li><a href='{sap_students_link}'{target_blank}>sapienzastudents.net{external_icon_text}</a></li>\n"
 
-            if page_links or attendance_custom_links or timetables_custom_links:
+            timetables_custom_links_html += "</ul>\n"
+
+            timetables_custom_html = (
+            "<details class='subcategory-details'>\n"
+            f"  <summary>{tt_title}</summary>\n"
+            f"  <div class='details-body'>\n{timetables_custom_links_html}  </div>\n"
+            "</details>\n"
+            )
+            attendance_custom_links.append((tt_title, timetables_custom_html, "freq"))
+
+            if page_links or attendance_custom_links:
                 # Always go back to global catalogue root since language selection page is removed
                 lang_back_url = "../../index.html"
 
@@ -1350,8 +1335,6 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                     info_category_name=cats["info"],
                     freq_category_name=cats["freq"],
                     freq_metadata_html=attendance_freq_metadata_html,
-                    timetables_links=timetables_custom_links,
-                    timetables_title=tt_title,
                     announcements_html=homepage_announcements_html
                 )
                 language_links.append((language_key.replace("en","English").replace("it","Italian"), f"{language_key}/index.html"))

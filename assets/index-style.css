@@ -93,8 +93,8 @@ details.category-details > summary:hover {
     opacity: 0.8;
 }
 
-/* Override existing margins for h2 so it aligns with the summary arrow */
-details.category-details > summary > h2.category-title {
+/* Override existing margins for h2, h3 to align with the summary arrow */
+details.category-details > summary > h2.category-title, h3.subcategory-title {
     display: inline-block;
     margin: 0;
     vertical-align: middle;
@@ -103,8 +103,6 @@ details.category-details > summary > h2.category-title {
 /* Subcategory titles (e.g., Timetables) */
 details.category-details .subcategory-title {
     color: var(--heading-color, #0056b3);
-    margin-top: 20px;
-    margin-bottom: 10px;
     font-size: 1.2em;
 }
 
