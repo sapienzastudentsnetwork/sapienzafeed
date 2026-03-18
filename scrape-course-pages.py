@@ -1282,7 +1282,7 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 categorized_links[cats["info"]].append((study_plan_text, study_plan_url))
                 
                 # Hardcode the link to Faculty academic calendar in "freq"
-                faculty_calendar_text = "Calendario didattico di Facoltà" if language_key == "it" else "Faculty academic calendar"
+                faculty_calendar_text = "Calendario didattico" if language_key == "it" else "Academic calendar"
                 faculty_calendar_url = "https://i3s.web.uniroma1.it/it/calendario-didattico" if language_key == "it" else "https://i3s.web.uniroma1.it/en/programme-calendar"
                 categorized_links[cats["freq"]].append((faculty_calendar_text, faculty_calendar_url))
 
