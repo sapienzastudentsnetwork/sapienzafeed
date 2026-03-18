@@ -44,7 +44,7 @@ ul.category-list > li > a, ul.simple-list > li > a {
     align-items: center;
     padding: 14px 20px;
     background-color: transparent;
-    color: var(--link-color);
+    color: var(--text-color);
     text-decoration: none;
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -109,7 +109,7 @@ details.category-details .subcategory-title {
 }
 
 details.category-details details a {
-    color: var(--link-color, #007BFF);
+    color: var(--text-color, #007BFF);
 }
 
 /* Collapsible Course Metadata (styled similarly to modern cards) */
@@ -132,7 +132,7 @@ details.category-details details a {
 
 .subcategory-details summary {
     font-weight: 500;
-    color: var(--link-color); /* Matches clickable links */
+    color: var(--text-color); /* Matches clickable links */
     font-size: 1.1em;
     margin-bottom: 0;
     cursor: pointer;
