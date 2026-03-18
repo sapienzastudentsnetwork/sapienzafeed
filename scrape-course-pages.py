@@ -341,37 +341,6 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         <input type="text" id="search-input" placeholder="{search_placeholder}" onkeyup="filterLinks()" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 5px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #000);">
     </div>'''
 
-    # Generate TOC for index pages (categories and subcategories)
-    toc_html = ""
-    if categorized_links:
-        toc_title = "Indice" if language_key == "it" else "Table of Contents"
-        toc_html = f'<div class="toc">\n<h2>{toc_title}</h2>\n<ul>\n'
-        
-        # Add Announcements to TOC if present
-        if announcements_html:
-            announcements_toc_text = "Avvisi in evidenza" if language_key == "it" else "Featured announcements"
-            toc_html += f'    <li><a href="#announcements">{announcements_toc_text}</a></li>\n'
-            
-        for category, cat_links in categorized_links.items():
-            has_metadata = (category == info_category_name and metadata_html)
-            has_freq_metadata = (category == freq_category_name and freq_metadata_html)
-            has_timetables = (category == freq_category_name and timetables_links)
-            
-            if not cat_links and not has_metadata and not has_freq_metadata and not has_timetables:
-                continue 
-                
-            cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
-            if not cat_id: cat_id = f"header-{abs(hash(category))}"
-            
-            toc_html += f'    <li><a href="#{cat_id}">{category}</a></li>\n'
-            
-            # Check for subcategories to add to TOC
-            if category == freq_category_name and timetables_links and timetables_title:
-                sub_id = re.sub(r'[^a-z0-9]+', '-', timetables_title.lower()).strip('-')
-                if not sub_id: sub_id = f"header-{abs(hash(timetables_title))}"
-                toc_html += f'    <li style="margin-left: 20px;"><a href="#{sub_id}">{timetables_title}</a></li>\n'
-        
-        toc_html += '</ul>\n</div>\n'
 
     with open(index_path, "w", encoding="utf-8") as file:
         file.write("""<!DOCTYPE html>
@@ -390,11 +359,10 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 
     {top_navbar_html}
 {search_html}
-{toc_html}
 {announcements_html}
 <button id="back-to-top" title="{btn_text}">▲ {btn_text}</button>
 <script src="{js_page_logic}"></script>
-""".format(language_key=language_key, title=title, THEME_PANEL_HTML=localized_theme_panel, top_navbar_html=top_navbar_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_apply=js_theme_apply, js_theme_switch=js_theme_switch, search_html=search_html, toc_html=toc_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
+""".format(language_key=language_key, title=title, THEME_PANEL_HTML=localized_theme_panel, top_navbar_html=top_navbar_html, theme_css_path=theme_css_path, css_path=css_path, js_theme_apply=js_theme_apply, js_theme_switch=js_theme_switch, search_html=search_html, announcements_html=announcements_html, btn_text=back_to_top_text, js_page_logic=js_page_logic))
 
         # Render dynamically categorized links if provided
         if categorized_links:
@@ -407,11 +375,13 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 if not cat_links and not has_metadata and not has_freq_metadata and not has_timetables:
                     continue
 
-                # Apply the same ID generated for the TOC
                 cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
                 if not cat_id: cat_id = f"header-{abs(hash(category))}"
 
-                file.write(f'    <h2 id="{cat_id}" class="category-title">{category}</h2>\n')
+                # Wrap category in a collapsible details element
+                file.write('    <details class="category-details">\n')
+                # Use summary for the title, and put h2 inside without inline styling
+                file.write(f'        <summary><h2 id="{cat_id}" class="category-title">{category}</h2></summary>\n')
 
                 # Inject metadata into the list of links so it gets sorted alphabetically
                 if has_metadata:
@@ -423,12 +393,13 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                     cat_links.append((freq_sort_key, freq_metadata_html))
 
                 if cat_links:
-                    file.write('    <ul class="category-list">\n')
+                    file.write('        <ul class="category-list">\n')
 
                     # Sort and iterate: 'Dettagli' will now automatically find its alphabetical place
                     for link_text, link_url in sorted(cat_links):
                         if link_url.startswith("<details"):
-                            file.write(f'        <li class="details-list-item">\n{link_url}        </li>\n')
+                            # This link is actually the HTML for a nested details element
+                            file.write(f'            <li class="details-list-item">\n{link_url}            </li>\n')
                             continue
 
                         formatted_url = link_url
@@ -446,34 +417,37 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
-                        file.write(f'        <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
+                        file.write(f'            <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
 
-                    file.write('    </ul>\n')
-                
+                    file.write('        </ul>\n')
+
                 # Render sub-category Timetables right after freq category links
                 if category == freq_category_name and timetables_links:
                     if timetables_title:
                         sub_id = re.sub(r'[^a-z0-9]+', '-', timetables_title.lower()).strip('-')
                         if not sub_id: sub_id = f"header-{abs(hash(timetables_title))}"
-                        file.write(f'    <h3 id="{sub_id}" class="subcategory-title" style="margin-top: 20px;">{timetables_title}</h3>\n')
-                    file.write('    <ul class="category-list">\n')
+                        file.write(f'        <h3 id="{sub_id}" class="subcategory-title">{timetables_title}</h3>\n')
+                    file.write('        <ul class="category-list">\n')
                     for link_text, link_url in sorted(timetables_links):
                         formatted_url = link_url
                         display_text = link_text
                         target_blank = ""
-                        
+
                         if is_external_url(link_url):
                             display_text = display_text.replace("↗", "").strip()
                             if "external-icon" not in display_text:
                                 display_text += ' <span class="external-icon">↗</span>'
                             # Open external links in a new tab
                             target_blank = ' target="_blank" rel="noopener noreferrer"'
-                                
+
                         if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                             formatted_url = link_url.rstrip("/") + "/index.html"
-                        file.write(f'        <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
-                    file.write('    </ul>\n')
-        
+                        file.write(f'            <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
+                    file.write('        </ul>\n')
+
+                # Close the details element
+                file.write('    </details>\n')
+
         # Render generic flat links (used for Root and Choose Language selection)
         elif links:
             file.write('    <ul class="simple-list">\n')

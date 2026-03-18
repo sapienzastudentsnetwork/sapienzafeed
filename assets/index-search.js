@@ -153,18 +153,24 @@ function filterLinks() {
             }
         }
     });
-    
+
     // Independent handling of category titles (H2, H3)
     var headings = document.querySelectorAll('h2.category-title, h3.subcategory-title');
     headings.forEach(function(heading) {
         var headingText = heading.textContent || heading.innerText;
-        var isCategoryMatch = (filter !== '' && (headingText.toUpperCase().indexOf(filter) > -1 || headingText.toUpperCase().indexOf(flexibleFilter) > -1));
-        
+        var flexFilter = typeof flexibleFilter !== 'undefined' ? flexibleFilter : filter;
+        var isCategoryMatch = (filter !== '' && (headingText.toUpperCase().indexOf(filter) > -1 || headingText.toUpperCase().indexOf(flexFilter) > -1));
+
         var hasVisibleContent = false;
-        var sibling = heading.nextElementSibling;
-        
-        // Traverse subsequent nodes until the next title
-        while (sibling && sibling.tagName !== 'H2' && sibling.tagName !== 'H3') {
+
+        // Determine the correct sibling to start traversal.
+        // H2 elements are wrapped in <summary> tags within a <details> block.
+        var sibling = (heading.tagName === 'H2' && heading.parentElement && heading.parentElement.tagName === 'SUMMARY')
+            ? heading.parentElement.nextElementSibling
+            : heading.nextElementSibling;
+
+        // Traverse subsequent nodes until the next title or the end of the container
+        while (sibling && sibling.tagName !== 'H2' && sibling.tagName !== 'H3' && sibling.tagName !== 'SUMMARY') {
             if (sibling.tagName === 'UL') {
                 var visibleItems = Array.from(sibling.getElementsByTagName('li')).filter(function(li) {
                     return li.style.display !== 'none';
@@ -177,10 +183,32 @@ function filterLinks() {
                     hasVisibleContent = true;
                 }
             }
-            
             sibling = sibling.nextElementSibling;
         }
-        
-        heading.style.display = (isCategoryMatch || hasVisibleContent || filter === '') ? '' : 'none';
+
+        var shouldShow = isCategoryMatch || hasVisibleContent || filter === '';
+
+        // Handle visibility and toggle state for collapsible categories
+        if (heading.tagName === 'H2' && heading.parentElement && heading.parentElement.tagName === 'SUMMARY') {
+            var detailsContainer = heading.parentElement.parentElement;
+            detailsContainer.style.display = shouldShow ? '' : 'none';
+
+            // Automatically expand the details block if there is an active search match
+            if (shouldShow && filter !== '') {
+                if (!detailsContainer.open) {
+                    detailsContainer.setAttribute('data-search-opened', 'true');
+                    detailsContainer.open = true;
+                }
+            } else if (filter === '') {
+                // Revert to the default closed state when the search is cleared
+                if (detailsContainer.getAttribute('data-search-opened') === 'true') {
+                    detailsContainer.open = false;
+                    detailsContainer.removeAttribute('data-search-opened');
+                }
+            }
+        } else {
+            // Standard visibility handling for subcategories
+            heading.style.display = shouldShow ? '' : 'none';
+        }
     });
 }

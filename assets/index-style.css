@@ -77,6 +77,41 @@ ul.category-list > li > a:hover::after, ul.simple-list > li > a:hover::after {
     opacity: 0.8;
 }
 
+details.category-details {
+    margin-bottom: 30px; /* Space between collapsible categories */
+}
+
+/* The summary acts as the clickable toggle */
+details.category-details > summary {
+    cursor: pointer;
+    color: var(--heading-color, #0056b3); /* Use existing heading color */
+    padding: 10px 0;
+    transition: opacity 0.2s ease;
+}
+
+details.category-details > summary:hover {
+    opacity: 0.8;
+}
+
+/* Override existing margins for h2 so it aligns with the summary arrow */
+details.category-details > summary > h2.category-title {
+    display: inline-block;
+    margin: 0;
+    vertical-align: middle;
+}
+
+/* Subcategory titles (e.g., Timetables) */
+details.category-details .subcategory-title {
+    color: var(--heading-color, #0056b3);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+details.category-details details a {
+    color: var(--link-color, #007BFF);
+}
+
 /* Collapsible Course Metadata (styled similarly to modern cards) */
 .subcategory-details {
     margin-top: 10px;
