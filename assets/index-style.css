@@ -413,7 +413,7 @@ summary[class="announcement-summary"]:hover {
     font-size: 1.05em;
     font-weight: bold;
     font-family: inherit;
-    color: var(--text-color);
+    color: var(--heading-color);
     background-color: var(--card-bg);
     border: 1px solid var(--heading-color);
     border-radius: 12px;
