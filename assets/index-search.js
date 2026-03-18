@@ -1,214 +1,180 @@
 /**
  * Filters the links dynamically in the index page based on user input.
- * Hides empty categories and toggles the Table of Contents and Announcements visibility.
- * Expands a <details> block ONLY if its inner elements match the search.
- * Restores the collapsed state of auto-expanded <details> when the search is cleared.
+ * Integrates with the tab (pill) system by hiding the navigation pills
+ * and displaying all matching tab contents in an "open accordion" stacked layout
+ * during a search. Restores the tabbed layout when the search is cleared.
  */
 function filterLinks() {
     var input = document.getElementById('search-input');
     if (!input) return; // Failsafe if input doesn't exist
-    
-    // Added trim() to prevent trailing spaces from breaking the stemming logic
+
     var filter = input.value.toUpperCase().trim();
-    
-    // ----------------------------------------------------------------------
-    // 1. HIDE TOC AND ANNOUNCEMENTS IMMEDIATELY DURING SEARCH
-    // ----------------------------------------------------------------------
-    
-    // Hide the Table of Contents (TOC)
+
+    // 1. HIDE TOC AND ANNOUNCEMENTS DURING SEARCH
     var toc = document.querySelector('.toc');
     if (toc) {
-        if (filter === '') {
-            toc.style.display = '';
-        } else {
-            toc.style.setProperty('display', 'none', 'important');
-        }
+        toc.style.setProperty('display', filter === '' ? '' : 'none', 'important');
     }
 
-    // Hide the announcements-section
     var announcementSections = document.querySelectorAll('.announcements-section');
     announcementSections.forEach(function(section) {
-        if (filter === '') {
-            section.style.display = '';
-        } else {
-            section.style.setProperty('display', 'none', 'important');
-        }
+        section.style.setProperty('display', filter === '' ? '' : 'none', 'important');
     });
 
-    // ----------------------------------------------------------------------
-    // 2. FILTER LINKS LOGIC
-    // ----------------------------------------------------------------------
-
-    // Basic stemming: drop the last letter if it's a common singular/plural ending (O, A, E, I, S)
-    // This allows "tirocinio" to match "tirocini" (stem: "tirocini") and vice versa (stem: "tirocin").
+    // 2. STEMMING LOGIC
+    // Drop the last letter if it's a common singular/plural ending
     var flexibleFilter = filter;
     if (filter.length > 3 && /[OAEIS]$/.test(filter)) {
         flexibleFilter = filter.slice(0, -1);
     }
-    
-    var lists = document.querySelectorAll('.category-list, .simple-list, .subcategory-list');
-    
-    lists.forEach(function(ul) {
-        var isCategoryMatch = false;
-        var isDetailsMatch = false;
-        
-        // Check if the parent category title (H2/H3) matches the search query
-        var startElem = ul.closest('details') || ul;
-        var elem = startElem.previousElementSibling;
-        
-        while (elem) {
-            if (elem.tagName === 'H2' || elem.tagName === 'H3') {
-                var headingText = elem.textContent || elem.innerText;
-                if (filter !== '' && (headingText.toUpperCase().indexOf(filter) > -1 || headingText.toUpperCase().indexOf(flexibleFilter) > -1)) {
-                    isCategoryMatch = true;
-                }
-                break;
-            }
-            elem = elem.previousElementSibling;
-        }
 
-        // Check if the parent details summary matches the search query
-        var parentDetails = ul.closest('details');
-        if (parentDetails) {
-            var summary = parentDetails.querySelector('summary');
-            if (summary) {
-                var summaryText = summary.textContent || summary.innerText;
-                if (filter !== '' && (summaryText.toUpperCase().indexOf(filter) > -1 || summaryText.toUpperCase().indexOf(flexibleFilter) > -1)) {
-                    isDetailsMatch = true;
-                }
+    // 3. TAB / PILL NAVIGATION HANDLING
+    var navControls = document.querySelector('.nav-controls-container');
+    if (navControls) {
+        // Hide navigation controls during search to show stacked results
+        navControls.style.display = filter === '' ? 'block' : 'none';
+    }
+
+    // 4. FILTERING TAB CONTENTS
+    var tabContents = document.querySelectorAll('.tab-content');
+
+    if (tabContents.length > 0) {
+        tabContents.forEach(function(tabContent) {
+            // Find the corresponding pill button to extract the category name
+            var categoryName = "";
+            var relatedBtn = document.querySelector('.pill-button[onclick*="' + tabContent.id + '"]');
+            if (relatedBtn) {
+                categoryName = (relatedBtn.textContent || relatedBtn.innerText).toUpperCase();
             }
-        }
-        
-        var hasMatchingInnerItem = false;
-        var hasVisibleItems = false;
-        var lis = ul.getElementsByTagName('li');
-        
-        for (var i = 0; i < lis.length; i++) {
-            var txtValue = lis[i].textContent || lis[i].innerText;
-            
-            // Extract the href attribute to allow searching by the LAST part of the URL
-            var aTag = lis[i].querySelector('a');
-            var hrefValue = aTag ? aTag.getAttribute('href') : '';
-            var urlLastSegment = '';
-            
-            if (hrefValue) {
-                // Remove query strings and anchors
-                var cleanUrl = hrefValue.split('?')[0].split('#')[0];
-                // Remove trailing slash if present
-                if (cleanUrl.endsWith('/')) {
-                    cleanUrl = cleanUrl.slice(0, -1);
-                }
-                // Extract only the last part of the path
-                urlLastSegment = cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1);
-            }
-            
-            // Check if either the visible text or the LAST SEGMENT of the URL matches the search filter (or flexible filter)
-            var isItemMatch = (filter !== '' && (
-                txtValue.toUpperCase().indexOf(filter) > -1 || 
-                urlLastSegment.toUpperCase().indexOf(filter) > -1 ||
-                txtValue.toUpperCase().indexOf(flexibleFilter) > -1 || 
-                urlLastSegment.toUpperCase().indexOf(flexibleFilter) > -1
-            ));
-            
-            // Show the item if it matches the category, details, the item itself, or if the search is empty
-            if (isCategoryMatch || isDetailsMatch || isItemMatch || filter === '') {
-                lis[i].style.display = '';
-                hasVisibleItems = true;
-                // Keep track if there is AT LEAST one actual match on the inner items
-                if (isItemMatch) {
-                    hasMatchingInnerItem = true;
-                }
-            } else {
-                lis[i].style.display = 'none';
-            }
-        }
-        
-        // Hide the entire ul if it has no visible items to prevent empty margins in layout
-        if (filter !== '' && !hasVisibleItems) {
-            ul.style.display = 'none';
-        } else {
-            ul.style.display = '';
-        }
-        
-        // Handle visibility and automatic expansion of <details>
-        if (parentDetails) {
-            var shouldShow = (isCategoryMatch || isDetailsMatch || hasMatchingInnerItem || filter === '');
-            parentDetails.style.display = shouldShow ? '' : 'none';
-            
-            if (filter === '') {
-                // If the search is cleared, close the details ONLY if we opened it previously
-                if (parentDetails.getAttribute('data-search-opened') === 'true') {
-                    parentDetails.open = false;
-                    parentDetails.removeAttribute('data-search-opened');
-                }
-            } else {
-                // Expand automatically ONLY if an inner item was found (not if it's just a summary match)
-                if (hasMatchingInnerItem) {
-                    // If it's not already open, open it and apply the flag
-                    if (!parentDetails.open) {
-                        parentDetails.open = true;
-                        parentDetails.setAttribute('data-search-opened', 'true');
+
+            var isCategoryMatch = (filter !== '' && (categoryName.indexOf(filter) > -1 || categoryName.indexOf(flexibleFilter) > -1));
+            var hasVisibleItems = false;
+            var lists = tabContent.querySelectorAll('ul');
+
+            lists.forEach(function(ul) {
+                var listItems = ul.children;
+                for (var i = 0; i < listItems.length; i++) {
+                    var li = listItems[i];
+                    var txtValue = li.textContent || li.innerText;
+
+                    var aTag = li.querySelector('a');
+                    var hrefValue = aTag ? aTag.getAttribute('href') : '';
+                    var urlLastSegment = '';
+
+                    if (hrefValue) {
+                        var cleanUrl = hrefValue.split('?')[0].split('#')[0];
+                        if (cleanUrl.endsWith('/')) cleanUrl = cleanUrl.slice(0, -1);
+                        urlLastSegment = cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1).toUpperCase();
+                    }
+
+                    txtValue = txtValue.toUpperCase();
+
+                    var isItemMatch = (filter !== '' && (
+                        txtValue.indexOf(filter) > -1 ||
+                        urlLastSegment.indexOf(filter) > -1 ||
+                        txtValue.indexOf(flexibleFilter) > -1 ||
+                        urlLastSegment.indexOf(flexibleFilter) > -1
+                    ));
+
+                    if (isCategoryMatch || isItemMatch || filter === '') {
+                        li.style.display = '';
+                        hasVisibleItems = true;
+                    } else {
+                        li.style.display = 'none';
+                    }
+
+                    // Handle nested <details> blocks (like Metadata or Timetables)
+                    var detailsElem = li.querySelector('details');
+                    if (detailsElem) {
+                        if (filter !== '' && isItemMatch) {
+                            if (!detailsElem.open) {
+                                detailsElem.open = true;
+                                detailsElem.setAttribute('data-search-opened', 'true');
+                            }
+                        } else if (filter === '') {
+                            if (detailsElem.getAttribute('data-search-opened') === 'true') {
+                                detailsElem.open = false;
+                                detailsElem.removeAttribute('data-search-opened');
+                            }
+                        }
                     }
                 }
-            }
-        }
-    });
+            });
 
-    // Independent handling of category titles (H2, H3)
-    var headings = document.querySelectorAll('h2.category-title, h3.subcategory-title');
-    headings.forEach(function(heading) {
-        var headingText = heading.textContent || heading.innerText;
-        var flexFilter = typeof flexibleFilter !== 'undefined' ? flexibleFilter : filter;
-        var isCategoryMatch = (filter !== '' && (headingText.toUpperCase().indexOf(filter) > -1 || headingText.toUpperCase().indexOf(flexFilter) > -1));
-
-        var hasVisibleContent = false;
-
-        // Determine the correct sibling to start traversal.
-        // H2 elements are wrapped in <summary> tags within a <details> block.
-        var sibling = (heading.tagName === 'H2' && heading.parentElement && heading.parentElement.tagName === 'SUMMARY')
-            ? heading.parentElement.nextElementSibling
-            : heading.nextElementSibling;
-
-        // Traverse subsequent nodes until the next title or the end of the container
-        while (sibling && sibling.tagName !== 'H2' && sibling.tagName !== 'H3' && sibling.tagName !== 'SUMMARY') {
-            if (sibling.tagName === 'UL') {
-                var visibleItems = Array.from(sibling.getElementsByTagName('li')).filter(function(li) {
-                    return li.style.display !== 'none';
-                });
-                if (visibleItems.length > 0) {
-                    hasVisibleContent = true;
+            // Display logic for the tab content container
+            if (filter === '') {
+                // Restore original tab state (show only the active tab)
+                if (relatedBtn && relatedBtn.classList.contains('active')) {
+                    tabContent.style.display = 'block';
+                } else {
+                    tabContent.style.display = 'none';
                 }
-            } else if (sibling.tagName === 'DETAILS') {
-                if (sibling.style.display !== 'none') {
-                    hasVisibleContent = true;
-                }
-            }
-            sibling = sibling.nextElementSibling;
-        }
 
-        var shouldShow = isCategoryMatch || hasVisibleContent || filter === '';
+                // Remove the dynamically injected heading
+                var dynamicHeading = tabContent.querySelector('.search-category-heading');
+                if (dynamicHeading) dynamicHeading.style.display = 'none';
 
-        // Handle visibility and toggle state for collapsible categories
-        if (heading.tagName === 'H2' && heading.parentElement && heading.parentElement.tagName === 'SUMMARY') {
-            var detailsContainer = heading.parentElement.parentElement;
-            detailsContainer.style.display = shouldShow ? '' : 'none';
+            } else {
+                // Search mode: show if it has matches
+                if (hasVisibleItems || isCategoryMatch) {
+                    tabContent.style.display = 'block';
 
-            // Automatically expand the details block if there is an active search match
-            if (shouldShow && filter !== '') {
-                if (!detailsContainer.open) {
-                    detailsContainer.setAttribute('data-search-opened', 'true');
-                    detailsContainer.open = true;
-                }
-            } else if (filter === '') {
-                // Revert to the default closed state when the search is cleared
-                if (detailsContainer.getAttribute('data-search-opened') === 'true') {
-                    detailsContainer.open = false;
-                    detailsContainer.removeAttribute('data-search-opened');
+                    // Inject a temporary heading to simulate the "open accordion" look
+                    var heading = tabContent.querySelector('.search-category-heading');
+                    if (!heading) {
+                        heading = document.createElement('h2');
+                        heading.className = 'search-category-heading category-title';
+                        heading.textContent = relatedBtn ? (relatedBtn.textContent || relatedBtn.innerText) : '';
+                        heading.style.marginTop = '10px';
+                        heading.style.marginBottom = '10px';
+                        tabContent.insertBefore(heading, tabContent.firstChild);
+                    }
+                    heading.style.display = 'block';
+                } else {
+                    tabContent.style.display = 'none';
                 }
             }
-        } else {
-            // Standard visibility handling for subcategories
-            heading.style.display = shouldShow ? '' : 'none';
-        }
-    });
+        });
+
+    } else {
+        // 5. FALLBACK FOR SIMPLE LISTS (e.g. Root Index)
+        var simpleLists = document.querySelectorAll('.simple-list');
+        simpleLists.forEach(function(ul) {
+            var hasVisibleItems = false;
+            var listItems = ul.children;
+
+            for (var i = 0; i < listItems.length; i++) {
+                var li = listItems[i];
+                var txtValue = li.textContent || li.innerText;
+
+                var aTag = li.querySelector('a');
+                var hrefValue = aTag ? aTag.getAttribute('href') : '';
+                var urlLastSegment = '';
+
+                if (hrefValue) {
+                    var cleanUrl = hrefValue.split('?')[0].split('#')[0];
+                    if (cleanUrl.endsWith('/')) cleanUrl = cleanUrl.slice(0, -1);
+                    urlLastSegment = cleanUrl.substring(cleanUrl.lastIndexOf('/') + 1).toUpperCase();
+                }
+
+                txtValue = txtValue.toUpperCase();
+
+                var isItemMatch = (filter !== '' && (
+                    txtValue.indexOf(filter) > -1 ||
+                    urlLastSegment.indexOf(filter) > -1 ||
+                    txtValue.indexOf(flexibleFilter) > -1 ||
+                    urlLastSegment.indexOf(flexibleFilter) > -1
+                ));
+
+                if (isItemMatch || filter === '') {
+                    li.style.display = '';
+                    hasVisibleItems = true;
+                } else {
+                    li.style.display = 'none';
+                }
+            }
+
+            ul.style.display = (filter !== '' && !hasVisibleItems) ? 'none' : '';
+        });
+    }
 }

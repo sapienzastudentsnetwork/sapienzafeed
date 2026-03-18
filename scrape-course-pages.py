@@ -370,62 +370,93 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
 
         # Render dynamically categorized links if provided
         if categorized_links:
+            # Skip empty categories unless it is the info category with metadata, freq category with metadata, or freq with timetables
+            valid_categories = []
             for category, cat_links in categorized_links.items():
-                # Skip empty categories unless it is the info category with metadata, freq category with metadata, or freq with timetables
                 has_metadata = (category == info_category_name and metadata_html)
                 has_freq_metadata = (category == freq_category_name and freq_metadata_html)
+                if cat_links or has_metadata or has_freq_metadata:
+                    valid_categories.append(category)
 
-                if not cat_links and not has_metadata and not has_freq_metadata:
-                    continue
+            if valid_categories:
+                # Generate the "Pills" navigation bar
+                file.write('    <div class="nav-controls-container">\n')
 
-                cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
-                if not cat_id: cat_id = f"header-{abs(hash(category))}"
+                # 1A. Mobile Select Dropdown
+                file.write('        <div class="mobile-select-container">\n')
+                file.write('            <select id="category-select" class="mobile-category-select" onchange="openTabFromSelect(event)">\n')
+                for category in valid_categories:
+                    cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
+                    if not cat_id: cat_id = f"header-{abs(hash(category))}"
+                    file.write(f'                <option value="{cat_id}-content">{category}</option>\n')
+                file.write('            </select>\n')
+                file.write('        </div>\n\n')
 
-                # Wrap category in a collapsible details element
-                file.write('    <details class="category-details">\n')
-                # Use summary for the title, and put h2 inside without inline styling
-                file.write(f'        <summary><h2 id="{cat_id}" class="category-title">{category}</h2></summary>\n')
+                # 1B. Desktop Pills
+                file.write('        <div class="pill-nav-container">\n')
+                is_first_tab = True
+                for category in valid_categories:
+                    cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
+                    if not cat_id: cat_id = f"header-{abs(hash(category))}"
 
-                # Inject metadata into the list of links so it gets sorted alphabetically
-                if has_metadata:
-                    sort_key = "Dettagli" if language_key == "it" else "Details"
-                    cat_links.append((sort_key, metadata_html))
+                    active_class = ' active' if is_first_tab else ''
+                    file.write(f'            <button class="pill-button{active_class}" onclick="openTab(event, \'{cat_id}-content\')">{category}</button>\n')
+                    is_first_tab = False
+                file.write('        </div>\n')
 
-                if has_freq_metadata:
-                    freq_sort_key = "Orari" if language_key == "it" else "Timetables"
-                    cat_links.append((freq_sort_key, freq_metadata_html))
+                file.write('    </div>\n\n')
 
-                if cat_links:
-                    file.write('        <ul class="category-list">\n')
+                # Generate tab contents
+                is_first_tab = True
+                for category in valid_categories:
+                    cat_links = categorized_links[category]
+                    has_metadata = (category == info_category_name and metadata_html)
+                    has_freq_metadata = (category == freq_category_name and freq_metadata_html)
 
-                    # Sort and iterate: 'Dettagli' will now automatically find its alphabetical place
-                    for link_text, link_url in sorted(cat_links):
-                        if link_url.startswith("<details"):
-                            # This link is actually the HTML for a nested details element
-                            file.write(f'            <li class="details-list-item">\n{link_url}            </li>\n')
-                            continue
+                    cat_id = re.sub(r'[^a-z0-9]+', '-', category.lower()).strip('-')
+                    if not cat_id: cat_id = f"header-{abs(hash(category))}"
 
-                        formatted_url = link_url
-                        display_text = link_text
-                        target_blank = ""
+                    # Show only the first tab by default, hide the others
+                    display_style = ' style="display: block;"' if is_first_tab else ' style="display: none;"'
+                    file.write(f'    <div id="{cat_id}-content" class="tab-content"{display_style}>\n')
 
-                        # Add external link icon with wrapper span
-                        if is_external_url(link_url):
-                            # Ensure we don't end up with unstyled or duplicated arrows
-                            display_text = display_text.replace("↗", "").strip()
-                            if "external-icon" not in display_text:
-                                display_text += ' <span class="external-icon">↗</span>'
-                            # Open external links in a new tab
-                            target_blank = ' target="_blank" rel="noopener noreferrer"'
+                    # Inject metadata into the list of links so it gets sorted alphabetically
+                    if has_metadata:
+                        sort_key = "Dettagli" if language_key == "it" else "Details"
+                        cat_links.append((sort_key, metadata_html))
+                    if has_freq_metadata:
+                        freq_sort_key = "Orari" if language_key == "it" else "Timetables"
+                        cat_links.append((freq_sort_key, freq_metadata_html))
 
-                        if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
-                            formatted_url = link_url.rstrip("/") + "/index.html"
-                        file.write(f'            <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
+                    if cat_links:
+                        file.write('        <ul class="category-list">\n')
+                        # Sort and iterate: 'Dettagli' will now automatically find its alphabetical place
+                        for link_text, link_url in sorted(cat_links):
+                            if link_url.startswith("<details"):
+                                # This link is actually the HTML for a nested details element
+                                file.write(f'            <li class="details-list-item">\n{link_url}            </li>\n')
+                                continue
 
-                    file.write('        </ul>\n')
+                            formatted_url = link_url
+                            display_text = link_text
+                            target_blank = ""
 
-                # Close the details element
-                file.write('    </details>\n')
+                            # Add external link icon with wrapper span
+                            if is_external_url(link_url):
+                                # Ensure we don't end up with unstyled or duplicated arrows
+                                display_text = display_text.replace("↗", "").strip()
+                                if "external-icon" not in display_text:
+                                    display_text += ' <span class="external-icon">↗</span>'
+                                # Open external links in a new tab
+                                target_blank = ' target="_blank" rel="noopener noreferrer"'
+
+                            if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
+                                formatted_url = link_url.rstrip("/") + "/index.html"
+                            file.write(f'            <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
+                        file.write('        </ul>\n')
+
+                    file.write('    </div>\n')
+                    is_first_tab = False
 
         # Render generic flat links (used for Root and Choose Language selection)
         elif links:

@@ -162,8 +162,29 @@ Per ulteriori informazioni, potete anche rivolgervi direttamente ai docenti del 
 
 <button id="back-to-top" title="Torna sù">▲ Torna sù</button>
 <script src="../../../assets/page-logic.js"></script>
-    <details class="category-details">
-        <summary><h2 id="frequentare" class="category-title">Frequentare</h2></summary>
+    <div class="nav-controls-container">
+        <div class="mobile-select-container">
+            <select id="category-select" class="mobile-category-select" onchange="openTabFromSelect(event)">
+                <option value="frequentare-content">Frequentare</option>
+                <option value="guide-e-procedure-content">Guide e procedure</option>
+                <option value="servizi-e-opportunit-content">Servizi e opportunità</option>
+                <option value="informazioni-sul-corso-content">Informazioni sul corso</option>
+                <option value="presentazione-del-corso-content">Presentazione del corso</option>
+                <option value="link-esterni-content">Link esterni</option>
+            </select>
+        </div>
+
+        <div class="pill-nav-container">
+            <button class="pill-button active" onclick="openTab(event, 'frequentare-content')">Frequentare</button>
+            <button class="pill-button" onclick="openTab(event, 'guide-e-procedure-content')">Guide e procedure</button>
+            <button class="pill-button" onclick="openTab(event, 'servizi-e-opportunit-content')">Servizi e opportunità</button>
+            <button class="pill-button" onclick="openTab(event, 'informazioni-sul-corso-content')">Informazioni sul corso</button>
+            <button class="pill-button" onclick="openTab(event, 'presentazione-del-corso-content')">Presentazione del corso</button>
+            <button class="pill-button" onclick="openTab(event, 'link-esterni-content')">Link esterni</button>
+        </div>
+    </div>
+
+    <div id="frequentare-content" class="tab-content" style="display: block;">
         <ul class="category-list">
             <li><a href="https://corsidilaurea.uniroma1.it/it/course/33516/attendance/exams" target="_blank" rel="noopener noreferrer">Appelli di esame <span class="external-icon">↗</span></a></li>
             <li><a href="https://www.uniroma1.it/it/pagina/calendario-dellanno-accademico" target="_blank" rel="noopener noreferrer">Calendario dell'anno accademico <span class="external-icon">↗</span></a></li>
@@ -183,9 +204,8 @@ Per ulteriori informazioni, potete anche rivolgervi direttamente ai docenti del 
 </details>
             </li>
         </ul>
-    </details>
-    <details class="category-details">
-        <summary><h2 id="guide-e-procedure" class="category-title">Guide e procedure</h2></summary>
+    </div>
+    <div id="guide-e-procedure-content" class="tab-content" style="display: none;">
         <ul class="category-list">
             <li><a href="apply.html">Come e quando iscriversi</a></li>
             <li class="details-list-item">
@@ -208,9 +228,8 @@ Per ulteriori informazioni, potete anche rivolgervi direttamente ai docenti del 
             <li><a href="attendance/instructions.html">Compilazione del piano di studi</a></li>
             <li><a href="attendance/graduation.html">Laurearsi</a></li>
         </ul>
-    </details>
-    <details class="category-details">
-        <summary><h2 id="servizi-e-opportunit" class="category-title">Servizi e opportunità</h2></summary>
+    </div>
+    <div id="servizi-e-opportunit-content" class="tab-content" style="display: none;">
         <ul class="category-list">
             <li><a href="https://sapienzastudents.net/rooms/" target="_blank" rel="noopener noreferrer">Aule studio <span class="external-icon">↗</span></a></li>
             <li><a href="https://cla.web.uniroma1.it/" target="_blank" rel="noopener noreferrer">Centro linguistico di ateneo <span class="external-icon">↗</span></a></li>
@@ -219,9 +238,8 @@ Per ulteriori informazioni, potete anche rivolgervi direttamente ai docenti del 
             <li><a href="attendance/excellence.html">Percorso di eccellenza</a></li>
             <li><a href="sapienza-for-you.html">Sapienza per te</a></li>
         </ul>
-    </details>
-    <details class="category-details">
-        <summary><h2 id="informazioni-sul-corso" class="category-title">Informazioni sul corso</h2></summary>
+    </div>
+    <div id="informazioni-sul-corso-content" class="tab-content" style="display: none;">
         <ul class="category-list">
             <li><a href="contacts.html">Contattaci</a></li>
             <li class="details-list-item">
@@ -269,9 +287,8 @@ Per ulteriori informazioni, potete anche rivolgervi direttamente ai docenti del 
             <li><a href="organization.html">Organizzazione e contatti</a></li>
             <li><a href="https://corsidilaurea.uniroma1.it/it/course/33516/study-plan" target="_blank" rel="noopener noreferrer">Percorso formativo <span class="external-icon">↗</span></a></li>
         </ul>
-    </details>
-    <details class="category-details">
-        <summary><h2 id="presentazione-del-corso" class="category-title">Presentazione del corso</h2></summary>
+    </div>
+    <div id="presentazione-del-corso-content" class="tab-content" style="display: none;">
         <ul class="category-list">
             <li><a href="quality.html">Assicurazione della qualità (AQ)</a></li>
             <li><a href="objectives.html">Obiettivi formativi</a></li>
@@ -280,16 +297,15 @@ Per ulteriori informazioni, potete anche rivolgervi direttamente ai docenti del 
             <li><a href="professional-opportunities.html">Profilo professionale</a></li>
             <li><a href="https://www.youtube.com/watch?v=xDK-GzyQS3Q" target="_blank" rel="noopener noreferrer">Video presentazione (#IoScelgoSapienza) <span class="external-icon">↗</span></a></li>
         </ul>
-    </details>
-    <details class="category-details">
-        <summary><h2 id="link-esterni" class="category-title">Link esterni</h2></summary>
+    </div>
+    <div id="link-esterni-content" class="tab-content" style="display: none;">
         <ul class="category-list">
             <li><a href="https://t.me/+MCDGWHGxGUg3ZTgy" target="_blank" rel="noopener noreferrer">Gruppo Telegram del Corso di Laurea <span class="external-icon">↗</span></a></li>
             <li><a href="https://www.di.uniroma1.it/it" target="_blank" rel="noopener noreferrer">Sito Web del Dipartimento (DI) <span class="external-icon">↗</span></a></li>
             <li><a href="https://i3s.web.uniroma1.it/it" target="_blank" rel="noopener noreferrer">Sito Web della Facoltà (I3S) <span class="external-icon">↗</span></a></li>
             <li><a href="https://sapienzastudents.net/it" target="_blank" rel="noopener noreferrer">Wiki del Corso su sapienzastudents.net <span class="external-icon">↗</span></a></li>
         </ul>
-    </details>
+    </div>
 
 <script src="../../../assets/index-search.js"></script>
 

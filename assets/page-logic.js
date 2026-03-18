@@ -178,3 +178,47 @@ window.addEventListener('afterprint', () => {
     });
 });
 
+/* ====================================================
+   PILL NAVIGATION SYSTEM
+   ==================================================== */
+function openTab(evt, tabId) {
+    // 1. Hide all tab contents
+    var tabContents = document.getElementsByClassName("tab-content");
+    for (var i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = "none";
+    }
+
+    // 2. Remove "active" class from all buttons
+    var tabButtons = document.getElementsByClassName("pill-button");
+    for (var i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+    }
+
+    // 3. Show current tab and add "active" to the corresponding button
+    document.getElementById(tabId).style.display = "block";
+    if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add("active");
+    }
+
+    // 4. Sync the mobile dropdown
+    var selectElem = document.getElementById("category-select");
+    if (selectElem && selectElem.value !== tabId) {
+        selectElem.value = tabId;
+    }
+}
+
+function openTabFromSelect(evt) {
+    var tabId = evt.target.value;
+
+    // Find the corresponding pill button to simulate the click state
+    var tabButtons = document.getElementsByClassName("pill-button");
+    var targetBtn = null;
+    for (var i = 0; i < tabButtons.length; i++) {
+        if (tabButtons[i].getAttribute("onclick").includes(tabId)) {
+            targetBtn = tabButtons[i];
+            break;
+        }
+    }
+
+    openTab({ currentTarget: targetBtn }, tabId);
+}
