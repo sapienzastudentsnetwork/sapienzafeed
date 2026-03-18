@@ -327,6 +327,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
     js_theme_apply = get_assets_relative_path(directory, "theme-apply.js")
     js_theme_switch = get_assets_relative_path(directory, "theme-switch.js")
     js_search_path = get_assets_relative_path(directory, "index-search.js")
+    js_root_index_logic = get_assets_relative_path(directory, "root-index-logic.js")
 
     localized_theme_panel = THEME_PANEL_HTML_IT if language_key == "it" else THEME_PANEL_HTML_EN
 
@@ -433,7 +434,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                 formatted_url = link_url
                 display_text = link_text
                 target_blank = ""
-                
+
                 # Add external link icon with wrapper span
                 if is_external_url(link_url):
                     # Ensure we don't end up with unstyled or duplicated arrows
@@ -442,7 +443,7 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
                         display_text += ' <span class="external-icon">↗</span>'
                     # Open external links in a new tab
                     target_blank = ' target="_blank" rel="noopener noreferrer"'
-                    
+
                 if not link_url.startswith("http") and ".html" not in link_url and "#" not in link_url:
                     formatted_url = link_url.rstrip("/") + "/index.html"
                 file.write(f'        <li><a href="{formatted_url}"{target_blank}>{display_text}</a></li>\n')
@@ -452,73 +453,50 @@ def generate_index_html(directory, links=None, title="", back_url="../index.html
         if not categorized_links and metadata_html:
             file.write(f"\n{metadata_html}\n")
 
-        # Inject the translation script and let JS determine if it is on the root index page
-        translation_script = """
-<script>
-    (function() {
-        const pageTitle = document.getElementById('page-title');
-        if (!pageTitle) return;
-        
-        const titleText = pageTitle.textContent.trim();
-        
-        // Trigger translation only if the title matches the courses selection page
-        if (titleText === 'Corsi di Laurea' || titleText === 'Degree Courses') {
-            const userLang = navigator.language || navigator.userLanguage;
-            const isItalian = userLang.toLowerCase().startsWith('it');
-            
-            document.documentElement.lang = isItalian ? 'it' : 'en';
-            pageTitle.textContent = isItalian ? 'Corsi di Laurea' : 'Degree Courses';
+        # Include the external translation script (the JS itself determines if it is on the root index page)
+        root_index_script = f'\n<script src="{js_root_index_logic}"></script>'
 
-            // Target the theme button by ID or fallback class
-            const themeBtn = document.getElementById('themeBtn') || document.querySelector('.theme-toggle');
-            if (themeBtn) {
-                themeBtn.innerHTML = isItalian ? '🌓 Tema' : '🌓 Theme';
-            }
-        }
-    })();
-</script>"""
-            
         # Include external JavaScript for real-time link filtering functionality only if search is enabled
         if show_search:
             file.write(f"""
 <script src="{js_search_path}"></script>
-{translation_script}
+{root_index_script}
 </body>
 </html>""")
         else:
             file.write(f"""
-{translation_script}
+{root_index_script}
 </body>
 </html>""")
 
 def fix_contacts_collapsibles(soup):
     """
-    Finds the specific structure of the 'contacts' page where an <a> tag 
-    acting as a toggle is followed by a div containing the emails. 
+    Finds the specific structure of the 'contacts' page where an <a> tag
+    acting as a toggle is followed by a div containing the emails.
     Converts them into functional HTML5 <details> elements.
     """
     toggles = soup.find_all('a', class_='accordion-card--contacts-toggle')
-    
+
     for toggle in toggles:
         contacts_div = toggle.find_next_sibling('div', class_='accordion-card--contacts')
-        
+
         if contacts_div:
             details = soup.new_tag('details')
             details['class'] = 'accordion-card--contacts-fixed'
             details['style'] = 'margin-top: 10px; cursor: pointer;'
-            
+
             summary = soup.new_tag('summary')
             summary.string = toggle.get_text(strip=True)
             summary['style'] = 'font-weight: bold; color: var(--link-color);'
             details.append(summary)
-            
+
             content_wrapper = soup.new_tag('div')
             content_wrapper['style'] = 'margin-top: 10px; padding-left: 15px;'
             for child in list(contacts_div.children):
                 content_wrapper.append(child)
-            
+
             details.append(content_wrapper)
-            
+
             toggle.replace_with(details)
             contacts_div.decompose()
 
