@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ACSAI] Orientamento al lavoro - ulteriori informazioni</title>
+    <link rel="stylesheet" href="../../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../../assets/page-style.css">
+    <script src="../../../../assets/theme-apply.js"></script>
+    <script src="../../../../assets/theme-switch.js" defer></script>
+</head>
+<body>
+<aside id="themePanel" class="panel" aria-hidden="true">
+    <header class="panel__header">
+        <h3 class="panel__title">Tema</h3>
+        <button id="closePanel" class="panel__close" type="button" aria-label="Chiudi tema">
+            ×
+        </button>
+    </header>
+
+    <div class="panel__content">
+        <section class="panel__section">
+            <label class="field">
+                <span class="field__label">Preset</span>
+                <select id="themePreset" class="select">
+                    <option value="auto">Auto</option>
+                    <option value="light">Chiaro</option>
+                    <option value="dark">Scuro</option>
+                    <option value="custom">Personalizzato</option>
+                </select>
+            </label>
+
+            <label class="field" id="variantField" style="display: none;">
+                <span class="field__label">Variante</span>
+                <select id="themeVariant" class="select">
+                    <option value="dark">Predefinita</option>
+                    <option value="rosewater">Rosewater</option>
+                    <option value="mauve">Mauve</option>
+                    <option value="red">Rosso</option>
+                    <option value="green">Verde</option>
+                    <option value="blue">Blu</option>
+                </select>
+            </label>
+        </section>
+
+        <section class="panel__section">
+            <div class="panel__sectionHead" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 id="paletteTitle" class="panel__sectionTitle">Palette attiva</h4>
+                    <p class="panel__hint" style="margin: 0;">Scegli o digita un hex.</p>
+                </div>
+                <div class="theme-actions" style="margin-top: 15px; display: flex; gap: 8px; align-items: center;">
+                    <button id="resetCustomBtn" type="button" class="panel-action-btn panel-action-btn--text">Reset</button> 
+                    
+                    <button id="exportThemeBtn" type="button" class="panel-action-btn">Esporta</button>
+                    
+                    <label for="importThemeInput" class="panel-action-btn">Importa</label>
+                    <input id="importThemeInput" type="file" accept=".json" style="display: none;">
+                </div>
+            </div>
+
+            <div class="swatches">
+                <div class="swatch" title="Colore di sfondo principale dell'intera pagina.">
+                    <span class="swatch__name">Sfondo</span>
+                    <div class="swatch__controls">
+                        <input id="kBg" type="color" value="#1a1a1a" class="swatch__picker" />
+                        <input id="kBgHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#1a1a1a" aria-label="Hex sfondo" />
+                    </div>
+                </div>
+
+                <div class="swatch" title="Colore di sfondo per schede, tabelle, pannelli e pulsanti.">
+                    <span class="swatch__name">Sfondo sec.</span>
+                    <div class="swatch__controls">
+                        <input id="kSrf" type="color" value="#252526" class="swatch__picker" />
+                        <input id="kSrfHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#252526" aria-label="Hex sfondo sec." />
+                    </div>
+                </div>
+
+                <div class="swatch" title="Colore principale usato per il testo e la lettura.">
+                    <span class="swatch__name">Testo</span>
+                    <div class="swatch__controls">
+                        <input id="kFg" type="color" value="#e0e0e0" class="swatch__picker" />
+                        <input id="kFgHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#e0e0e0" aria-label="Hex testo" />
+                    </div>
+                </div>
+
+                <div class="swatch" title="Colore per evidenziare link, titoli ed elementi interattivi.">
+                    <span class="swatch__name">Accento</span>
+                    <div class="swatch__controls">
+                        <input id="kAcc" type="color" value="#4da3ff" class="swatch__picker" />
+                        <input id="kAccHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#4da3ff" aria-label="Hex accento" />
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</aside>
+
+<div id="panelBackdrop" class="backdrop" hidden></div>
+
+
+    <header class="top-navbar is-stacked">
+        <h1 id="page-title" class="brand-title">[ACSAI] Orientamento al lavoro - ulteriori informazioni</h1>
+        <div class="controls-bar">
+            <a href="../index.html" class="back-link-btn">◀️ Indice</a>
+            <a href="https://corsidilaurea.uniroma1.it/it/course/33502/attendance" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Fonte</a>
+            <label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label>
+            <a href="../../en/attendance/job-orientation-additional.html" class="lang-btn" title="Switch language">🇮🇹 Lingua</a>
+            <button id="themeBtn" class="theme-toggle" aria-controls="themePanel">🌓 Tema</button>
+            <button class="print-btn" onclick="window.print()">🖨️ Salva come PDF</button>
+        </div>
+    </header>
+
+<div class="content-wrapper">
+<div> <p><strong>Pagina di IT Meeting per le proposte di orientamento al lavoro (e opportunità di tirocinio):</strong><br/> <a href="https://itmeeting.wordpress.com/" rel="noopener noreferrer" target="_blank">https://itmeeting.wordpress.com/ <span class="external-icon">↗</span></a></p> </div>
+
+</div>
+<button id="back-to-top" title="Torna sù">▲ Torna sù</button>
+<script src="../../../../assets/page-logic.js"></script>
+</body>
+</html>
