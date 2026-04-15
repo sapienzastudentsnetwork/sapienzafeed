@@ -118,6 +118,49 @@
     <div class="search-container" style="margin-top: 20px; margin-bottom: 20px;">
         <input type="text" id="search-input" placeholder="Search..." onkeyup="filterLinks()" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid var(--border-color, #ccc); border-radius: 5px; box-sizing: border-box; background-color: var(--bg-color, #fff); color: var(--text-color, #000);">
     </div>
+<div class='announcements-section' style='margin-bottom: 20px;'>
+  <h2 class='category-title' id='announcements'>Featured announcements</h2>
+  <details class='announcement-details'>
+    <summary class='announcement-summary' id='announcement-5994'>16/03/2026 - ONLINE PRE-SELECTION FOR INTERNATIONAL STUDENTS</summary>
+    <div class='announcement-details-body'>
+      <p>Important Notice<br/>
+Please check the attachment for information regarding pre-admission to courses.</p>
+<div class="panel-attachments">
+<ul class="document-list"><li><a class="document-icon pdf" href="https://corsidilaurea.uniroma1.it/sites/default/files/avvisi/pre-selection_platform_movein.pdf"></a> <span class="file-type">(PDF)</span></li>
+</ul>
+</div>
+
+    </div>
+  </details>
+  <details class='announcement-details'>
+    <summary class='announcement-summary' id='announcement-5624'>18/02/2026 - Certificate of Exam Completion Signed by the Professor</summary>
+    <div class='announcement-details-body'>
+      <p>Please use the attached form to justify your absence from work or to certify that you have taken an exam.<br/>
+Complete all sections of the form and ask the lecturer with whom you took the exam to sign it.<br/>
+After the lecturer signs it, send it to our office no later than a few days after the exam date.<br/>
+We will affix the Department stamp to confirm its validity.</p>
+<div class="panel-attachments">
+<ul class="document-list"><li><a class="document-icon" href="https://corsidilaurea.uniroma1.it/sites/default/files/avvisi/giustificato_per_esami_excused_for_exams.docx"></a> <span class="file-type">()</span></li>
+</ul>
+</div>
+
+    </div>
+  </details>
+  <details class='announcement-details'>
+    <summary class='announcement-summary' id='announcement-5507'>12/02/2026 - DATA SCIENCE SECOND SEMESTER TIMETABLE</summary>
+    <div class='announcement-details-body'>
+      <p>     </p>
+<div class="panel-attachments">
+<ul class="document-list"><li><a class="document-icon pdf" href="https://corsidilaurea.uniroma1.it/sites/default/files/avvisi/data_science_orario_ii_semestre_2025-26.xlsx_-_foglio4_9.pdf"></a> <span class="file-type">(PDF)</span></li>
+</ul>
+</div>
+
+    </div>
+  </details>
+  <div class='all-announcements-link' style='margin-top: 15px;'>
+    <a href='announcements.html'>See all announcements &rarr;</a>
+  </div>
+</div>
 
 <button id="back-to-top" title="Back to top">▲ Back to top</button>
 <script src="../../../assets/page-logic.js"></script>
@@ -128,6 +171,7 @@
                 <option value="guides-and-procedures-content">Guides and procedures</option>
                 <option value="services-and-opportunities-content">Services and opportunities</option>
                 <option value="course-information-content">Course information</option>
+                <option value="course-presentation-content">Course presentation</option>
                 <option value="external-links-content">External links</option>
             </select>
         </div>
@@ -137,12 +181,17 @@
             <button class="pill-button" onclick="openTab(event, 'guides-and-procedures-content')">Guides and procedures</button>
             <button class="pill-button" onclick="openTab(event, 'services-and-opportunities-content')">Services and opportunities</button>
             <button class="pill-button" onclick="openTab(event, 'course-information-content')">Course information</button>
+            <button class="pill-button" onclick="openTab(event, 'course-presentation-content')">Course presentation</button>
             <button class="pill-button" onclick="openTab(event, 'external-links-content')">External links</button>
         </div>
     </div>
 
     <div id="attendance-content" class="tab-content" style="display: block;">
         <ul class="category-list">
+            <li><a href="https://www.uniroma1.it/en/pagina/academic-calendar" target="_blank" rel="noopener noreferrer">Academic calendar <span class="external-icon">↗</span></a></li>
+            <li><a href="https://corsidilaurea.uniroma1.it/en/course/33519/attendance/lessons-plan" target="_blank" rel="noopener noreferrer">Courses <span class="external-icon">↗</span></a></li>
+            <li><a href="https://corsidilaurea.uniroma1.it/en/course/33519/attendance/exams" target="_blank" rel="noopener noreferrer">Exam appeals <span class="external-icon">↗</span></a></li>
+            <li><a href="attendance/credits-other-activities.html">Other training activities that award credits</a></li>
             <li><a href="https://i3s.web.uniroma1.it/en/programme-calendar" target="_blank" rel="noopener noreferrer">Programme calendar <span class="external-icon">↗</span></a></li>
             <li><a href="teachers.html">Teachers</a></li>
             <li class="details-list-item">
@@ -151,6 +200,7 @@
   <div class='details-body'>
 <ul class='subcategory-list'>
   <li><a href='https://timetables-33519.sapienzastudents.net/' target="_blank" rel="noopener noreferrer">docs.google.com <span class="external-icon">↗</span></a></li>
+  <li><a href='https://corsidilaurea.uniroma1.it/en/course/33519/attendance/timetable' target="_blank" rel="noopener noreferrer">corsidilaurea.uniroma1.it <span class="external-icon">↗</span></a></li>
   <li><a href='https://sapienzastudents.net/datasci/courses/timetables/' target="_blank" rel="noopener noreferrer">sapienzastudents.net <span class="external-icon">↗</span></a></li>
 </ul>
   </div>
@@ -160,17 +210,92 @@
     </div>
     <div id="guides-and-procedures-content" class="tab-content" style="display: none;">
         <ul class="category-list">
+            <li><a href="attendance/graduation.html">Graduate</a></li>
             <li><a href="apply.html">How and When to Enroll</a></li>
+            <li class="details-list-item">
+<details class='subcategory-details'>
+  <summary>How to</summary>
+  <div class='details-body'>
+<ul class='subcategory-list'>
+  <li><a href='https://www.uniroma1.it/it/node/24520' target="_blank" rel="noopener noreferrer">Calculate your tuition costs <span class="external-icon">↗</span></a></li>
+  <li><a href='https://www.uniroma1.it/it/node/24306' target="_blank" rel="noopener noreferrer">Have exemptions and concessions <span class="external-icon">↗</span></a></li>
+  <li><a href='https://www.uniroma1.it/it/node/29720' target="_blank" rel="noopener noreferrer">Applying for Student-Athlete Status <span class="external-icon">↗</span></a></li>
+  <li><a href='https://www.uniroma1.it/it/node/29755' target="_blank" rel="noopener noreferrer">Activate an alias career <span class="external-icon">↗</span></a></li>
+  <li><a href='https://www.uniroma1.it/it/node/29738' target="_blank" rel="noopener noreferrer">Sign up for part-time <span class="external-icon">↗</span></a></li>
+  <li><a href='https://www.uniroma1.it/it/node/29714' target="_blank" rel="noopener noreferrer">Interrupting and resuming studies <span class="external-icon">↗</span></a></li>
+  <li><a href='https://www.uniroma1.it/it/node/29736' target="_blank" rel="noopener noreferrer">Unsubscribe <span class="external-icon">↗</span></a></li>
+  <li><a href='https://www.uniroma1.it/it/node/419854' target="_blank" rel="noopener noreferrer">Search from A to Z <span class="external-icon">↗</span></a></li>
+</ul>
+  </div>
+</details>
+            </li>
+            <li><a href="attendance/instructions.html">Study plan instructions</a></li>
         </ul>
     </div>
     <div id="services-and-opportunities-content" class="tab-content" style="display: none;">
         <ul class="category-list">
+            <li><a href="international-experiences.html">International experiences</a></li>
+            <li><a href="attendance/job-orientation.html">Job Orientation</a></li>
+            <li><a href="attendance/excellence.html">Path of excellence</a></li>
+            <li><a href="sapienza-for-you.html">Sapienza for you</a></li>
             <li><a href="https://sapienzastudents.net/rooms/" target="_blank" rel="noopener noreferrer">Study rooms <span class="external-icon">↗</span></a></li>
+            <li><a href="https://cla.web.uniroma1.it/" target="_blank" rel="noopener noreferrer">University Language Center <span class="external-icon">↗</span></a></li>
         </ul>
     </div>
     <div id="course-information-content" class="tab-content" style="display: none;">
         <ul class="category-list">
+            <li><a href="contacts.html">Contact us</a></li>
+            <li class="details-list-item">
+<details class='subcategory-details'>
+  <summary>Details</summary>
+  <div class='details-body'>
+<ul class='subcategory-list'>
+  <li>
+            Programme code<span>33519</span>
+</li>
+  <li>
+            Test code<span>33519</span>
+</li>
+  <li>
+            Course type<span>Master's degree</span>
+</li>
+  <li>
+            Bachelor class<span>LM-Data</span>
+</li>
+  <li>
+            Duration<span>2 years</span>
+</li>
+  <li>
+            Access procedure<span>Verification of requirements and personal preparation</span>
+</li>
+  <li>
+            Faculty<span>Ingegneria dell'informazione, informatica e statistica</span>
+</li>
+  <li>
+            Department<span>INFORMATICA</span>
+</li>
+  <li>
+            Language<span>English</span>
+</li>
+  <li>
+            Lesson mode<span>Conventional - in Person</span>
+</li>
+</ul>
+  </div>
+</details>
+            </li>
             <li><a href="https://corsidilaurea.uniroma1.it/en/course/33519/study-plan" target="_blank" rel="noopener noreferrer">Educational pathway <span class="external-icon">↗</span></a></li>
+            <li><a href="organization.html">Organisation and contacts</a></li>
+        </ul>
+    </div>
+    <div id="course-presentation-content" class="tab-content" style="display: none;">
+        <ul class="category-list">
+            <li><a href="choice-orientation.html">Degree programme choice orientation</a></li>
+            <li><a href="objectives.html">Objectives</a></li>
+            <li><a href="presentation.html">Presentation</a></li>
+            <li><a href="professional-opportunities.html">Professional opportunities</a></li>
+            <li><a href="quality.html">Quality Assurance (QA)</a></li>
+            <li><a href="https://www.youtube.com/watch?v=IuRjMpBePGs" target="_blank" rel="noopener noreferrer">Video presentation (#IoScelgoSapienza) <span class="external-icon">↗</span></a></li>
         </ul>
     </div>
     <div id="external-links-content" class="tab-content" style="display: none;">
