@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BARBAROSSA SERGIO</title>
+    <link rel="stylesheet" href="../../../assets/theme-style.css">
+    <link rel="stylesheet" href="../../../assets/page-style.css">
+    <script src="../../../assets/theme-apply.js"></script>
+    <script src="../../../assets/theme-switch.js" defer></script>
+</head>
+<body>
+    <aside id="themePanel" class="panel" aria-hidden="true">
+    <header class="panel__header">
+        <h3 class="panel__title">Tema</h3>
+        <button id="closePanel" class="panel__close" type="button" aria-label="Chiudi tema">
+            ×
+        </button>
+    </header>
+
+    <div class="panel__content">
+        <section class="panel__section">
+            <label class="field">
+                <span class="field__label">Preset</span>
+                <select id="themePreset" class="select">
+                    <option value="auto">Auto</option>
+                    <option value="light">Chiaro</option>
+                    <option value="dark">Scuro</option>
+                    <option value="custom">Personalizzato</option>
+                </select>
+            </label>
+
+            <label class="field" id="variantField" style="display: none;">
+                <span class="field__label">Variante</span>
+                <select id="themeVariant" class="select">
+                    <option value="dark">Predefinita</option>
+                    <option value="rosewater">Rosewater</option>
+                    <option value="mauve">Mauve</option>
+                    <option value="red">Rosso</option>
+                    <option value="green">Verde</option>
+                    <option value="blue">Blu</option>
+                </select>
+            </label>
+        </section>
+
+        <section class="panel__section">
+            <div class="panel__sectionHead" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 id="paletteTitle" class="panel__sectionTitle">Palette attiva</h4>
+                    <p class="panel__hint" style="margin: 0;">Scegli o digita un hex.</p>
+                </div>
+                <div class="theme-actions" style="margin-top: 15px; display: flex; gap: 8px; align-items: center;">
+                    <button id="resetCustomBtn" type="button" class="panel-action-btn panel-action-btn--text">Reset</button> 
+                    
+                    <button id="exportThemeBtn" type="button" class="panel-action-btn">Esporta</button>
+                    
+                    <label for="importThemeInput" class="panel-action-btn">Importa</label>
+                    <input id="importThemeInput" type="file" accept=".json" style="display: none;">
+                </div>
+            </div>
+
+            <div class="swatches">
+                <div class="swatch" title="Colore di sfondo principale dell'intera pagina.">
+                    <span class="swatch__name">Sfondo</span>
+                    <div class="swatch__controls">
+                        <input id="kBg" type="color" value="#1a1a1a" class="swatch__picker" />
+                        <input id="kBgHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#1a1a1a" aria-label="Hex sfondo" />
+                    </div>
+                </div>
+
+                <div class="swatch" title="Colore di sfondo per schede, tabelle, pannelli e pulsanti.">
+                    <span class="swatch__name">Sfondo sec.</span>
+                    <div class="swatch__controls">
+                        <input id="kSrf" type="color" value="#252526" class="swatch__picker" />
+                        <input id="kSrfHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#252526" aria-label="Hex sfondo sec." />
+                    </div>
+                </div>
+
+                <div class="swatch" title="Colore principale usato per il testo e la lettura.">
+                    <span class="swatch__name">Testo</span>
+                    <div class="swatch__controls">
+                        <input id="kFg" type="color" value="#e0e0e0" class="swatch__picker" />
+                        <input id="kFgHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#e0e0e0" aria-label="Hex testo" />
+                    </div>
+                </div>
+
+                <div class="swatch" title="Colore per evidenziare link, titoli ed elementi interattivi.">
+                    <span class="swatch__name">Accento</span>
+                    <div class="swatch__controls">
+                        <input id="kAcc" type="color" value="#4da3ff" class="swatch__picker" />
+                        <input id="kAccHex" type="text" inputmode="text" spellcheck="false"
+                            class="swatch__hex" value="#4da3ff" aria-label="Hex accento" />
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</aside>
+
+<div id="panelBackdrop" class="backdrop" hidden></div>
+
+    
+    <header class="top-navbar is-stacked">
+        <h1 id="page-title" class="brand-title">BARBAROSSA SERGIO</h1>
+        <div class="controls-bar">
+            <a href="../../it/index.html" class="back-link-btn">◀️ Docenti</a>
+            <a href="https://corsidilaurea.uniroma1.it/it/lecturer/88df9010c1b60181f39fa5df11b9f97924f16f2bd502e90e920c24d9" class="original-link-btn" target="_blank" rel="noopener noreferrer">🌐 Fonte</a>
+            <label class="font-toggle-label"><input type="checkbox" id="font-dsa-toggle"> OpenDyslexic</label>
+            <a href="../en/index.html" class="lang-btn" title="Switch language">🇮🇹 Lingua</a>
+            <button id="themeBtn" class="theme-toggle" aria-controls="themePanel">🌓 Tema</button>
+            <button class="print-btn" onclick="window.print()">🖨️ Salva come PDF</button>
+        </div>
+    </header>
+    
+    <div class="docente-profile" style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px;">
+        <div class="docente-picture">
+            <img src="https://corsidilaurea.uniroma1.it/sites/default/files/styles/lecturer_picture/public/pictures/img_0226.jpg?itok=vLR-a3Xc" alt="" style="width: 120px; height: 120px; object-fit: cover;">
+        </div>
+        <div class="docente-info">
+            <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:sergio.barbarossa@uniroma1.it">sergio.barbarossa@uniroma1.it</a></p>
+            <p style="margin: 5px 0;"><strong>Struttura:</strong> Dipartimento di INGEGNERIA DELL'INFORMAZIONE, ELETTRONICA E TELECOMUNICAZIONI</p>
+            <p style="margin: 5px 0;"><strong>SSD:</strong> IINF-03/A</p>
+            <p style="margin: 5px 0;"><a href="https://research.uniroma1.it/researcher/88df9010c1b60181f39fa5df11b9f97924f16f2bd502e90e920c24d9" target="_blank" rel="noopener noreferrer">Profilo Research↗</a></p>
+        </div>
+    </div>
+    
+    <div class="sections-content">
+
+    <button id="back-to-top" title="Torna sù">▲ Torna sù</button>
+    <script src="../../../assets/page-logic.js"></script>
+        <details id="details-lecturer-news" data-common-id="common-lecturer-news" style="display:none;">
+            <summary class="level-h4" id="lecturer-news">Notizie</summary>
+            <div class="details-body" id="body-lecturer-news"></div>
+        </details>
+        <details id="details-receiving-hours" data-common-id="common-receiving-hours" style="display:none;">
+            <summary class="level-h4" id="receiving-hours">Orari di ricevimento</summary>
+            <div class="details-body" id="body-receiving-hours"></div>
+        </details>
+        <details id="details-lecturer-cv" data-common-id="common-lecturer-cv" style="display:none;">
+            <summary class="level-h4" id="lecturer-cv">Curriculum</summary>
+            <div class="details-body" id="body-lecturer-cv"></div>
+        </details>
+        <details id="details-lecturer-activities">
+            <summary class="level-h4" id="lecturer-activities">Insegnamenti</summary>
+            <div class="details-body" id="body-lecturer-activities">
+
+<div class="cv-content"><div class="table-responsive">
+<table class="table table-hover table-striped sticky-enabled">
+<thead><tr><th>Insegnamento</th><th>Anno - Semestre</th><th>Lingua</th><th> Corso</th><th>Curriculum</th> </tr></thead>
+<tbody>
+<tr><td>SIGNAL PROCESSING FOR MACHINE LEARNING (<a href="https://corsidilaurea.uniroma1.it/it/course/33519/attendance/lesson/b269cfe6-c43e-4260-9c8b-ffbb477b8941/2/1/47ce5eeb-80df-4f63-978e-7d915b1eee30/21b045f5-7674-41a5-b88a-164f14fa48d3" rel="noopener noreferrer" target="_blank">10610252 <span class="external-icon">↗</span></a>)</td><td>2º - 1º</td><td>ENG</td><td>Data Science (33519)</td><td>Curriculum unico</td> </tr>
+<tr><td>TEORIA ED ELABORAZIONE DEI SEGNALI II - TEORIA DEI SEGNALI ALEATORI (<a href="https://corsidilaurea.uniroma1.it/it/course/33497/attendance/lesson/224fcc3b-830a-4cca-afc5-b26013e226fb/2/2/dc866191-f44d-4cf8-a559-6a0855123dbd/614a54d7-3a10-4238-a0c0-cb093e3c0b85" rel="noopener noreferrer" target="_blank">10621281 <span class="external-icon">↗</span></a>)</td><td>2º - 2º</td><td>ITA</td><td>Ingegneria delle Telecomunicazioni (33497)</td><td>Curriculum unico</td> </tr>
+<tr><td>TEORIA ED ELABORAZIONE DEI SEGNALI I - TEORIA DEI SEGNALI CERTI (<a href="https://corsidilaurea.uniroma1.it/it/course/33497/attendance/lesson/224fcc3b-830a-4cca-afc5-b26013e226fb/2/1/3466e339-3958-4671-9703-4cf9171b98fe/d417ee89-6ceb-4074-a5a8-a23ef91adb76" rel="noopener noreferrer" target="_blank">10621280 <span class="external-icon">↗</span></a>)</td><td>2º - 1º</td><td>ITA</td><td>Ingegneria delle Telecomunicazioni (33497)</td><td>Curriculum unico</td> </tr>
+<tr><td>TEORIA DEI SEGNALI II (<a href="https://corsidilaurea.uniroma1.it/it/course/33499/attendance/lesson/ef15b36b-943e-4643-add4-8093f9f7852c/2/2/2102d2df-6422-446c-a4fa-7d17f328cffa" rel="noopener noreferrer" target="_blank">10621501 <span class="external-icon">↗</span></a>)</td><td>2º - 2º</td><td>ITA</td><td>Ingegneria Elettronica (33499)</td><td>Curriculum unico</td> </tr>
+<tr><td>TEORIA DEI SEGNALI I (<a href="https://corsidilaurea.uniroma1.it/it/course/33499/attendance/lesson/ef15b36b-943e-4643-add4-8093f9f7852c/2/1/6bd01f44-df1c-4baf-b541-35ea8b00a46a" rel="noopener noreferrer" target="_blank">10621502 <span class="external-icon">↗</span></a>)</td><td>2º - 1º</td><td>ITA</td><td>Ingegneria Elettronica (33499)</td><td>Curriculum unico</td> </tr>
+<tr><td>AI-NATIVE COMMUNICATION NETWORKS (<a href="https://corsidilaurea.uniroma1.it/it/course/33510/attendance/lesson/ebae5389-8a03-4d3a-bbde-908711a2ede5/2/2/576e0f52-f46c-4519-8b73-7af39a5ce91c/6e3912ee-a165-4390-80b4-2fcc3ad77c2c" rel="noopener noreferrer" target="_blank">10621075 <span class="external-icon">↗</span></a>)</td><td>2º - 2º</td><td>ENG</td><td>Telecommunication Engineering - Ingegneria delle Telecomunicazioni (33510)</td><td>Telecommunication Engineering  (percorso valido anche ai fini del rilascio del doppio titolo italo-francese o italo-statunitense )</td> </tr>
+</tbody>
+</table></div></div>
+            </div>
+        </details>
+    </div>
+
+    <button id="back-to-top" title="Torna sù">▲ Torna sù</button>
+
+    <script>
+    fetch('../common.html')
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            document.querySelectorAll('details[data-common-id]').forEach(details => {
+                const commonId = details.getAttribute('data-common-id');
+                const source = doc.getElementById(commonId);
+                if (source && source.innerHTML.trim()) {
+                    details.querySelector('.details-body').innerHTML = source.innerHTML;
+                    details.style.display = 'block'; // Make visible if content exists
+                }
+            });
+        })
+        .catch(err => console.error('Error loading common content:', err));
+    </script>
+</body>
+</html>
