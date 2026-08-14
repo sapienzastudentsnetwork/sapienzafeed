@@ -48,27 +48,26 @@ jobs:
             # Extract UUID from the directory path (lecturers/UUID/common.html)
             uuid=$(echo "$file" | cut -d'/' -f2)
             
-            # Python script to extract a "fingerprint" of the content (text + all hrefs)
-            # This ensures we catch changes in visible text OR in underlying link URLs
-            CHECK_SCRIPT="import sys; from bs4 import BeautifulSoup; \
-              html = sys.stdin.read(); \
-              soup = BeautifulSoup(html, 'html.parser'); \
-              text = soup.get_text(strip=True); \
-              links = [a.get('href') for a in soup.find_all('a', href=True)]; \
-              print(f'{text}|||{links}')"
-
-            new_content_fingerprint=$(cat "$file" | python3 -c "$CHECK_SCRIPT")
-            
-            # Check if the file already exists in the latest commit
+            # Compare only the lecturer-news data. Ignore DOM formatting and ordering,
+            # but notify for every text or href change, including older information.
+            old_file=$(mktemp)
             if git ls-files --error-unmatch "$file" > /dev/null 2>&1; then
-              old_content_fingerprint=$(git show HEAD:"$file" | python3 -c "$CHECK_SCRIPT")
+              git show HEAD:"$file" > "$old_file"
+              old_arg=(--old "$old_file")
             else
-              old_content_fingerprint="NEW_FILE"
+              old_arg=()
             fi
 
-            # Trigger notification if text or any URL in an href has changed
-            if [ "$new_content_fingerprint" != "$old_content_fingerprint" ]; then
-              to_notify="$to_notify $uuid"
+            notify=$(python3 should-notify-professor-news.py \
+              "${old_arg[@]}" --new "$file")
+            rm -f "$old_file"
+
+            if [ "$notify" = "1" ]; then
+              # Avoid duplicate posts when the same lecturer changes in both languages.
+              case " $to_notify " in
+                *" $uuid "*) ;;
+                *) to_notify="$to_notify $uuid" ;;
+              esac
             fi
           done
 
@@ -89,9 +88,11 @@ jobs:
               # Format the name to Title Case
               formatted_name=$(echo "$prof_name_raw" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
               
-              # Notification link points to the English index page
-              file_url="sapienzastudents.net/sapienzafeed/lecturers/$uuid/en/index.html"
-              commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
+              # Link to the lecturer page and directly to this lecturer's file diff.
+              file_url="https://sapienzastudents.net/sapienzafeed/lecturers/$uuid/en/index.html"
+              changed_path="lecturers/$uuid/common.html"
+              diff_hash=$(printf '%s' "$changed_path" | sha256sum | cut -d' ' -f1)
+              commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash#diff-$diff_hash"
               
               python send-professor-news-update-to-telegram.py "$formatted_name" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
             done
