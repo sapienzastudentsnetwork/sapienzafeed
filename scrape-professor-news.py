@@ -12,6 +12,10 @@ REPO_PATH = "./lecturers"      # Directory to store the news and index files
 LANGUAGES = ["it", "en"]
 DEFAULT_PIC = "https://corsidilaurea.uniroma1.it/sites/all/modules/custom/cdl_professors/images/user_picture.png"
 NULL_UUID = "00000000-0000-0000-0000-000000000000"
+COURSE_NAME_OVERRIDES = {
+    "33503": "Informatica",
+    "33504": "Informatica - erogato in modalità prevalentemente a distanza",
+}
 
 def load_professors():
     """
@@ -174,6 +178,9 @@ def optimize_activities_table(soup, content_div):
                     cells[2].string = f"{year_val} - {sem_val}"
                     
                     # Merge Course Code (6) into Course (5)
+                    course_code = cells[6].get_text(strip=True)
+                    if course_code in COURSE_NAME_OVERRIDES:
+                        cells[5].string = COURSE_NAME_OVERRIDES[course_code]
                     cells[5].append(" (")
                     for child in list(cells[6].contents):
                         cells[5].append(child)
@@ -183,6 +190,27 @@ def optimize_activities_table(soup, content_div):
                     cells[6].decompose()
                     cells[3].decompose()
                     cells[0].decompose()
+
+            for tbody in table.find_all('tbody'):
+                rows = tbody.find_all('tr', recursive=False)
+
+                def row_sort_key(row):
+                    cells = row.find_all('td', recursive=False)
+                    if len(cells) < 5:
+                        return ("", "", "", str(row))
+                    return (
+                        cells[0].get_text(" ", strip=True).casefold(),
+                        cells[3].get_text(" ", strip=True).casefold(),
+                        cells[4].get_text(" ", strip=True).casefold(),
+                        str(row),
+                    )
+
+                sorted_rows = sorted(rows, key=row_sort_key)
+                tbody.clear()
+                tbody.append("\n")
+                for row in sorted_rows:
+                    tbody.append(row)
+                    tbody.append("\n")
 
 def generate_top_navbar_html(title, language_key, flag_html="", original_url=None, back_url=None, is_index_page=False, custom_back_text=None):
     """
