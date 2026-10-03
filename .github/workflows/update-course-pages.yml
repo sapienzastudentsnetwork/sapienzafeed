@@ -38,6 +38,7 @@ jobs:
 
           changed_files=$(git status --porcelain | awk '{print $2}')
           announcement_events=$(mktemp)
+          announcement_files=()
 
           for file in $changed_files; do
             if [[ "$file" == *"style.css"* ]]; then
@@ -101,6 +102,8 @@ jobs:
                 "$language" \
                 "$file_url" >> "$announcement_events"
               rm -f "$old_file"
+              announcement_files+=("$file")
+              continue
             fi
 
             git add "$file"
@@ -114,15 +117,24 @@ jobs:
 
           done
 
+          if (( ${#announcement_files[@]} > 0 )); then
+            git add "${announcement_files[@]}"
+            git commit -m "Update announcements sections" || true
+            git push
+          fi
+
           if [[ -s "$announcement_events" ]]; then
             python send-course-announcement-update-to-telegram.py \
               "$announcement_events" \
               "course-announcement-telegram-messages.json" \
+              "course-announcement-telegram-notification-history.json" \
               "${{ secrets.TELEGRAM_BOT_TOKEN }}" \
               "${{ secrets.TELEGRAM_CHAT_ID }}"
 
-            git add course-announcement-telegram-messages.json
-            git commit -m "Update course announcement Telegram message registry" || true
+            git add \
+              course-announcement-telegram-messages.json \
+              course-announcement-telegram-notification-history.json
+            git commit -m "Update course announcement Telegram notification state" || true
             git push
           fi
 

@@ -5,6 +5,10 @@ on:
     - cron: '*/10 * * * *' # Runs every 10 minutes
   workflow_dispatch: # Allows manual triggering
 
+concurrency:
+  group: update-professor-news
+  cancel-in-progress: false
+
 jobs:
   update-professor-news:
     runs-on: ubuntu-latest
@@ -79,24 +83,38 @@ jobs:
           
           if ! git diff --cached --quiet; then
             git commit -m "Update professor news, index pages and metadata"
-            git push
-            
             commit_hash=$(git rev-parse HEAD)
-            
+            git push
+
             # Send Telegram notifications for actual content updates
             for uuid in $to_notify; do
               # Retrieve the professor name from professors.json using UUID
               prof_name_raw=$(jq -r ".\"$uuid\".name" professors.json)
-              
+
               # Format the name to Title Case
               formatted_name=$(echo "$prof_name_raw" | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1')
-              
+
               # Link to the lecturer page and directly to this lecturer's file diff.
               file_url="https://sapienzastudents.net/sapienzafeed/lecturers/$uuid/en/index.html"
               changed_path="lecturers/$uuid/common.html"
               diff_hash=$(printf '%s' "$changed_path" | sha256sum | cut -d' ' -f1)
               commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash#diff-$diff_hash"
-              
-              python send-professor-news-update-to-telegram.py "$formatted_name" "$file_url" "$commit_url" "${{ secrets.TELEGRAM_BOT_TOKEN }}" "${{ secrets.TELEGRAM_CHAT_ID }}"
+
+              message_id_file=$(mktemp)
+              python send-professor-news-update-to-telegram.py \
+                send \
+                "$formatted_name" \
+                "$file_url" \
+                "$commit_url" \
+                "$uuid" \
+                professor-news-telegram-notification-history.json \
+                "${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+                "${{ secrets.TELEGRAM_CHAT_ID }}" \
+                "$message_id_file"
+              rm -f "$message_id_file"
             done
+
+            git add professor-news-telegram-notification-history.json
+            git commit -m "Update professor news Telegram notification history" || true
+            git push
           fi

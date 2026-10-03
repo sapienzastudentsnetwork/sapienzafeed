@@ -1,6 +1,7 @@
 import json
 import sys
 from collections import defaultdict
+from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
 import requests
@@ -16,6 +17,38 @@ def load_registry(path):
         return {}
     return json.loads(registry_path.read_text(encoding="utf-8"))
 
+
+
+def load_notification_history(path):
+    history_path = Path(path)
+    if not history_path.exists():
+        return {"courses": {}}
+    return json.loads(history_path.read_text(encoding="utf-8"))
+
+
+def notification_timestamp():
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def update_notification_history(history, courses, message_id, sent_at):
+    course_history = history.setdefault("courses", {})
+    for course in courses:
+        course_entry = course_history.setdefault(course["id"], {
+            "name": course["name"],
+            "notifications": {}
+        })
+        course_entry["name"] = course["name"]
+        course_entry["notifications"]["announcements"] = {
+            "sent_at": sent_at,
+            "telegram_message_id": message_id
+        }
+
+
+def save_json(path, value):
+    Path(path).write_text(
+        json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8"
+    )
 
 def load_events(path):
     events = []
@@ -51,8 +84,9 @@ def call_telegram(method, token, payload):
     return result["result"]
 
 
-def notify(events_path, registry_path, telegram_token, chat_id):
+def notify(events_path, registry_path, history_path, telegram_token, chat_id):
     registry = load_registry(registry_path)
+    history = load_notification_history(history_path)
     grouped_events = defaultdict(list)
     for event in load_events(events_path):
         grouped_events[event["fingerprint"]].append(event)
@@ -78,8 +112,18 @@ def notify(events_path, registry_path, telegram_token, chat_id):
         }
 
         message_id = registry_entry.get("message_id")
+        new_courses = merge_courses([], [
+            {
+                "name": event["course_name"],
+                "id": event["course_id"],
+                "language": event["language"],
+                "url": event["url"]
+            }
+            for event in events
+        ])
         if message_id is not None and courses == registry_entry.get("courses", []):
             continue
+        tracked_courses = new_courses
         if message_id is not None:
             payload["message_id"] = message_id
             try:
@@ -87,23 +131,28 @@ def notify(events_path, registry_path, telegram_token, chat_id):
             except TelegramAPIError:
                 payload.pop("message_id")
                 message_id = call_telegram("sendMessage", telegram_token, payload)["message_id"]
+                tracked_courses = courses
         else:
             message_id = call_telegram("sendMessage", telegram_token, payload)["message_id"]
 
+        update_notification_history(
+            history,
+            tracked_courses,
+            message_id,
+            notification_timestamp()
+        )
         registry[fingerprint] = {
             "title": title,
             "message_id": message_id,
             "courses": courses
         }
 
-    Path(registry_path).write_text(
-        json.dumps(registry, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
-        encoding="utf-8"
-    )
+    save_json(registry_path, registry)
+    save_json(history_path, history)
 
 
 def main():
-    notify(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+    notify(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 
 
 if __name__ == "__main__":
