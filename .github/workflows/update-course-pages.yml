@@ -5,6 +5,10 @@ on:
     - cron: '*/10 * * * *' # Runs every 10 minutes
   workflow_dispatch: # Allows manual triggering
 
+concurrency:
+  group: update-course-pages
+  cancel-in-progress: false
+
 jobs:
   update-course-pages:
     runs-on: ubuntu-latest
@@ -33,6 +37,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
           changed_files=$(git status --porcelain | awk '{print $2}')
+          announcement_events=$(mktemp)
 
           for file in $changed_files; do
             if [[ "$file" == *"style.css"* ]]; then
@@ -84,6 +89,20 @@ jobs:
               commit_message="Update $page_name section for $course_name $lang_label"
             fi
 
+            if [[ "$file" == corsidilaurea/*/*/announcements.html ]]; then
+              old_file=$(mktemp)
+              git show "HEAD:$file" > "$old_file" 2>/dev/null || true
+              file_url="https://sapienzastudents.net/sapienzafeed/${file}"
+              python detect-course-announcement-updates.py \
+                "$old_file" \
+                "$file" \
+                "$course_name" \
+                "$course_id" \
+                "$language" \
+                "$file_url" >> "$announcement_events"
+              rm -f "$old_file"
+            fi
+
             git add "$file"
             
             # Commit the file, or skip to the next iteration if there are no real changes
@@ -93,20 +112,18 @@ jobs:
             git push
             commit_hash=$(git rev-parse HEAD)
 
-            # Skip Telegram notification if the file is a teachers.html or index.html page
-            if [[ "$file" == *"teachers.html"* ]] || [[ "$file" == *"index.html"* ]]; then
-              continue
-            fi
-          
-            # Generate URLs for the updated file and the commit
-            file_url="https://sapienzastudents.net/sapienzafeed/${file}"
-            commit_url="https://github.com/${{ github.repository }}/commit/$commit_hash"
-          
-            # Send Telegram Notification
-            #python send-course-page-update-to-telegram.py \
-            #  "$commit_message" \
-            #  "$file_url" \
-            #  "$commit_url" \
-            #  "${{ secrets.TELEGRAM_BOT_TOKEN }}" \
-            #  "${{ secrets.TELEGRAM_CHAT_ID }}"
           done
+
+          if [[ -s "$announcement_events" ]]; then
+            python send-course-announcement-update-to-telegram.py \
+              "$announcement_events" \
+              "course-announcement-telegram-messages.json" \
+              "${{ secrets.TELEGRAM_BOT_TOKEN }}" \
+              "${{ secrets.TELEGRAM_CHAT_ID }}"
+
+            git add course-announcement-telegram-messages.json
+            git commit -m "Update course announcement Telegram message registry" || true
+            git push
+          fi
+
+          rm -f "$announcement_events"
