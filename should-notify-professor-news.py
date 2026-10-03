@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import re
 import sys
 from collections import Counter
@@ -45,6 +47,31 @@ def fingerprint(path: Path | None) -> tuple[Counter, Counter]:
     return texts, links
 
 
+def fingerprint_digest(value: tuple[Counter, Counter]) -> str | None:
+    texts, links = value
+    if not texts and not links:
+        return None
+    serialized = json.dumps(
+        [sorted(texts.items()), sorted(links.items())],
+        ensure_ascii=False,
+        separators=(",", ":")
+    )
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+
+def load_state(path: Path) -> dict[str, str]:
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def save_state(path: Path, state: dict[str, str]) -> None:
+    path.write_text(
+        json.dumps(state, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8"
+    )
+
+
 def decide(old_path: Path | None, new_path: Path) -> tuple[bool, str]:
     old_texts, old_links = fingerprint(old_path)
     new_texts, new_links = fingerprint(new_path)
@@ -55,12 +82,55 @@ def decide(old_path: Path | None, new_path: Path) -> tuple[bool, str]:
     return True, "visible news text changed"
 
 
+def decide_with_state(
+    old_path: Path | None,
+    new_path: Path,
+    state_path: Path,
+    lecturer_id: str
+) -> tuple[bool, str]:
+    state = load_state(state_path)
+    old_digest = fingerprint_digest(fingerprint(old_path))
+    new_digest = fingerprint_digest(fingerprint(new_path))
+    remembered_digest = state.get(lecturer_id)
+
+    if remembered_digest is None and old_digest is not None:
+        remembered_digest = old_digest
+        state[lecturer_id] = old_digest
+
+    if new_digest is None:
+        save_state(state_path, state)
+        return False, "temporary complete news disappearance suppressed"
+
+    if new_digest == remembered_digest:
+        save_state(state_path, state)
+        return False, "news restored unchanged after a temporary disappearance"
+
+    notify, reason = decide(old_path, new_path)
+    state[lecturer_id] = new_digest
+    save_state(state_path, state)
+    return notify, reason
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--old", type=Path)
     parser.add_argument("--new", required=True, type=Path)
+    parser.add_argument("--state", type=Path)
+    parser.add_argument("--lecturer-id")
     args = parser.parse_args()
-    notify, reason = decide(args.old, args.new)
+
+    if args.state is not None or args.lecturer_id is not None:
+        if args.state is None or args.lecturer_id is None:
+            parser.error("--state and --lecturer-id must be used together")
+        notify, reason = decide_with_state(
+            args.old,
+            args.new,
+            args.state,
+            args.lecturer_id
+        )
+    else:
+        notify, reason = decide(args.old, args.new)
+
     print("1" if notify else "0")
     print(reason, file=sys.stderr)
     return 0

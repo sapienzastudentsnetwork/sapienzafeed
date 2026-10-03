@@ -59,7 +59,10 @@ jobs:
             fi
 
             notify=$(python3 should-notify-professor-news.py \
-              "${old_arg[@]}" --new "$file")
+              "${old_arg[@]}" \
+              --new "$file" \
+              --state professor-news-notification-state.json \
+              --lecturer-id "$uuid")
             rm -f "$old_file"
 
             if [ "$notify" = "1" ]; then
