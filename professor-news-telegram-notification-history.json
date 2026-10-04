@@ -1,3 +1,13 @@
 {
-  "lecturers": {}
+  "lecturers": {
+    "71a5cf24a1542dffce1962c7f2b4ce9f215ec20f318292197f21a163": {
+      "name": "Zuliani Paolo",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-04T14:33:00+00:00",
+          "telegram_message_id": 1695
+        }
+      }
+    }
+  }
 }
