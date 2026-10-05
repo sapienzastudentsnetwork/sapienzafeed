@@ -8,6 +8,15 @@
           "telegram_message_id": 1695
         }
       }
+    },
+    "987320833b51f80dfb0da7cc0f48ccf336622615be73ed3c17e66333": {
+      "name": "Zatti Stefano",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-05T21:39:47+00:00",
+          "telegram_message_id": 1696
+        }
+      }
     }
   }
 }
