@@ -1,1 +1,50 @@
-{}
+{
+  "4c0126a65c552fa1595d93d3f874c2f4dbddff5270f11b5414c924a093e10a9b": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-9526"
+      }
+    ],
+    "message_id": 1698,
+    "title": "06/10/2026 - Calendario Appelli Straordinari - II Sessione 2025/2026,"
+  },
+  "be9792a29b7ee03ca39e48515ae579ecf5cb9d99a9c6e4aa9e238b7ecb191995": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-9526"
+      }
+    ],
+    "message_id": 1697,
+    "title": "06/10/2026 - Extraordinary Examination Calendar – Second Session 2025/2026"
+  }
+}
