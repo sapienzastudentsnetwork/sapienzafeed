@@ -4,8 +4,8 @@
       "name": "ACSAI",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-10-06T06:22:35+00:00",
-          "telegram_message_id": 1698
+          "sent_at": "2026-10-07T16:20:41+00:00",
+          "telegram_message_id": 1701
         }
       }
     },
@@ -13,8 +13,8 @@
       "name": "Informatica",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-10-06T13:33:18+00:00",
-          "telegram_message_id": 1699
+          "sent_at": "2026-10-07T16:20:41+00:00",
+          "telegram_message_id": 1701
         }
       }
     },
@@ -22,8 +22,8 @@
       "name": "Informatica - a distanza",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-10-06T06:22:35+00:00",
-          "telegram_message_id": 1698
+          "sent_at": "2026-10-07T16:20:41+00:00",
+          "telegram_message_id": 1701
         }
       }
     },
@@ -31,8 +31,26 @@
       "name": "Computer Science",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-10-06T06:22:35+00:00",
-          "telegram_message_id": 1698
+          "sent_at": "2026-10-07T16:20:41+00:00",
+          "telegram_message_id": 1701
+        }
+      }
+    },
+    "33516": {
+      "name": "Cybersecurity",
+      "notifications": {
+        "announcements": {
+          "sent_at": "2026-10-07T16:20:41+00:00",
+          "telegram_message_id": 1701
+        }
+      }
+    },
+    "33519": {
+      "name": "Data Science",
+      "notifications": {
+        "announcements": {
+          "sent_at": "2026-10-07T16:20:41+00:00",
+          "telegram_message_id": 1701
         }
       }
     }
