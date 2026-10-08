@@ -71,6 +71,66 @@
     "message_id": 1700,
     "title": "07/10/2026 - Erasmus and Free Mover Examination Certificates – DiSCo Lazio"
   },
+  "3a5f7d8fa5ee01e88f4a9e158cda1ebc20cbb31847e71461ce2893cbf08f895a": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9593"
+      },
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-9593"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-9593"
+      },
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-9593"
+      }
+    ],
+    "message_id": 1705,
+    "title": "08/10/2026 - Prenotazione esame– sessione straordinaria"
+  },
+  "3b3a76a70d477417cfae004c5f2b796743195c54c561f1b9e17b5414f1110f45": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9593"
+      },
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-9593"
+      }
+    ],
+    "message_id": 1703,
+    "title": "08/10/2026 - Exam registration – extraordinary examination session"
+  },
+  "3f4b0ea8a5726072c713ef9dcf73f6b84bda957a0285a86ca3d193b024cc1e0b": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9591"
+      }
+    ],
+    "message_id": 1704,
+    "title": "08/10/2026 - lezione di Foundations of Computer Science: 27 ottobre"
+  },
   "4c0126a65c552fa1595d93d3f874c2f4dbddff5270f11b5414c924a093e10a9b": {
     "courses": [
       {
@@ -130,5 +190,17 @@
     ],
     "message_id": 1697,
     "title": "06/10/2026 - Extraordinary Examination Calendar – Second Session 2025/2026"
+  },
+  "caa4928d9c2767d9628baf2467d58a8f7018f2d9d4d2156a0137a0d8d48db759": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9591"
+      }
+    ],
+    "message_id": 1702,
+    "title": "08/10/2026 - Classes of Foundations of Computer Science: October 27th"
   }
 }
