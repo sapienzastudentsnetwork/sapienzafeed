@@ -71,6 +71,60 @@
     "message_id": 1700,
     "title": "07/10/2026 - Erasmus and Free Mover Examination Certificates – DiSCo Lazio"
   },
+  "31ddc5e8eb018f5b70aff1a6031bfa4fb5c61b796689665f91317ab4d2e85233": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9475"
+      },
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-9475"
+      },
+      {
+        "id": "33516",
+        "language": "en",
+        "name": "Cybersecurity",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33516/en/announcements.html#announcement-9475"
+      }
+    ],
+    "message_id": 1709,
+    "title": "02/10/2026 - Study Plan"
+  },
+  "34bce6bcc81fa574fb47d7aaae199a1ed4e0e2904e441e40a243c2c9736480b3": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-9526"
+      }
+    ],
+    "message_id": 1711,
+    "title": "06/10/2026 - Calendario Appelli Straordinari - II Sessione 2025/2026,"
+  },
   "3a5f7d8fa5ee01e88f4a9e158cda1ebc20cbb31847e71461ce2893cbf08f895a": {
     "courses": [
       {
@@ -161,6 +215,66 @@
     "message_id": 1698,
     "title": "06/10/2026 - Calendario Appelli Straordinari - II Sessione 2025/2026,"
   },
+  "6840da839c9ac99816ee9abf7dd2af1eb1766bc50ff73b911b2cbf0e908360e1": {
+    "courses": [
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-9708"
+      }
+    ],
+    "message_id": 1713,
+    "title": "10/10/2026 - Fondamenti di programmazione"
+  },
+  "695bcdffe15a6035a194331c0ca249210f04c3af681c84cca1cc98920d7f8525": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9707"
+      },
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-9707"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-9707"
+      },
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-9707"
+      }
+    ],
+    "message_id": 1710,
+    "title": "10/10/2026 - Avviso – Sessione straordinaria d’esame"
+  },
+  "70df4f63c7f4580bfe0f003153f4d3b21a123bb731b0cd74a0434e24eed06060": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9526"
+      },
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-9526"
+      }
+    ],
+    "message_id": 1708,
+    "title": "06/10/2026 - Extraordinary Examination Calendar – Second Session 2025/2026"
+  },
   "a14f20e903828f7def8cd81824c6efa74d2a4c45c9d3dbffa723cce52c4b8c13": {
     "courses": [
       {
@@ -191,6 +305,24 @@
     "message_id": 1697,
     "title": "06/10/2026 - Extraordinary Examination Calendar – Second Session 2025/2026"
   },
+  "c8108aac1fcf71081f2c084a40f802eb398b293559d64cfb9380e1ba874c4980": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9707"
+      },
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-9707"
+      }
+    ],
+    "message_id": 1707,
+    "title": "10/10/2026 - Notice – Extraordinary Examination Session"
+  },
   "caa4928d9c2767d9628baf2467d58a8f7018f2d9d4d2156a0137a0d8d48db759": {
     "courses": [
       {
@@ -202,5 +334,41 @@
     ],
     "message_id": 1702,
     "title": "08/10/2026 - Classes of Foundations of Computer Science: October 27th"
+  },
+  "e3e544bd95e328f4b08e8d6eb29a4f5f049912e73bec1f0f209e46fdfa3fc6d4": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9475"
+      },
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-9475"
+      },
+      {
+        "id": "33516",
+        "language": "it",
+        "name": "Cybersecurity",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33516/it/announcements.html#announcement-9475"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-9475"
+      },
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-9475"
+      }
+    ],
+    "message_id": 1712,
+    "title": "02/10/2026 - Piani di studio"
   }
 }
