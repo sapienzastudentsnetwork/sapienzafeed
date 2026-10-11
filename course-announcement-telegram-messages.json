@@ -185,6 +185,36 @@
     "message_id": 1704,
     "title": "08/10/2026 - lezione di Foundations of Computer Science: 27 ottobre"
   },
+  "47ab304e6e697aab8ce60053e9f5eb0ac09fd476dab323c5928c4197a714d010": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9710"
+      },
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-9710"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-9710"
+      },
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-9710"
+      }
+    ],
+    "message_id": 1715,
+    "title": "11/10/2026 - L-31 e LM-18 - IV sessione di laurea"
+  },
   "4c0126a65c552fa1595d93d3f874c2f4dbddff5270f11b5414c924a093e10a9b": {
     "courses": [
       {
@@ -370,5 +400,23 @@
     ],
     "message_id": 1712,
     "title": "02/10/2026 - Piani di studio"
+  },
+  "f42b7e8038063c47fa53b1c64cef80d4080f9309f19c3938a4cf44f5e413de2b": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9710"
+      },
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-9710"
+      }
+    ],
+    "message_id": 1714,
+    "title": "11/10/2026 - L-31 and LM-18 – 4th Graduation Session"
   }
 }
