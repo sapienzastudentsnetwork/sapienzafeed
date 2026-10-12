@@ -1,5 +1,14 @@
 {
   "lecturers": {
+    "4ebfbe5cb9997b03daadfbe341896cd80637c80fe101cc29787937c0": {
+      "name": "Faralli Stefano",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-12T17:56:54+00:00",
+          "telegram_message_id": 1717
+        }
+      }
+    },
     "71a5cf24a1542dffce1962c7f2b4ce9f215ec20f318292197f21a163": {
       "name": "Zuliani Paolo",
       "notifications": {
