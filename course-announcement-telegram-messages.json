@@ -245,6 +245,18 @@
     "message_id": 1698,
     "title": "06/10/2026 - Calendario Appelli Straordinari - II Sessione 2025/2026,"
   },
+  "59a10e74212a053837016df3478364f845ce9edbe3b88459d10db4c9f9d449d6": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-9798"
+      }
+    ],
+    "message_id": 1721,
+    "title": "16/10/2026 - Inizio del corso di Deep Learning – 19 ottobre 2026"
+  },
   "6840da839c9ac99816ee9abf7dd2af1eb1766bc50ff73b911b2cbf0e908360e1": {
     "courses": [
       {
@@ -304,6 +316,18 @@
     ],
     "message_id": 1708,
     "title": "06/10/2026 - Extraordinary Examination Calendar – Second Session 2025/2026"
+  },
+  "8d9722ac36c2ec72cca0b0391e525f9374c928020e8a36b1af8bf3181191292d": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-9798"
+      }
+    ],
+    "message_id": 1720,
+    "title": "16/10/2026 - Deep Learning Course – Starting October 19, 2026"
   },
   "90b76b805299fac8c1f13cd8eb3b7ea71dd627b038e485ae3812fcb9b90679f5": {
     "courses": [
