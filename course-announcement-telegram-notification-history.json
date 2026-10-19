@@ -4,8 +4,8 @@
       "name": "ACSAI",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-10-16T14:15:14+00:00",
-          "telegram_message_id": 1721
+          "sent_at": "2026-10-19T10:13:34+00:00",
+          "telegram_message_id": 1723
         }
       }
     },
@@ -13,8 +13,8 @@
       "name": "Informatica",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-10-11T23:00:29+00:00",
-          "telegram_message_id": 1715
+          "sent_at": "2026-10-19T10:13:34+00:00",
+          "telegram_message_id": 1724
         }
       }
     },
@@ -22,8 +22,8 @@
       "name": "Informatica - a distanza",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-10-11T23:00:29+00:00",
-          "telegram_message_id": 1715
+          "sent_at": "2026-10-19T10:13:34+00:00",
+          "telegram_message_id": 1725
         }
       }
     },
