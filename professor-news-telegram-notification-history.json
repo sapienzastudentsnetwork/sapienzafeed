@@ -18,6 +18,15 @@
         }
       }
     },
+    "65816d4db3c3490a6f9ebd8ceed2d87fead474a980f41016a6d61e8e": {
+      "name": "De Marsico Maria",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-20T19:29:50+00:00",
+          "telegram_message_id": 1727
+        }
+      }
+    },
     "71a5cf24a1542dffce1962c7f2b4ce9f215ec20f318292197f21a163": {
       "name": "Zuliani Paolo",
       "notifications": {
@@ -45,12 +54,39 @@
         }
       }
     },
+    "c576aff061883e7e1abb092f4808c36b9118a21d065cd74ce854b703": {
+      "name": "Gastaldi Tommaso",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-20T19:29:51+00:00",
+          "telegram_message_id": 1728
+        }
+      }
+    },
     "d0ab2313982ae31335bf0ca9ec541c1e29015850654190038e83754d": {
       "name": "Panizzi Emanuele",
       "notifications": {
         "news": {
           "sent_at": "2026-10-14T19:02:25+00:00",
           "telegram_message_id": 1718
+        }
+      }
+    },
+    "f239f16747654cfca4b4f64364f85827f3e4af654fa236b61c69213b": {
+      "name": "Ansini Nadia",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-20T19:29:51+00:00",
+          "telegram_message_id": 1729
+        }
+      }
+    },
+    "fe89d218146f928b93d072069f7a09e0b53c73f1929d2c13e4bae634": {
+      "name": "Richelli Giorgio",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-20T19:29:52+00:00",
+          "telegram_message_id": 1730
         }
       }
     }
