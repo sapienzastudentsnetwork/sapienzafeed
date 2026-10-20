@@ -1,5 +1,14 @@
 {
   "lecturers": {
+    "03ed820157baa29c9671ff82b11d1fbda0f06d117976e3de3f67b766": {
+      "name": "Mancini Toni",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-20T22:39:37+00:00",
+          "telegram_message_id": 1731
+        }
+      }
+    },
     "1e8332c3d3a479250212ca7e148332ff08a6db9192577d1312216ffc": {
       "name": "Pellarin Federico",
       "notifications": {
