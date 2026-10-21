@@ -30,12 +30,15 @@ def is_external_url(url):
 def fetch_html(url, timeout=15):
     """
     Executes a safe HTTP GET request. 
-    Returns the response object if successful, otherwise None.
+    Returns the response object if successful, False for connection failures, otherwise None.
     """
     try:
         response = requests.get(url, timeout=timeout)
         response.raise_for_status()
         return response
+    except (requests.ConnectionError, requests.Timeout) as e:
+        print(f"Skipping {url} due to request error: {e}")
+        return False
     except requests.RequestException as e:
         print(f"Skipping {url} due to request error: {e}")
         return None
@@ -584,6 +587,9 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             homepage_announcements_html = ""
             
             hp_resp = fetch_html(homepage_url)
+            if hp_resp is False:
+                print(f"Skipping index update for {course_id} [{language_key}] due to connection failure.")
+                continue
             if hp_resp:
                 hp_soup = BeautifulSoup(hp_resp.text, 'html.parser')
                 extracted_metadata, youtube_video_url = extract_course_metadata(hp_soup, language_key)
@@ -596,11 +602,15 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
             attendance_custom_links = []
             attendance_freq_metadata_html = ""
             scraped_timetable_link = None
+            connection_failed = False
 
             for language_page in pages:
                 url = url_pattern.format(language_key, course_id, language_page)
 
                 response = fetch_html(url)
+                if response is False:
+                    connection_failed = True
+                    continue
                 if not response:
                     continue
 
@@ -1268,6 +1278,10 @@ def fetch_and_save_page(languages, pages, ids, excluded_en_ids, course_names, co
                 lang_back_url = "../../index.html"
 
                 # Define structural categories and include the new 'guides' category
+                if connection_failed:
+                    print(f"Skipping index update for {course_id} [{language_key}] due to connection failure.")
+                    continue
+
                 cats = categories_dict.get(language_key, categories_dict.get("en", {})).copy()
 
                 # Pre-initialize categorized map to maintain section order
