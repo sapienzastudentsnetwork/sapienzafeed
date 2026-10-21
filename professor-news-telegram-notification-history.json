@@ -9,12 +9,30 @@
         }
       }
     },
+    "0c78e43351e850cb2be8beabcae820c350058cdc7b29a4c5dc52666b": {
+      "name": "Polverini Marco",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T00:59:57+00:00",
+          "telegram_message_id": 1732
+        }
+      }
+    },
     "1e8332c3d3a479250212ca7e148332ff08a6db9192577d1312216ffc": {
       "name": "Pellarin Federico",
       "notifications": {
         "news": {
           "sent_at": "2026-10-15T15:05:01+00:00",
           "telegram_message_id": 1719
+        }
+      }
+    },
+    "4c66b6b5b325da811da1984148bb74f364dc5f95c3aee7f43b08d8b3": {
+      "name": "Di Luna Giuseppe Antonio",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T00:59:57+00:00",
+          "telegram_message_id": 1733
         }
       }
     },
@@ -54,6 +72,15 @@
         }
       }
     },
+    "92e4cf0c6bdf3e64296b4b6c3449f0fb440dea02e1fd588c10d42099": {
+      "name": "Friolo Daniele",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T00:59:58+00:00",
+          "telegram_message_id": 1734
+        }
+      }
+    },
     "987320833b51f80dfb0da7cc0f48ccf336622615be73ed3c17e66333": {
       "name": "Zatti Stefano",
       "notifications": {
@@ -78,6 +105,15 @@
         "news": {
           "sent_at": "2026-10-14T19:02:25+00:00",
           "telegram_message_id": 1718
+        }
+      }
+    },
+    "ecf21e46efa0f790d7d9d7867444474b472130b52c5c014de7ea19bd": {
+      "name": "Silvestri Vittoria",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T00:59:58+00:00",
+          "telegram_message_id": 1735
         }
       }
     },
