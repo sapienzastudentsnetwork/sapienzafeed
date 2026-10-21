@@ -22,8 +22,17 @@
       "name": "Polverini Marco",
       "notifications": {
         "news": {
-          "sent_at": "2026-10-21T00:59:57+00:00",
-          "telegram_message_id": 1732
+          "sent_at": "2026-10-21T11:42:03+00:00",
+          "telegram_message_id": 1740
+        }
+      }
+    },
+    "1d7f2572efcc18caab227fcf62db9ca08022e850ac3f90bda80c0afb": {
+      "name": "Hitaj Dorjan",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T11:42:04+00:00",
+          "telegram_message_id": 1741
         }
       }
     },
@@ -87,6 +96,15 @@
         "news": {
           "sent_at": "2026-10-20T19:29:50+00:00",
           "telegram_message_id": 1727
+        }
+      }
+    },
+    "70769f6c7421a78996077ee50349a49bd73720aa32a34f33f86c9193": {
+      "name": "Mancini Luigi Vincenzo",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T11:42:05+00:00",
+          "telegram_message_id": 1742
         }
       }
     },
