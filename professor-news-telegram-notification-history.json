@@ -9,6 +9,15 @@
         }
       }
     },
+    "04be579af80ce4071b63bda30a71717fe853fe3df7bd03582ad070cd": {
+      "name": "Francati Danilo",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T05:58:37+00:00",
+          "telegram_message_id": 1736
+        }
+      }
+    },
     "0c78e43351e850cb2be8beabcae820c350058cdc7b29a4c5dc52666b": {
       "name": "Polverini Marco",
       "notifications": {
@@ -27,6 +36,15 @@
         }
       }
     },
+    "3097fd484e15641601eb5b871b61a77a7966ddaf7c1716fbf749a66c": {
+      "name": "D'adamo Idiano",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T05:58:37+00:00",
+          "telegram_message_id": 1737
+        }
+      }
+    },
     "4c66b6b5b325da811da1984148bb74f364dc5f95c3aee7f43b08d8b3": {
       "name": "Di Luna Giuseppe Antonio",
       "notifications": {
@@ -42,6 +60,24 @@
         "news": {
           "sent_at": "2026-10-12T17:56:54+00:00",
           "telegram_message_id": 1717
+        }
+      }
+    },
+    "51f8a826f48cc117e58434915b54a21b6fedfd426dec0087a3de2826": {
+      "name": "Galasso Fabio",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T05:58:38+00:00",
+          "telegram_message_id": 1738
+        }
+      }
+    },
+    "559cd99f7f86fcae59cf4f08e349490a12345d4d2034ed6c7d4fa62b": {
+      "name": "Cinque Luigi",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-21T05:58:38+00:00",
+          "telegram_message_id": 1739
         }
       }
     },
