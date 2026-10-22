@@ -27,6 +27,15 @@
         }
       }
     },
+    "19fc71c8f9c4e99c17d9edaac05e9da08d53f31611cd2359e4300b1e": {
+      "name": "Bandiera Ruggero",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-22T12:35:20+00:00",
+          "telegram_message_id": 1743
+        }
+      }
+    },
     "1d7f2572efcc18caab227fcf62db9ca08022e850ac3f90bda80c0afb": {
       "name": "Hitaj Dorjan",
       "notifications": {
@@ -141,6 +150,15 @@
         "news": {
           "sent_at": "2026-10-05T21:39:47+00:00",
           "telegram_message_id": 1696
+        }
+      }
+    },
+    "a10b1c7ed1eb88f53aea8974f203e8f296af399a2977880ee858367d": {
+      "name": "Masi Iacopo",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-10-22T12:35:21+00:00",
+          "telegram_message_id": 1744
         }
       }
     },
