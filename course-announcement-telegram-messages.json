@@ -371,6 +371,24 @@
     "message_id": 1710,
     "title": "10/10/2026 - Avviso – Sessione straordinaria d’esame"
   },
+  "6c746d9c66697441331cd4f4f5d346ad3bfe19600954efea53708bdddfcbc3d4": {
+    "courses": [
+      {
+        "id": "33516",
+        "language": "en",
+        "name": "Cybersecurity",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33516/en/announcements.html#announcement-9860"
+      },
+      {
+        "id": "33516",
+        "language": "it",
+        "name": "Cybersecurity",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33516/it/announcements.html#announcement-9860"
+      }
+    ],
+    "message_id": 1747,
+    "title": "26/10/2026 - Difendi te stesso dagli attacchi informatici: un laboratorio interattivo guidato dagli esperti di IBM."
+  },
   "70df4f63c7f4580bfe0f003153f4d3b21a123bb731b0cd74a0434e24eed06060": {
     "courses": [
       {
