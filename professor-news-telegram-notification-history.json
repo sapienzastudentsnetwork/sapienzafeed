@@ -99,6 +99,15 @@
         }
       }
     },
+    "5abed536d1e74423ec4c390c9efd0c727ec17d34f4c03874c27479af": {
+      "name": "Avitabile Luisa",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-11-02T19:40:31+00:00",
+          "telegram_message_id": 1749
+        }
+      }
+    },
     "65816d4db3c3490a6f9ebd8ceed2d87fead474a980f41016a6d61e8e": {
       "name": "De Marsico Maria",
       "notifications": {
