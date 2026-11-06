@@ -135,6 +135,15 @@
         }
       }
     },
+    "8353250b517d80413abcb5ed6e7c1b3644cfdda01f2c4f67324cf0be": {
+      "name": "Calamoneri Tiziana",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-11-06T20:38:56+00:00",
+          "telegram_message_id": 1751
+        }
+      }
+    },
     "877234eaec4e010fc4e230ab5e683208f72274d5e073b05a54991bb3": {
       "name": "D'alessandro Flavio",
       "notifications": {
