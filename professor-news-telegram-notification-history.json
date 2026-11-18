@@ -180,6 +180,15 @@
         }
       }
     },
+    "b88986f842b5c00afe548279b3eec4a640918f8270a87b49c5d0e056": {
+      "name": "Mei Alessandro",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-11-18T10:04:38+00:00",
+          "telegram_message_id": 1759
+        }
+      }
+    },
     "be67ada94f05ddff2f83ea03c356a47a43ff62b65a3ac0ba70251f21": {
       "name": "Capparelli Stefano",
       "notifications": {
