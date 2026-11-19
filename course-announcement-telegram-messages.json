@@ -527,6 +527,24 @@
     "message_id": 1702,
     "title": "08/10/2026 - Classes of Foundations of Computer Science: October 27th"
   },
+  "d3af42a4aae8f896a043b75e76b5719b2a251c188d1f6e99821a9238acde4246": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-10301"
+      },
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-10301"
+      }
+    ],
+    "message_id": 1760,
+    "title": "19/11/2026 - 18 December – IT Meeting"
+  },
   "e3e544bd95e328f4b08e8d6eb29a4f5f049912e73bec1f0f209e46fdfa3fc6d4": {
     "courses": [
       {
@@ -598,6 +616,30 @@
     ],
     "message_id": 1714,
     "title": "11/10/2026 - L-31 and LM-18 – 4th Graduation Session"
+  },
+  "fa807e31c2d22db740ae634570127be8726835d6550be1890fced42b79103926": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-10301"
+      },
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-10301"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-10301"
+      }
+    ],
+    "message_id": 1761,
+    "title": "19/11/2026 - 18 dicembre – IT Meeting"
   },
   "fc4eb3cf57b7fef2ce66b3a75a2d82ff6e132bb48bd094672aeeaf1bc9ac5a29": {
     "courses": [

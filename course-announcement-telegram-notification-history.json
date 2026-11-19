@@ -4,8 +4,8 @@
       "name": "ACSAI",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-11-06T21:38:14+00:00",
-          "telegram_message_id": 1753
+          "sent_at": "2026-11-19T13:08:34+00:00",
+          "telegram_message_id": 1761
         }
       }
     },
@@ -13,8 +13,8 @@
       "name": "Informatica",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-11-06T21:38:14+00:00",
-          "telegram_message_id": 1753
+          "sent_at": "2026-11-19T13:08:34+00:00",
+          "telegram_message_id": 1761
         }
       }
     },
@@ -31,8 +31,8 @@
       "name": "Computer Science",
       "notifications": {
         "announcements": {
-          "sent_at": "2026-11-06T21:38:14+00:00",
-          "telegram_message_id": 1753
+          "sent_at": "2026-11-19T13:08:34+00:00",
+          "telegram_message_id": 1761
         }
       }
     },
