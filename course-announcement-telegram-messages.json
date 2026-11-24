@@ -119,6 +119,18 @@
     "message_id": 1700,
     "title": "07/10/2026 - Erasmus and Free Mover Examination Certificates – DiSCo Lazio"
   },
+  "20c006887d5015ec496eccf7eaa51e9c87f49dfb67bcc1626263c37e474ef55b": {
+    "courses": [
+      {
+        "id": "33516",
+        "language": "it",
+        "name": "Cybersecurity",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33516/it/announcements.html#announcement-10739"
+      }
+    ],
+    "message_id": 1768,
+    "title": "24/11/2026 - Percorsi di Eccellenza (a.a. 2026-2027)"
+  },
   "31ddc5e8eb018f5b70aff1a6031bfa4fb5c61b796689665f91317ab4d2e85233": {
     "courses": [
       {
@@ -257,6 +269,30 @@
     "message_id": 1722,
     "title": "19/10/2026 - Deep Learning Course – Starting October 19, 2026"
   },
+  "3d8017ab5610102bfda7e3be8777d0b06d25e34057dffeffff2d6d3bff6c93ac": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "it",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/it/announcements.html#announcement-10737"
+      },
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-10737"
+      },
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-10737"
+      }
+    ],
+    "message_id": 1764,
+    "title": "24/11/2026 - Percorsi di Eccellenza (a.a. 2026-2027)"
+  },
   "3f4b0ea8a5726072c713ef9dcf73f6b84bda957a0285a86ca3d193b024cc1e0b": {
     "courses": [
       {
@@ -298,6 +334,18 @@
     ],
     "message_id": 1715,
     "title": "11/10/2026 - L-31 e LM-18 - IV sessione di laurea"
+  },
+  "4b5257786262fa8b960b1cd535ffe3c67628cb05b272b023b239d9c9dec9acfd": {
+    "courses": [
+      {
+        "id": "33508",
+        "language": "it",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/it/announcements.html#announcement-10738"
+      }
+    ],
+    "message_id": 1766,
+    "title": "24/11/2026 - Percorsi di Eccellenza (a.a. 2026-2027)"
   },
   "4c0126a65c552fa1595d93d3f874c2f4dbddff5270f11b5414c924a093e10a9b": {
     "courses": [
@@ -401,6 +449,18 @@
     "message_id": 1710,
     "title": "10/10/2026 - Avviso – Sessione straordinaria d’esame"
   },
+  "6ad66567897fd56fbb39eed5fc58a5237580f2c71baf3772415c3fda133203b1": {
+    "courses": [
+      {
+        "id": "33508",
+        "language": "en",
+        "name": "Computer Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33508/en/announcements.html#announcement-10738"
+      }
+    ],
+    "message_id": 1765,
+    "title": "24/11/2026 - Excellence Programmes 2026-2027"
+  },
   "6c746d9c66697441331cd4f4f5d346ad3bfe19600954efea53708bdddfcbc3d4": {
     "courses": [
       {
@@ -449,6 +509,18 @@
     "message_id": 1720,
     "title": "16/10/2026 - Deep Learning Course – Starting October 19, 2026"
   },
+  "8f8b7697ee42233c8ab6ddcb992a1238575f5f7bc9cf293ddd4d3919fcc9a325": {
+    "courses": [
+      {
+        "id": "33516",
+        "language": "en",
+        "name": "Cybersecurity",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33516/en/announcements.html#announcement-10739"
+      }
+    ],
+    "message_id": 1767,
+    "title": "24/11/2026 - CALL FOR APPLICATIONS No. 11/2026 – ADMISSION PROCEDURES FOR EXCELLENCE PROGRAMMES – I3S FACULTY – A.Y. 2026/2027"
+  },
   "90b76b805299fac8c1f13cd8eb3b7ea71dd627b038e485ae3812fcb9b90679f5": {
     "courses": [
       {
@@ -478,6 +550,18 @@
     ],
     "message_id": 1699,
     "title": "06/10/2026 - Ritardo inizio lezione in data odierna prof. Wollan Paul ALGORITMI 2"
+  },
+  "be827db4bdc1e0903be55370f6e0068015604220d88ced8a2bbf4b01e806fb8b": {
+    "courses": [
+      {
+        "id": "33502",
+        "language": "en",
+        "name": "ACSAI",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33502/en/announcements.html#announcement-10737"
+      }
+    ],
+    "message_id": 1763,
+    "title": "24/11/2026 - Excellence Programmes (Academic Year 2026–2027)"
   },
   "be9792a29b7ee03ca39e48515ae579ecf5cb9d99a9c6e4aa9e238b7ecb191995": {
     "courses": [
