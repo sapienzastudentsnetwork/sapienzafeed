@@ -234,6 +234,15 @@
         }
       }
     },
+    "f92bef1a8f2f1066d80ce36539412fe083a105b7f1a73473875ba2f4": {
+      "name": "Piazza Paolo",
+      "notifications": {
+        "news": {
+          "sent_at": "2026-11-24T15:28:10+00:00",
+          "telegram_message_id": 1762
+        }
+      }
+    },
     "fe89d218146f928b93d072069f7a09e0b53c73f1929d2c13e4bae634": {
       "name": "Richelli Giorgio",
       "notifications": {
