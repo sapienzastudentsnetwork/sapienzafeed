@@ -377,6 +377,18 @@
     "message_id": 1698,
     "title": "06/10/2026 - Calendario Appelli Straordinari - II Sessione 2025/2026,"
   },
+  "58d6c0b8c2cd61db5b65d006a697b0313162162600a04e4ccc70966bc2db66e7": {
+    "courses": [
+      {
+        "id": "33503",
+        "language": "it",
+        "name": "Informatica",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33503/it/announcements.html#announcement-10742"
+      }
+    ],
+    "message_id": 1769,
+    "title": "25/11/2026 - Corrispondenze tra insegnamenti, esami e docenti"
+  },
   "59a10e74212a053837016df3478364f845ce9edbe3b88459d10db4c9f9d449d6": {
     "courses": [
       {
@@ -610,6 +622,18 @@
     ],
     "message_id": 1702,
     "title": "08/10/2026 - Classes of Foundations of Computer Science: October 27th"
+  },
+  "d28076e391f86454369fd994d26b6624340165a6ac17d8566a60576eb71fe216": {
+    "courses": [
+      {
+        "id": "33504",
+        "language": "it",
+        "name": "Informatica - a distanza",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33504/it/announcements.html#announcement-10743"
+      }
+    ],
+    "message_id": 1770,
+    "title": "25/11/2026 - Corrispondenze per esami - insegnamenti e docenti"
   },
   "d3af42a4aae8f896a043b75e76b5719b2a251c188d1f6e99821a9238acde4246": {
     "courses": [
