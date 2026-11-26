@@ -491,6 +491,18 @@
     "message_id": 1747,
     "title": "26/10/2026 - Difendi te stesso dagli attacchi informatici: un laboratorio interattivo guidato dagli esperti di IBM."
   },
+  "6d98d3a8419c7bcfa1d5bf5eb6ac73eb85370054dbc44e9f8ec8bd0b02bb6ba8": {
+    "courses": [
+      {
+        "id": "33519",
+        "language": "en",
+        "name": "Data Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33519/en/announcements.html#announcement-10768"
+      }
+    ],
+    "message_id": 1771,
+    "title": "26/11/2026 - 24/11/2026 - Excellence Programmes 2026-2027"
+  },
   "70df4f63c7f4580bfe0f003153f4d3b21a123bb731b0cd74a0434e24eed06060": {
     "courses": [
       {
@@ -508,6 +520,18 @@
     ],
     "message_id": 1708,
     "title": "06/10/2026 - Extraordinary Examination Calendar – Second Session 2025/2026"
+  },
+  "72af731aa3304ec0f455235171070e5761e6dbce97f1244e82126657ad0e669d": {
+    "courses": [
+      {
+        "id": "33519",
+        "language": "it",
+        "name": "Data Science",
+        "url": "https://sapienzastudents.net/sapienzafeed/corsidilaurea/33519/it/announcements.html#announcement-10768"
+      }
+    ],
+    "message_id": 1772,
+    "title": "26/11/2026 - 24/11/2026 - Percorsi di Eccellenza (a.a. 2026-2027)"
   },
   "8d9722ac36c2ec72cca0b0391e525f9374c928020e8a36b1af8bf3181191292d": {
     "courses": [
